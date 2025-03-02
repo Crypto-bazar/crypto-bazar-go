@@ -11,8 +11,8 @@ type Router struct {
 	userHandler *handlers.UserHandler
 }
 
-func NewRouter(engine *gin.Engine, userHandler *handlers.UserHandler) *Router {
-	return &Router{engine: engine, userHandler: userHandler}
+func NewRouter(userHandler *handlers.UserHandler) *Router {
+	return &Router{engine: gin.Default(), userHandler: userHandler}
 }
 
 func (r *Router) RegisterRoutes() {

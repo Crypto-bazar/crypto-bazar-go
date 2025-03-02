@@ -50,6 +50,6 @@ func (u *UserHandler) GetUserById(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func NewUserHandler(service domain.UserService) domain.UserHandler {
+func NewUserHandler(service domain.UserService) *UserHandler {
 	return &UserHandler{service: service}
 }
