@@ -28,9 +28,9 @@ func (r *Router) RegisterRoutes() {
 
 		nft := api.Group("/nfts")
 		{
-			nft.POST("/", r.userHandler.CreateUser)
-			nft.GET("/", r.userHandler.GetAllUsers)
-			nft.GET("/:id", r.userHandler.GetUserById)
+			nft.POST("/", r.nftHandler.CreateNFT)
+			nft.GET("/", r.nftHandler.GetAllNFTs)
+			nft.GET("/:id", r.nftHandler.GetNFTById)
 		}
 	}
 }

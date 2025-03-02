@@ -3,6 +3,7 @@ package handlers
 import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/models"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 		return
 	}
 
+	fmt.Printf("%+v\n", nft)
 	if err := u.service.CreateNFT(&nft); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

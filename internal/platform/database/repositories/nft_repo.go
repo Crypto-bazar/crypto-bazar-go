@@ -15,6 +15,7 @@ type NFTRepository struct {
 
 // CreateNFT implements domain.NFTRepository.
 func (n *NFTRepository) CreateNFT(nft *models.NFT) error {
+	fmt.Printf("%+v\n", nft)
 	query := "INSERT INTO nft (token_id, owner_id) VALUES (:token_id, :owner_id)"
 	_, err := n.db.NamedExec(query, &nft)
 
