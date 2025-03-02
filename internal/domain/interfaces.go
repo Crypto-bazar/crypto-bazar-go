@@ -23,3 +23,21 @@ type UserHandler interface {
 	GetAllUsers(c *gin.Context)
 	GetUserById(c *gin.Context)
 }
+
+type NFTRepository interface {
+	CreateNFT(nft *models.NFT) error
+	GetAllNFTs() (*[]models.NFT, error)
+	GetNFTById(id string) (*models.NFT, error)
+}
+
+type NFTService interface {
+	CreateNFT(nft *models.NFT) error
+	GetAllNFTs() (*[]models.NFT, error)
+	GetNFTById(id string) (*models.NFT, error)
+}
+
+type NFTHandler interface {
+	CreateNFT(c *gin.Context)
+	GetAllNFTs(c *gin.Context)
+	GetNFTById(c *gin.Context)
+}
