@@ -38,7 +38,7 @@ func (u *UserRepository) GetAllUsers() (*[]models.User, error) {
 }
 
 // GetUserById implements domain.UserRepository.
-func (u *UserRepository) GetUserById(id uint) (*models.User, error) {
+func (u *UserRepository) GetUserById(id string) (*models.User, error) {
 	var user models.User
 	query := "SELECT * FROM users WHERE id = ?"
 	err := u.db.Get(&user, query, id)

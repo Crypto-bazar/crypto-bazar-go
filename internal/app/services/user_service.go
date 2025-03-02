@@ -20,7 +20,7 @@ func (u *UserService) GetAllUsers() (*[]models.User, error) {
 }
 
 // GetUserById implements domain.UserService.
-func (u *UserService) GetUserById(id uint) (*models.User, error) {
+func (u *UserService) GetUserById(id string) (*models.User, error) {
 	return u.repo.GetUserById(id)
 }
 
