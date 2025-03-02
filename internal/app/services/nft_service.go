@@ -6,24 +6,24 @@ import (
 )
 
 type NFTService struct {
-	repo domain.UserRepository
+	repo domain.NFTRepository
 }
 
 // CreateNFT implements domain.NFTService.
 func (n *NFTService) CreateNFT(nft *models.NFT) error {
-	panic("unimplemented")
+	return n.repo.CreateNFT(nft)
 }
 
 // GetAllNFTs implements domain.NFTService.
 func (n *NFTService) GetAllNFTs() (*[]models.NFT, error) {
-	panic("unimplemented")
+	return n.repo.GetAllNFTs()
 }
 
 // GetNFTById implements domain.NFTService.
 func (n *NFTService) GetNFTById(id string) (*models.NFT, error) {
-	panic("unimplemented")
+	return n.repo.GetNFTById(id)
 }
 
-func NewUserService(repo domain.UserRepository) domain.NFTService {
+func NewUserService(repo domain.NFTRepository) domain.NFTService {
 	return &NFTService{repo: repo}
 }
