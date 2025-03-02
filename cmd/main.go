@@ -21,12 +21,14 @@ func main() {
 	log.Println("Success connection!")
 
 	userRepo := repositories.NewUserRepository(db)
-
 	userService := services.NewUserRepository(userRepo)
-
 	userHandler := handlers.NewUserHandler(userService)
 
-	router := router.NewRouter(userHandler)
+	nftRepo := repositories.NewNFTRepository(db)
+	nftService := services.NewNFTService(nftRepo)
+	nftHandler := handlers.NewNFTHandler(nftService)
+
+	router := router.NewRouter(userHandler, nftHandler)
 	router.RegisterRoutes()
 
 	if err := router.Run(":8080"); err != nil {
