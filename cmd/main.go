@@ -29,7 +29,7 @@ func main() {
 	router := router.NewRouter(userHandler)
 	router.RegisterRoutes()
 
-	if err := router.Run(":" + cfg.Port); err != nil {
+	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }

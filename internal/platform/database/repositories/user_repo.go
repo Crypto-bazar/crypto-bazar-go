@@ -4,6 +4,7 @@ import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/models"
 	"fmt"
+	"log"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -14,10 +15,11 @@ type UserRepository struct {
 
 // CreateUser implements domain.UserRepository.
 func (u *UserRepository) CreateUser(user *models.User) error {
-	query := "INSERT INFO users (eth_address) VALUES (:eth_address)"
+	query := "INSERT INTO users (eth_address) VALUES (:eth_address)"
 	_, err := u.db.NamedExec(query, &user)
 
 	if err != nil {
+		log.Printf("DB error: %v", err)
 		return fmt.Errorf("error creating user: %w", err)
 	}
 
@@ -31,6 +33,7 @@ func (u *UserRepository) GetAllUsers() (*[]models.User, error) {
 	err := u.db.Get(&users, query)
 
 	if err != nil {
+		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error getting all users: %w", err)
 	}
 
@@ -44,6 +47,7 @@ func (u *UserRepository) GetUserById(id string) (*models.User, error) {
 	err := u.db.Get(&user, query, id)
 
 	if err != nil {
+		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error getting user by ID: %w", err)
 	}
 

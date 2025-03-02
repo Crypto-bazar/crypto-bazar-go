@@ -15,13 +15,14 @@ type UserHandler struct {
 // CreateUser implements domain.UserHandler.
 func (u *UserHandler) CreateUser(c *gin.Context) {
 	var user models.User
+
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
 	if err := u.service.CreateUser(&user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

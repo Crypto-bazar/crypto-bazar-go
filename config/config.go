@@ -2,11 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
-	_ "github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+
+	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 type DB struct {
