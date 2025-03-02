@@ -24,6 +24,6 @@ func (n *NFTService) GetNFTById(id string) (*models.NFT, error) {
 	return n.repo.GetNFTById(id)
 }
 
-func NewUserService(repo domain.NFTRepository) domain.NFTService {
+func NewNFTService(repo domain.NFTRepository) domain.NFTService {
 	return &NFTService{repo: repo}
 }

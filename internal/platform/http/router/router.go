@@ -9,10 +9,11 @@ import (
 type Router struct {
 	engine      *gin.Engine
 	userHandler *handlers.UserHandler
+	nftHandler  *handlers.NFTHandler
 }
 
-func NewRouter(userHandler *handlers.UserHandler) *Router {
-	return &Router{engine: gin.Default(), userHandler: userHandler}
+func NewRouter(userHandler *handlers.UserHandler, nftHandler *handlers.NFTHandler) *Router {
+	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler}
 }
 
 func (r *Router) RegisterRoutes() {
@@ -23,6 +24,13 @@ func (r *Router) RegisterRoutes() {
 			users.POST("/", r.userHandler.CreateUser)
 			users.GET("/", r.userHandler.GetAllUsers)
 			users.GET("/:id", r.userHandler.GetUserById)
+		}
+
+		nft := api.Group("/nfts")
+		{
+			nft.POST("/", r.userHandler.CreateUser)
+			nft.GET("/", r.userHandler.GetAllUsers)
+			nft.GET("/:id", r.userHandler.GetUserById)
 		}
 	}
 }
