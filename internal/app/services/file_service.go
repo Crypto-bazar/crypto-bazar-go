@@ -24,5 +24,5 @@ func FileSave(c *gin.Context, fileField string, uploadDir string) (string, error
 		return "", fmt.Errorf("failed to save file: %w", err)
 	}
 
-	return filePath, nil
+	return file.Filename, nil
 }

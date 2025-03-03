@@ -31,7 +31,7 @@ func (n *NFTRepository) CreateNFT(nft *models.NFT) error {
 func (n *NFTRepository) GetAllNFTs() (*[]models.NFT, error) {
 	var nfts []models.NFT
 	query := "SELECT * FROM nft"
-	err := n.db.Get(&nfts, query)
+	err := n.db.Select(&nfts, query)
 
 	if err != nil {
 		log.Printf("DB error: %v", err)
