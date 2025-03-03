@@ -6,6 +6,8 @@ import (
 	"bazar/internal/platform/database/repositories"
 	"bazar/internal/platform/http/handlers"
 	"bazar/internal/platform/http/router"
+	"fmt"
+	"github.com/jmoiron/sqlx"
 	"log"
 )
 
@@ -17,7 +19,13 @@ func main() {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
 
-	defer db.Close()
+	defer func(db *sqlx.DB) {
+		err := db.Close()
+		if err != nil {
+			fmt.Printf("Error closing database connection: %v", err)
+		}
+	}(db)
+
 	log.Println("Success connection!")
 
 	userRepo := repositories.NewUserRepository(db)
@@ -28,10 +36,10 @@ func main() {
 	nftService := services.NewNFTService(nftRepo)
 	nftHandler := handlers.NewNFTHandler(nftService)
 
-	router := router.NewRouter(userHandler, nftHandler)
-	router.RegisterRoutes()
+	newRouter := router.NewRouter(userHandler, nftHandler)
+	newRouter.RegisterRoutes()
 
-	if err := router.Run(":8080"); err != nil {
+	if err := newRouter.Run(":8080"); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }
