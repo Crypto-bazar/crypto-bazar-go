@@ -10,7 +10,6 @@ import (
 
 func FileSave(c *gin.Context, fileField string, uploadDir string) (string, error) {
 	file, err := c.FormFile(fileField)
-	fmt.Println(file.Filename)
 	if err != nil {
 		return "", fmt.Errorf("file not found: %w", err)
 	}
