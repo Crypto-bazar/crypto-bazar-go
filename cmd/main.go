@@ -1,45 +1,24 @@
 package main
 
 import (
-	"bazar/config"
-	"bazar/internal/app/services"
-	"bazar/internal/platform/database/repositories"
-	"bazar/internal/platform/http/handlers"
-	"bazar/internal/platform/http/router"
+	"bazar/internal/app"
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"log"
 )
 
 func main() {
-	cfg := config.LoadConfig()
-	db, err := config.ConnectDB(cfg)
-
+	application, err := app.BootStrap()
 	if err != nil {
-		log.Fatalf("Error connecting to database: %v", err)
+		log.Fatalf("Failed to bootstrap application: %v", err)
 	}
 
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
+	defer func() {
+		if err := application.DB.Close(); err != nil {
 			fmt.Printf("Error closing database connection: %v", err)
 		}
-	}(db)
+	}()
 
-	log.Println("Success connection!")
-
-	userRepo := repositories.NewUserRepository(db)
-	userService := services.NewUserRepository(userRepo)
-	userHandler := handlers.NewUserHandler(userService)
-
-	nftRepo := repositories.NewNFTRepository(db)
-	nftService := services.NewNFTService(nftRepo)
-	nftHandler := handlers.NewNFTHandler(nftService)
-
-	newRouter := router.NewRouter(userHandler, nftHandler)
-	newRouter.RegisterRoutes()
-
-	if err := newRouter.Run(":8080"); err != nil {
+	if err := application.Router.Run(":8080"); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }
