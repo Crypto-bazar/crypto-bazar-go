@@ -2,6 +2,7 @@ package router
 
 import (
 	"bazar/internal/platform/http/handlers"
+	"bazar/internal/platform/http/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,11 @@ func NewRouter(userHandler *handlers.UserHandler, nftHandler *handlers.NFTHandle
 }
 
 func (r *Router) RegisterRoutes() {
+	r.engine.Use(middleware.Logger())
+	r.engine.Use(middleware.Recovery())
+	r.engine.Use(middleware.Cors())
+	r.engine.Static("/uploads", "./uploads")
+
 	api := r.engine.Group("/api/v1")
 	{
 		users := api.Group("/users")
