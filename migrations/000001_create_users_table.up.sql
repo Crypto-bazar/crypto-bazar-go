@@ -1,4 +1,4 @@
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    eth_address CHAR(42) UNIQUE NOT NULL
+    id BIGSERIAL PRIMARY KEY,
+    eth_address VARCHAR(42) UNIQUE NOT NULL
 );
