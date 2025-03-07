@@ -29,7 +29,7 @@ func (n *NFTRepository) CreateNFT(nft *models.NFT) error {
 // GetAllNFTs implements domain.NFTRepository.
 func (n *NFTRepository) GetAllNFTs() (*[]models.NFT, error) {
 	var nfts []models.NFT
-	query := "SELECT * FROM nft"
+	query := "SELECT * FROM nfts"
 	err := n.db.Select(&nfts, query)
 
 	if err != nil {
@@ -43,7 +43,7 @@ func (n *NFTRepository) GetAllNFTs() (*[]models.NFT, error) {
 // GetNFTById implements domain.NFTRepository.
 func (n *NFTRepository) GetNFTById(id string) (*models.NFT, error) {
 	var nft models.NFT
-	query := "SELECT * FROM nft WHERE id = ?"
+	query := "SELECT * FROM nfts WHERE id = ?"
 	err := n.db.Get(&nft, query, id)
 
 	if err != nil {
