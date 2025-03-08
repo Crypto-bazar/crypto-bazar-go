@@ -3,7 +3,8 @@ package handlers
 import (
 	"bazar/internal/app/services"
 	"bazar/internal/domain"
-	"bazar/internal/domain/models"
+	"bazar/internal/domain/dto"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,9 +15,9 @@ type NFTHandler struct {
 }
 
 func (u *NFTHandler) CreateNFT(c *gin.Context) {
-	var nft models.NFT
+	var req dto.CreateNFTRequest
 
-	if err := c.ShouldBind(&nft); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload", "details": err.Error()})
 		return
 	}
@@ -25,15 +26,15 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
+	
+	fmt.Println("NFT created successfully:", req)
 
-	nft.ImagePath = imagePath
-
-	if err := u.service.CreateNFT(&nft); err != nil {
+	if err := u.service.CreateNFT(&imagePath, &req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, nft)
+	c.JSON(http.StatusCreated, req)
 }
 
 func (u *NFTHandler) GetAllNFTs(c *gin.Context) {

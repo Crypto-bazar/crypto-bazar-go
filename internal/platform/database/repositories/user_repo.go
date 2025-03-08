@@ -13,6 +13,20 @@ type UserRepository struct {
 	db *sqlx.DB
 }
 
+// GetUserByAddress implements domain.UserRepository.
+func (u *UserRepository) GetUserByAddress(address string) (*models.User, error) {
+	var user models.User
+	fmt.Println("Address to query:", address)
+	query := "SELECT * FROM users WHERE eth_address = $1"
+	err := u.db.Get(&user, query, address)
+
+	if err != nil {
+		return nil, fmt.Errorf("error getting user by address: %w", err)
+	}
+
+	return &user, nil
+}
+
 // CreateUser implements domain.UserRepository.
 func (u *UserRepository) CreateUser(user *models.User) error {
 	query := "INSERT INTO users (eth_address) VALUES (:eth_address)"
