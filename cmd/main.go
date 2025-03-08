@@ -33,7 +33,7 @@ func main() {
 	userHandler := handlers.NewUserHandler(userService)
 
 	nftRepo := repositories.NewNFTRepository(db)
-	nftService := services.NewNFTService(nftRepo)
+	nftService := services.NewNFTService(nftRepo, userRepo)
 	nftHandler := handlers.NewNFTHandler(nftService)
 
 	newRouter := router.NewRouter(userHandler, nftHandler)

@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"bazar/internal/domain/dto"
 	"bazar/internal/domain/models"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,7 @@ type UserRepository interface {
 	CreateUser(user *models.User) error
 	GetAllUsers() (*[]models.User, error)
 	GetUserById(id string) (*models.User, error)
+	GetUserByAddress(address string) (*models.User, error)
 }
 
 type UserService interface {
@@ -31,7 +33,7 @@ type NFTRepository interface {
 }
 
 type NFTService interface {
-	CreateNFT(nft *models.NFT) error
+	CreateNFT(imagePath *string, nft *dto.CreateNFTRequest) error
 	GetAllNFTs() (*[]models.NFT, error)
 	GetNFTById(id string) (*models.NFT, error)
 }
