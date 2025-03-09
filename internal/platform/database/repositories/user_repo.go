@@ -13,6 +13,20 @@ type UserRepository struct {
 	db *sqlx.DB
 }
 
+// CheckUserExists implements domain.UserRepository.
+func (u *UserRepository) CheckUserExists(address string) (*bool, error) {
+	var isExists bool
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE eth_address = $1)"
+
+	err := u.db.Get(&isExists, query, &address)
+
+	if err != nil {
+		return nil, fmt.Errorf("error checking if user exists: %w", err)
+	}
+
+	return &isExists, nil
+}
+
 // GetUserByAddress implements domain.UserRepository.
 func (u *UserRepository) GetUserByAddress(address string) (*models.User, error) {
 	var user models.User

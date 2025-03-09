@@ -29,7 +29,7 @@ func main() {
 	log.Println("Success connection!")
 
 	userRepo := repositories.NewUserRepository(db)
-	userService := services.NewUserRepository(userRepo)
+	userService := services.NewUserService(userRepo)
 	userHandler := handlers.NewUserHandler(userService)
 
 	nftRepo := repositories.NewNFTRepository(db)

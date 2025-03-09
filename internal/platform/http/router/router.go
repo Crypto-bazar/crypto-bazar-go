@@ -1,6 +1,7 @@
 package router
 
 import (
+	"bazar/internal/domain"
 	"bazar/internal/platform/http/handlers"
 	"bazar/internal/platform/http/middleware"
 
@@ -9,11 +10,11 @@ import (
 
 type Router struct {
 	engine      *gin.Engine
-	userHandler *handlers.UserHandler
+	userHandler domain.UserHandler
 	nftHandler  *handlers.NFTHandler
 }
 
-func NewRouter(userHandler *handlers.UserHandler, nftHandler *handlers.NFTHandler) *Router {
+func NewRouter(userHandler domain.UserHandler, nftHandler *handlers.NFTHandler) *Router {
 	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler}
 }
 
@@ -30,6 +31,7 @@ func (r *Router) RegisterRoutes() {
 			users.POST("/", r.userHandler.CreateUser)
 			users.GET("/", r.userHandler.GetAllUsers)
 			users.GET("/:id", r.userHandler.GetUserById)
+			users.POST("/check", r.userHandler.CheckUserExists)
 		}
 
 		nft := api.Group("/nfts")
