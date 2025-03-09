@@ -57,6 +57,6 @@ func (u *NFTHandler) GetNFTById(c *gin.Context) {
 	c.JSON(http.StatusOK, nft)
 }
 
-func NewNFTHandler(service domain.NFTService) *NFTHandler {
+func NewNFTHandler(service domain.NFTService) domain.NFTHandler {
 	return &NFTHandler{service: service}
 }
