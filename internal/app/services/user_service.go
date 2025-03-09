@@ -4,6 +4,8 @@ import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/dto"
 	"bazar/internal/domain/models"
+	crypto "bazar/internal/pkg"
+	"fmt"
 )
 
 type UserService struct {
@@ -17,6 +19,12 @@ func (u *UserService) CheckUserExists(address *dto.CheckUserRequest) (*bool, err
 
 // CreateUser implements domain.UserService.
 func (u *UserService) CreateUser(user *dto.CreateUserRequest) error {
+	verifyResult := crypto.VerifySignature(user.EthAddress, user.Message, user.Signature)
+
+	if !verifyResult {
+		return fmt.Errorf("signature verification failed")
+	}
+
 	newUser := models.User{
 		ID:         0,
 		EthAddress: user.EthAddress,
