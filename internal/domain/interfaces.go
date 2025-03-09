@@ -12,18 +12,21 @@ type UserRepository interface {
 	GetAllUsers() (*[]models.User, error)
 	GetUserById(id string) (*models.User, error)
 	GetUserByAddress(address string) (*models.User, error)
+	CheckUserExists(address string) (*bool, error)
 }
 
 type UserService interface {
-	CreateUser(user *models.User) error
+	CreateUser(user *dto.CreateUserRequest) error
 	GetAllUsers() (*[]models.User, error)
 	GetUserById(id string) (*models.User, error)
+	CheckUserExists(address *dto.CheckUserRequest) (*bool, error)
 }
 
 type UserHandler interface {
 	CreateUser(c *gin.Context)
 	GetAllUsers(c *gin.Context)
 	GetUserById(c *gin.Context)
+	CheckUserExists(c *gin.Context)
 }
 
 type NFTRepository interface {
@@ -33,7 +36,7 @@ type NFTRepository interface {
 }
 
 type NFTService interface {
-	CreateNFT(imagePath *string, nft *dto.CreateNFTRequest) error
+	CreateNFT(imagePath string, nft *dto.CreateNFTRequest) error
 	GetAllNFTs() (*[]models.NFT, error)
 	GetNFTById(id string) (*models.NFT, error)
 }

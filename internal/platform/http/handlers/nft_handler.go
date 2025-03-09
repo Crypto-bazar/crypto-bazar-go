@@ -29,7 +29,7 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 	
 	fmt.Println("NFT created successfully:", req)
 
-	if err := u.service.CreateNFT(&imagePath, &req); err != nil {
+	if err := u.service.CreateNFT(imagePath, &req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

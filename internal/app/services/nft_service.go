@@ -13,7 +13,7 @@ type NFTService struct {
 }
 
 // CreateNFT implements domain.NFTService.
-func (n *NFTService) CreateNFT(imagePath *string, nft *dto.CreateNFTRequest) error {
+func (n *NFTService) CreateNFT(imagePath string, nft *dto.CreateNFTRequest) error {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func (n *NFTService) CreateNFT(imagePath *string, nft *dto.CreateNFTRequest) err
 		Price:       nft.Price,
 		Owner:       owner.ID,
 		ID:          0,
-		ImagePath:   *imagePath,
+		ImagePath:   imagePath,
 	}
 	return n.nftRepo.CreateNFT(&nftModel)
 }
