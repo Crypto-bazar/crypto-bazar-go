@@ -4,7 +4,7 @@ import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/dto"
 	"bazar/internal/domain/models"
-	crypto "bazar/internal/pkg"
+	"bazar/internal/platform/utils"
 	"fmt"
 )
 
@@ -19,7 +19,7 @@ func (u *UserService) CheckUserExists(address *dto.CheckUserRequest) (*bool, err
 
 // CreateUser implements domain.UserService.
 func (u *UserService) CreateUser(user *dto.CreateUserRequest) error {
-	verifyResult, err := crypto.VerifySignature(user.Message, user.Signature, user.EthAddress)
+	verifyResult, err := utils.VerifySignature(user.Message, user.Signature, user.EthAddress)
 
 	if err != nil {
 		return fmt.Errorf("signature error %w", err)

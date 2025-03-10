@@ -1,4 +1,4 @@
-package crypto
+package utils
 
 import (
 	ethcommon "github.com/ethereum/go-ethereum/common"

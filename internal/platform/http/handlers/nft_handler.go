@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"bazar/internal/app/services"
 	"bazar/internal/domain"
 	"bazar/internal/domain/dto"
+	"bazar/internal/platform/utils"
 	"fmt"
 	"net/http"
 
@@ -22,11 +22,12 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 		return
 	}
 
-	imagePath, err := services.FileSave(c, "image", "uploads")
+	imagePath, err := utils.FileSave(c, "image", "uploads")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	
+
 	fmt.Println("NFT created successfully:", req)
 
 	if err := u.service.CreateNFT(imagePath, &req); err != nil {
