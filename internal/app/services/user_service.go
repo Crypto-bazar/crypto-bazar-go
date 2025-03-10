@@ -19,7 +19,11 @@ func (u *UserService) CheckUserExists(address *dto.CheckUserRequest) (*bool, err
 
 // CreateUser implements domain.UserService.
 func (u *UserService) CreateUser(user *dto.CreateUserRequest) error {
-	verifyResult := crypto.VerifySignature(user.EthAddress, user.Message, user.Signature)
+	verifyResult, err := crypto.VerifySignature(user.Message, user.Signature, user.EthAddress)
+
+	if err != nil {
+		return fmt.Errorf("signature error %w", err)
+	}
 
 	if !verifyResult {
 		return fmt.Errorf("signature verification failed")
