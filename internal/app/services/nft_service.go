@@ -12,7 +12,6 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
-// CreateNFT implements domain.NFTService.
 func (n *NFTService) CreateNFT(imagePath string, nft *dto.CreateNFTRequest) error {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
 
@@ -23,6 +22,7 @@ func (n *NFTService) CreateNFT(imagePath string, nft *dto.CreateNFTRequest) erro
 	nftModel := models.NFT{
 		TokenID:     nft.TokenID,
 		Name:        nft.Name,
+		Symbol:      nft.Symbol,
 		Description: nft.Description,
 		Price:       nft.Price,
 		Owner:       owner.ID,
@@ -32,12 +32,10 @@ func (n *NFTService) CreateNFT(imagePath string, nft *dto.CreateNFTRequest) erro
 	return n.nftRepo.CreateNFT(&nftModel)
 }
 
-// GetAllNFTs implements domain.NFTService.
 func (n *NFTService) GetAllNFTs() (*[]models.NFT, error) {
 	return n.nftRepo.GetAllNFTs()
 }
 
-// GetNFTById implements domain.NFTService.
 func (n *NFTService) GetNFTById(id string) (*models.NFT, error) {
 	return n.nftRepo.GetNFTById(id)
 }
