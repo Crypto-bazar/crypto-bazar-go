@@ -29,7 +29,6 @@ func (u *UserHandler) CheckUserExists(c *gin.Context) {
 	c.JSON(http.StatusOK, isExists)
 }
 
-// CreateUser implements domain.UserHandler.
 func (u *UserHandler) CreateUser(c *gin.Context) {
 	var user dto.CreateUserRequest
 
