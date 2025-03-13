@@ -33,16 +33,19 @@ type NFTRepository interface {
 	CreateNFT(nft *models.NFT) error
 	GetAllNFTs() (*[]models.NFT, error)
 	GetNFTById(id string) (*models.NFT, error)
+	SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error)
 }
 
 type NFTService interface {
 	CreateNFT(imagePath string, nft *dto.CreateNFTRequest) error
 	GetAllNFTs() (*[]models.NFT, error)
 	GetNFTById(id string) (*models.NFT, error)
+	SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error)
 }
 
 type NFTHandler interface {
 	CreateNFT(c *gin.Context)
 	GetAllNFTs(c *gin.Context)
 	GetNFTById(c *gin.Context)
+	SetTokenAddress(c *gin.Context)
 }

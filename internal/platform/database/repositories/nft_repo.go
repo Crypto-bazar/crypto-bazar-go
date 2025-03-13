@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"bazar/internal/domain"
+	"bazar/internal/domain/dto"
 	"bazar/internal/domain/models"
 	"fmt"
 	"log"
@@ -11,6 +12,30 @@ import (
 
 type NFTRepository struct {
 	db *sqlx.DB
+}
+
+func (n *NFTRepository) SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error) {
+	var nft models.NFT
+
+	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE id = :id"
+	_, err := n.db.NamedExec(updateQuery, map[string]interface{}{
+		"token_id": updateTokenReq.ContractAddress,
+		"id":       updateTokenReq.Id,
+	})
+
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("error updating NFT: %w", err)
+	}
+
+	err = n.db.Get(&nft, "SELECT * FROM nfts WHERE id = $1", updateTokenReq.Id)
+
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("error updating NFT: %w", err)
+	}
+
+	return &nft, nil
 }
 
 func (n *NFTRepository) CreateNFT(nft *models.NFT) error {

@@ -5,6 +5,7 @@ import (
 	"bazar/internal/domain/dto"
 	"bazar/internal/platform/utils"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,26 @@ import (
 
 type NFTHandler struct {
 	service domain.NFTService
+}
+
+func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
+	var req dto.UpdateTokenAddressReq
+
+	if err := c.ShouldBind(&req); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+	
+	nft, err := u.service.SetTokenAddress(&req)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nft)
+
 }
 
 func (u *NFTHandler) CreateNFT(c *gin.Context) {

@@ -38,6 +38,7 @@ func (r *Router) RegisterRoutes() {
 			nft.POST("/", r.nftHandler.CreateNFT)
 			nft.GET("/", r.nftHandler.GetAllNFTs)
 			nft.GET("/:id", r.nftHandler.GetNFTById)
+			nft.PUT("/", r.nftHandler.SetTokenAddress)
 		}
 	}
 }

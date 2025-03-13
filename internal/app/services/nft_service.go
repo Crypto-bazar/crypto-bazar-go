@@ -12,6 +12,10 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
+func (n *NFTService) SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error) {
+	return n.nftRepo.SetTokenAddress(updateTokenReq)
+}
+
 func (n *NFTService) CreateNFT(imagePath string, nft *dto.CreateNFTRequest) error {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
 
