@@ -26,7 +26,6 @@ func (n *NFTService) CreateNFT(imagePath string, nft *dto.CreateNFTRequest) erro
 	nftModel := models.NFT{
 		TokenID:     nft.TokenID,
 		Name:        nft.Name,
-		Symbol:      nft.Symbol,
 		Description: nft.Description,
 		Price:       nft.Price,
 		Owner:       owner.ID,

@@ -39,7 +39,7 @@ func (n *NFTRepository) SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressRe
 }
 
 func (n *NFTRepository) CreateNFT(nft *models.NFT) error {
-	query := "INSERT INTO nfts (token_id, name, symbol, description, price, owner_id, image_path) VALUES (:token_id, :name, :symbol, :description, :price, :owner_id, :image_path)"
+	query := "INSERT INTO nfts (token_id, name, description, price, owner_id, image_path) VALUES (:token_id, :name, :description, :price, :owner_id, :image_path)"
 	_, err := n.db.NamedExec(query, &nft)
 
 	if err != nil {
