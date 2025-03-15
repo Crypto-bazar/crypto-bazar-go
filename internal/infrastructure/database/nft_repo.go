@@ -14,13 +14,13 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
-func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error) {
+func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
 	var nft entities.NFT
 
-	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE id = :id"
+	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE token_URI = :token_URI)"
 	_, err := n.db.NamedExec(updateQuery, map[string]interface{}{
-		"token_id": updateTokenReq.ContractAddress,
-		"id":       updateTokenReq.Id,
+		"token_id":    updateTokenReq.TokenId,
+		"token_URI": updateTokenReq.TokenURI,
 	})
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddr
 		return nil, fmt.Errorf("error updating NFT: %w", err)
 	}
 
-	err = n.db.Get(&nft, "SELECT * FROM nfts WHERE id = $1", updateTokenReq.Id)
+	err = n.db.Get(&nft, "SELECT * FROM nfts WHERE id = $1", updateTokenReq.TokenId)
 
 	if err != nil {
 		log.Printf("DB error: %v", err)
@@ -39,7 +39,7 @@ func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddr
 }
 
 func (n *NFTRepository) CreateNFT(nft *entities.NFT) error {
-	query := "INSERT INTO nfts (token_id, name, description, price, owner_id, image_path) VALUES (:token_id, :name, :description, :price, :owner_id, :image_path)"
+	query := "INSERT INTO nfts (token_id, token_URI, name, description, price, owner_id, image_path) VALUES (:token_id, :token_URI, :name, :description, :price, :owner_id, :image_path)"
 	_, err := n.db.NamedExec(query, &nft)
 
 	if err != nil {

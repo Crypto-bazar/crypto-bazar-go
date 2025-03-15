@@ -2,8 +2,9 @@ package usecase
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/domain/requests"
 	"bazar/internal/domain/entities"
+	"bazar/internal/domain/requests"
+	"bazar/pkg/utils"
 	"fmt"
 )
 
@@ -12,12 +13,13 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
-func (n *NFTService) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error) {
+func (n *NFTService) SetTokenAddress(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
 	return n.nftRepo.SetTokenAddress(updateTokenReq)
 }
 
 func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
+	tokenUri := utils.GenerateTokenURI("http://localhost:8080/", imagePath)
 
 	if err != nil {
 		return fmt.Errorf("error, user not found %w", err)
@@ -31,6 +33,7 @@ func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest)
 		Owner:       owner.ID,
 		ID:          0,
 		ImagePath:   imagePath,
+		TokenURI:    tokenUri,
 	}
 	return n.nftRepo.CreateNFT(&nftModel)
 }

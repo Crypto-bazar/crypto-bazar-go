@@ -16,7 +16,7 @@ type NFTHandler struct {
 }
 
 func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
-	var req requests.UpdateTokenAddressReq
+	var req requests.UpdateTokenIdReq
 
 	if err := c.ShouldBind(&req); err != nil {
 		log.Println(err)

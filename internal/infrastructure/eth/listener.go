@@ -15,12 +15,13 @@ import (
 )
 
 type Listener struct {
-	client *Client
-	abi    string
+	client       *Client
+	abi          string
+	eventHandler domain.EventHandler
 }
 
-func NewListener(client *Client, abi string) (*Listener, error) {
-	return &Listener{client: client, abi: abi}, nil
+func NewListener(client *Client, abi string, eventHandler domain.EventHandler) (*Listener, error) {
+	return &Listener{client: client, abi: abi, eventHandler: eventHandler}, nil
 
 }
 
@@ -62,6 +63,12 @@ func (l *Listener) StartListening(ctx context.Context) {
 				err := parsedABI.UnpackIntoInterface(&eventData, "TokenMinted", vLog.Data)
 				if err != nil {
 					log.Fatal(err)
+				}
+
+				err = l.eventHandler.OnTokenMinted(ctx, eventData)
+
+				if err != nil {
+					log.Panicf("Error get TokenMinted: %v", err)
 				}
 
 				fmt.Printf("Token Minted: TokenId=%s, Owner=%s, TokenURI=%s\n", eventData.TokenId.String(), eventData.Owner.Hex(), eventData.TokenURI)

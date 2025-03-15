@@ -1,8 +1,9 @@
 package domain
 
 import (
-	"bazar/internal/domain/requests"
 	"bazar/internal/domain/entities"
+	"bazar/internal/domain/requests"
+	"context"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,14 +34,14 @@ type NFTRepository interface {
 	CreateNFT(nft *entities.NFT) error
 	GetAllNFTs() (*[]entities.NFT, error)
 	GetNFTById(id string) (*entities.NFT, error)
-	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error)
+	SetTokenAddress(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 }
 
 type NFTService interface {
 	CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error
 	GetAllNFTs() (*[]entities.NFT, error)
 	GetNFTById(id string) (*entities.NFT, error)
-	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error)
+	SetTokenAddress(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 }
 
 type NFTHandler interface {
@@ -48,4 +49,10 @@ type NFTHandler interface {
 	GetAllNFTs(c *gin.Context)
 	GetNFTById(c *gin.Context)
 	SetTokenAddress(c *gin.Context)
+}
+
+type EventHandler interface {
+	OnTokenMinted(ctx context.Context, event TokenMintedEvent) error
+	OnTokenListedForSale(ctx context.Context, event TokenListedForSaleEvent) error
+	OnTokenSold(ctx context.Context, event TokenSold) error
 }

@@ -13,7 +13,6 @@ type UserRepository struct {
 	db *sqlx.DB
 }
 
-// CheckUserExists implements domain.UserRepository.
 func (u *UserRepository) CheckUserExists(address string) (*bool, error) {
 	var isExists bool
 	query := "SELECT EXISTS(SELECT 1 FROM users WHERE eth_address = $1)"
@@ -27,7 +26,6 @@ func (u *UserRepository) CheckUserExists(address string) (*bool, error) {
 	return &isExists, nil
 }
 
-// GetUserByAddress implements domain.UserRepository.
 func (u *UserRepository) GetUserByAddress(address string) (*entities.User, error) {
 	var user entities.User
 	fmt.Println("Address to query:", address)
@@ -41,7 +39,6 @@ func (u *UserRepository) GetUserByAddress(address string) (*entities.User, error
 	return &user, nil
 }
 
-// CreateUser implements domain.UserRepository.
 func (u *UserRepository) CreateUser(user *entities.User) error {
 	query := "INSERT INTO users (eth_address) VALUES (:eth_address)"
 	_, err := u.db.NamedExec(query, &user)
@@ -54,7 +51,6 @@ func (u *UserRepository) CreateUser(user *entities.User) error {
 	return nil
 }
 
-// GetAllUsers implements domain.UserRepository.
 func (u *UserRepository) GetAllUsers() (*[]entities.User, error) {
 	var users []entities.User
 	query := "SELECT * FROM users"
@@ -68,7 +64,6 @@ func (u *UserRepository) GetAllUsers() (*[]entities.User, error) {
 	return &users, nil
 }
 
-// GetUserById implements domain.UserRepository.
 func (u *UserRepository) GetUserById(id string) (*entities.User, error) {
 	var user entities.User
 	query := "SELECT * FROM users WHERE id = ?"
