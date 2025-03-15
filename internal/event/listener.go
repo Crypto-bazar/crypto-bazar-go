@@ -1,74 +1,88 @@
 package event
 
 import (
-	"bazar/internal/infrastructure/blockchain"
+	"bazar/internal/domain"
+	"bazar/internal/infrastructure"
 	"context"
+	"fmt"
 	"log"
+	"math/big"
+	"strings"
 
-	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 type Listener struct {
-	client       *ethclient.Client
-	contract     *blockchain.GeneratedMetaData // ABI контракта
-	contractAddr common.Address
-	eventRepo    repository.EventRepository
+	client *infrastructure.Client
+	abi    string
 }
 
-func NewListener(client *ethclient.Client, contractAddr common.Address, eventRepo repository.EventRepository) (*Listener, error) {
-	contract, err := generated.NewNFTMarketplace(contractAddr, client)
-	if err != nil {
-		return nil, err
-	}
+func NewListener(client *infrastructure.Client, abi string) (*Listener, error) {
+	return &Listener{client: client, abi: abi}, nil
 
-	return &Listener{
-		client:       client,
-		contract:     contract,
-		contractAddr: contractAddr,
-		eventRepo:    eventRepo,
-	}, nil
 }
 
 func (l *Listener) StartListening(ctx context.Context) {
-	log.Println("Запуск прослушивания событий...")
-
-	query := ethereum.FilterQuery{
-		Addresses: []common.Address{l.contractAddr},
-	}
 
 	logs := make(chan types.Log)
-	sub, err := l.client.SubscribeFilterLogs(ctx, query, logs)
+	sub, err := l.client.SubscribeToEvents(ctx, logs)
 	if err != nil {
-		log.Fatalf("Ошибка подписки на логи: %v", err)
+		log.Fatal(err)
 	}
-	defer sub.Unsubscribe()
+
+	parsedABI, err := abi.JSON(strings.NewReader(l.abi))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for {
 		select {
 		case err := <-sub.Err():
-			log.Println("Ошибка в подписке:", err)
+			log.Fatal(err)
 		case vLog := <-logs:
-			event, err := l.contract.ParseNFTCreated(vLog)
-			if err != nil {
-				log.Println("Ошибка парсинга события:", err)
-				continue
+			if vLog.Topics[0].Hex() == parsedABI.Events["TokenMinted"].ID.Hex() {
+				var eventData domain.TokenMintedEvent
+
+				eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes())
+				eventData.Owner = common.HexToAddress(vLog.Topics[2].Hex())
+
+				err := parsedABI.UnpackIntoInterface(&eventData, "TokenMinted", vLog.Data)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				fmt.Printf("Token Minted: TokenId=%s, Owner=%s, TokenURI=%s\n", eventData.TokenId.String(), eventData.Owner.Hex(), eventData.TokenURI)
 			}
 
-			nftEvent := domain.NFTCreatedEvent{
-				Creator: event.Creator.Hex(),
-				TokenID: event.TokenId.Uint64(),
-				URI:     event.Uri,
+			if vLog.Topics[0].Hex() == parsedABI.Events["TokenListedForSale"].ID.Hex() {
+				var eventData domain.TokenListedForSaleEvent
+
+				eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Uint64()
+				eventData.Seller = common.HexToAddress(vLog.Topics[2].Hex())
+
+				err := parsedABI.UnpackIntoInterface(&eventData, "TokenListedForSale", vLog.Data)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				fmt.Printf("Token Listed For Sale: TokenId=%d, Price=%s, Seller=%s\n", eventData.TokenId, eventData.Price.String(), eventData.Seller.Hex())
 			}
 
-			err = l.eventRepo.SaveEvent(nftEvent)
-			if err != nil {
-				log.Println("Ошибка сохранения события:", err)
-			}
+			if vLog.Topics[0].Hex() == parsedABI.Events["TokenSold"].ID.Hex() {
+				var eventData domain.TokenSold
 
-			log.Printf("Получено событие: %+v\n", nftEvent)
+				eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Uint64()
+				eventData.Buyer = common.HexToAddress(vLog.Topics[2].Hex())
+
+				err := parsedABI.UnpackIntoInterface(&eventData, "TokenSold", vLog.Data)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				fmt.Printf("Token Sold: TokenId=%d, Buyer=%s, Price=%s\n", eventData.TokenId, eventData.Buyer.Hex(), eventData.Price.String())
+			}
 		}
 	}
 }
