@@ -8,6 +8,7 @@ import (
 	"math/big"
 	"strings"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -23,18 +24,29 @@ func NewListener(client *Client, abi string) (*Listener, error) {
 
 }
 
-func (l *Listener) StartListening(ctx context.Context) {
+func (l *Listener) parseAbi() *abi.ABI {
+	parsedABI, err := abi.JSON(strings.NewReader(l.abi))
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	return &parsedABI
+}
+
+func (l *Listener) subscriveToEvents(ctx context.Context) (ethereum.Subscription, chan types.Log) {
 	logs := make(chan types.Log)
 	sub, err := l.client.SubscribeToEvents(ctx, logs)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	parsedABI, err := abi.JSON(strings.NewReader(l.abi))
-	if err != nil {
-		log.Fatal(err)
-	}
+	return sub, logs
+}
+
+func (l *Listener) StartListening(ctx context.Context) {
+
+	sub, logs := l.subscriveToEvents(ctx)
+	parsedABI := l.parseAbi()
 
 	for {
 		select {
