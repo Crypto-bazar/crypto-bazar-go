@@ -1,6 +1,6 @@
 package requests
 
-type UpdateTokenAddressReq struct {
-	Id              uint   `json:"id"`
-	ContractAddress string `json:"contract_address"`
+type UpdateTokenIdReq struct {
+	TokenURI string `json:"token_URI"`
+	TokenId  string `json:"token_id"`
 }

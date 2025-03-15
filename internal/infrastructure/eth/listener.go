@@ -1,4 +1,4 @@
-package infrastructure
+package eth
 
 import (
 	"bazar/internal/domain"
@@ -8,33 +8,46 @@ import (
 	"math/big"
 	"strings"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
 type Listener struct {
-	client *Client
-	abi    string
+	client       *Client
+	abi          string
+	eventHandler domain.EventHandler
 }
 
-func NewListener(client *Client, abi string) (*Listener, error) {
-	return &Listener{client: client, abi: abi}, nil
+func NewListener(client *Client, abi string, eventHandler domain.EventHandler) (*Listener, error) {
+	return &Listener{client: client, abi: abi, eventHandler: eventHandler}, nil
 
 }
 
-func (l *Listener) StartListening(ctx context.Context) {
+func (l *Listener) parseAbi() *abi.ABI {
+	parsedABI, err := abi.JSON(strings.NewReader(l.abi))
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	return &parsedABI
+}
+
+func (l *Listener) subscriveToEvents(ctx context.Context) (ethereum.Subscription, chan types.Log) {
 	logs := make(chan types.Log)
 	sub, err := l.client.SubscribeToEvents(ctx, logs)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	parsedABI, err := abi.JSON(strings.NewReader(l.abi))
-	if err != nil {
-		log.Fatal(err)
-	}
+	return sub, logs
+}
+
+func (l *Listener) StartListening(ctx context.Context) {
+
+	sub, logs := l.subscriveToEvents(ctx)
+	parsedABI := l.parseAbi()
 
 	for {
 		select {
@@ -52,7 +65,12 @@ func (l *Listener) StartListening(ctx context.Context) {
 					log.Fatal(err)
 				}
 
-				fmt.Printf("Token Minted: TokenId=%s, Owner=%s, TokenURI=%s\n", eventData.TokenId.String(), eventData.Owner.Hex(), eventData.TokenURI)
+				err = l.eventHandler.OnTokenMinted(ctx, eventData)
+
+				if err != nil {
+					log.Panicf("Error get TokenMinted: %v", err)
+				}
+
 			}
 
 			if vLog.Topics[0].Hex() == parsedABI.Events["TokenListedForSale"].ID.Hex() {

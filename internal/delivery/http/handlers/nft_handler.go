@@ -3,8 +3,7 @@ package handlers
 import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/requests"
-	"bazar/internal/platform/utils"
-	"fmt"
+	"bazar/pkg/utils"
 	"log"
 	"net/http"
 
@@ -16,15 +15,15 @@ type NFTHandler struct {
 }
 
 func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
-	var req requests.UpdateTokenAddressReq
+	var req requests.UpdateTokenIdReq
 
 	if err := c.ShouldBind(&req); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
-	
-	nft, err := u.service.SetTokenAddress(&req)
+
+	nft, err := u.service.SetTokenId(&req)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
@@ -48,8 +47,6 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println("NFT created successfully:", req)
 
 	if err := u.service.CreateNFT(imagePath, &req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

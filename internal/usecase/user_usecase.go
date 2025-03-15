@@ -1,10 +1,10 @@
-package services
+package usecase
 
 import (
 	"bazar/internal/domain"
+	"bazar/internal/domain/entities"
 	"bazar/internal/domain/requests"
-	"bazar/internal/domain/models"
-	"bazar/internal/platform/utils"
+	"bazar/pkg/utils"
 	"fmt"
 )
 
@@ -27,18 +27,18 @@ func (u *UserService) CreateUser(user *requests.CreateUserRequest) error {
 		return fmt.Errorf("signature verification failed")
 	}
 
-	newUser := models.User{
+	newUser := entities.User{
 		EthAddress: user.EthAddress,
 	}
 
 	return u.repo.CreateUser(&newUser)
 }
 
-func (u *UserService) GetAllUsers() (*[]models.User, error) {
+func (u *UserService) GetAllUsers() (*[]entities.User, error) {
 	return u.repo.GetAllUsers()
 }
 
-func (u *UserService) GetUserById(id string) (*models.User, error) {
+func (u *UserService) GetUserById(id string) (*entities.User, error) {
 	return u.repo.GetUserById(id)
 }
 

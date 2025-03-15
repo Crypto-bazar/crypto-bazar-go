@@ -1,6 +1,7 @@
 CREATE TABLE nfts (
     id SERIAL PRIMARY KEY,
-    token_id VARCHAR(42),
+    token_id TEXT,
+    token_uri TEXT,
     name VARCHAR(255),
     description TEXT,
     price NUMERIC(38,18), 
