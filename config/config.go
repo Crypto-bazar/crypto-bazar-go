@@ -11,11 +11,13 @@ import (
 )
 
 type DB struct {
-	Host     string
-	User     string
-	Password string
-	Name     string
-	Port     string
+	Host            string
+	User            string
+	Password        string
+	Name            string
+	Port            string
+	EthereumNodeUrl string
+	ContractAddress string
 }
 
 func ConnectDB(cfg *DB) (*sqlx.DB, error) {
@@ -50,6 +52,8 @@ func LoadConfig() *DB {
 		Password: getEnv("DB_PASSWORD", ""),
 		Name:     getEnv("DB_NAME", ""),
 		Port:     getEnv("DB_PORT", "5432"),
+		EthereumNodeUrl: getEnv("ETHEREUM_NODE_URL", ""),
+		ContractAddress: getEnv("CONTRACT_ADDRESS", ""),
 	}
 }
 
