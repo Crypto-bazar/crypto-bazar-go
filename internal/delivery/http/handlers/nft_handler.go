@@ -4,7 +4,6 @@ import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/requests"
 	"bazar/pkg/utils"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -24,7 +23,7 @@ func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
 		return
 	}
 
-	nft, err := u.service.SetTokenAddress(&req)
+	nft, err := u.service.SetTokenId(&req)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
@@ -48,8 +47,6 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println("NFT created successfully:", req)
 
 	if err := u.service.CreateNFT(imagePath, &req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

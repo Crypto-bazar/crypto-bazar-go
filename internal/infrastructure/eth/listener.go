@@ -71,7 +71,6 @@ func (l *Listener) StartListening(ctx context.Context) {
 					log.Panicf("Error get TokenMinted: %v", err)
 				}
 
-				fmt.Printf("Token Minted: TokenId=%s, Owner=%s, TokenURI=%s\n", eventData.TokenId.String(), eventData.Owner.Hex(), eventData.TokenURI)
 			}
 
 			if vLog.Topics[0].Hex() == parsedABI.Events["TokenListedForSale"].ID.Hex() {

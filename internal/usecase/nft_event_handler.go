@@ -4,6 +4,7 @@ import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/requests"
 	"context"
+	"log"
 )
 
 type NFTEventHandler struct {
@@ -14,14 +15,19 @@ func (n *NFTEventHandler) OnTokenListedForSale(ctx context.Context, event domain
 	panic("unimplemented")
 }
 
-// TODO доделать реализацию обновления id токена. Генерировать и искать по tokenURI
 func (n *NFTEventHandler) OnTokenMinted(ctx context.Context, event domain.TokenMintedEvent) error {
 	req := &requests.UpdateTokenIdReq{
-		TokenURI: event.TokenId.String(),
-		TokenId:  event.TokenURI,
+		TokenURI: event.TokenURI,
+		TokenId:  event.TokenId.String(),
 	}
 
-	
+	_, err := n.nftService.SetTokenId(req)
+	if err != nil {
+		log.Printf("Ошибка обновления NFT в БД: %v", err)
+		return err
+	}
+
+	return nil
 }
 
 func (n *NFTEventHandler) OnTokenSold(ctx context.Context, event domain.TokenSold) error {

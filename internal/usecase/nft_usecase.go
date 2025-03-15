@@ -13,20 +13,20 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
-func (n *NFTService) SetTokenAddress(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
-	return n.nftRepo.SetTokenAddress(updateTokenReq)
+func (n *NFTService) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
+	return n.nftRepo.SetTokenId(updateTokenReq)
 }
 
 func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
-	tokenUri := utils.GenerateTokenURI("http://localhost:8080/", imagePath)
+	tokenUri := utils.GenerateTokenURI("http://localhost:8080", imagePath)
 
 	if err != nil {
 		return fmt.Errorf("error, user not found %w", err)
 	}
 
 	nftModel := entities.NFT{
-		TokenID:     nft.TokenID,
+		TokenID:     0,
 		Name:        nft.Name,
 		Description: nft.Description,
 		Price:       nft.Price,

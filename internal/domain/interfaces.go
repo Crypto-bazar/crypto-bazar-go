@@ -34,14 +34,14 @@ type NFTRepository interface {
 	CreateNFT(nft *entities.NFT) error
 	GetAllNFTs() (*[]entities.NFT, error)
 	GetNFTById(id string) (*entities.NFT, error)
-	SetTokenAddress(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
+	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 }
 
 type NFTService interface {
 	CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error
 	GetAllNFTs() (*[]entities.NFT, error)
 	GetNFTById(id string) (*entities.NFT, error)
-	SetTokenAddress(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
+	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 }
 
 type NFTHandler interface {
