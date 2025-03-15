@@ -1,8 +1,7 @@
-package event
+package infrastructure
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/infrastructure"
 	"context"
 	"fmt"
 	"log"
@@ -15,11 +14,11 @@ import (
 )
 
 type Listener struct {
-	client *infrastructure.Client
+	client *Client
 	abi    string
 }
 
-func NewListener(client *infrastructure.Client, abi string) (*Listener, error) {
+func NewListener(client *Client, abi string) (*Listener, error) {
 	return &Listener{client: client, abi: abi}, nil
 
 }

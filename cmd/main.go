@@ -4,7 +4,6 @@ import (
 	"bazar/config"
 	"bazar/internal/app/services"
 	"bazar/internal/contract"
-	"bazar/internal/event"
 	"bazar/internal/infrastructure"
 	"bazar/internal/platform/database/repositories"
 	"bazar/internal/platform/http/handlers"
@@ -49,7 +48,7 @@ func main() {
 		fmt.Printf("Error create client: %v", err)
 	}
 
-	listener, err := event.NewListener(client, contract.ContractAbi)
+	listener, err := infrastructure.NewListener(client, contract.ContractAbi)
 	if err != nil {
 		fmt.Printf("Error create listener: %v", err)
 	}
