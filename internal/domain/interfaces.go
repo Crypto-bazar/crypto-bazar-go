@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"bazar/internal/domain/dto"
+	"bazar/internal/domain/requests"
 	"bazar/internal/domain/models"
 
 	"github.com/gin-gonic/gin"
@@ -16,10 +16,10 @@ type UserRepository interface {
 }
 
 type UserService interface {
-	CreateUser(user *dto.CreateUserRequest) error
+	CreateUser(user *requests.CreateUserRequest) error
 	GetAllUsers() (*[]models.User, error)
 	GetUserById(id string) (*models.User, error)
-	CheckUserExists(address *dto.CheckUserRequest) (*bool, error)
+	CheckUserExists(address *requests.CheckUserRequest) (*bool, error)
 }
 
 type UserHandler interface {
@@ -33,14 +33,14 @@ type NFTRepository interface {
 	CreateNFT(nft *models.NFT) error
 	GetAllNFTs() (*[]models.NFT, error)
 	GetNFTById(id string) (*models.NFT, error)
-	SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error)
+	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error)
 }
 
 type NFTService interface {
-	CreateNFT(imagePath string, nft *dto.CreateNFTRequest) error
+	CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error
 	GetAllNFTs() (*[]models.NFT, error)
 	GetNFTById(id string) (*models.NFT, error)
-	SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error)
+	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error)
 }
 
 type NFTHandler interface {

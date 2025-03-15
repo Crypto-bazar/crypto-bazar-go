@@ -1,4 +1,4 @@
-package dto
+package requests
 
 type CreateNFTRequest struct {
 	TokenID      string `form:"token_id"`

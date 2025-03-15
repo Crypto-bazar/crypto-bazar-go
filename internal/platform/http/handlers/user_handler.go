@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/domain/dto"
+	"bazar/internal/domain/requests"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +14,7 @@ type UserHandler struct {
 
 // CheckUserExists implements domain.UserHandler.
 func (u *UserHandler) CheckUserExists(c *gin.Context) {
-	var address dto.CheckUserRequest
+	var address requests.CheckUserRequest
 	if err := c.BindJSON(&address); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
@@ -30,7 +30,7 @@ func (u *UserHandler) CheckUserExists(c *gin.Context) {
 }
 
 func (u *UserHandler) CreateUser(c *gin.Context) {
-	var user dto.CreateUserRequest
+	var user requests.CreateUserRequest
 
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})

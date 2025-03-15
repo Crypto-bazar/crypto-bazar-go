@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/domain/dto"
 	"bazar/internal/domain/models"
+	"bazar/internal/domain/requests"
 	"fmt"
 	"log"
 
@@ -14,7 +14,7 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
-func (n *NFTRepository) SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error) {
+func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error) {
 	var nft models.NFT
 
 	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE id = :id"

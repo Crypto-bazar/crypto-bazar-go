@@ -1,4 +1,4 @@
-package dto
+package requests
 
 type CreateUserRequest struct {
 	EthAddress string `json:"eth_address"`

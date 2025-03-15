@@ -2,7 +2,7 @@ package services
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/domain/dto"
+	"bazar/internal/domain/requests"
 	"bazar/internal/domain/models"
 	"bazar/internal/platform/utils"
 	"fmt"
@@ -12,11 +12,11 @@ type UserService struct {
 	repo domain.UserRepository
 }
 
-func (u *UserService) CheckUserExists(address *dto.CheckUserRequest) (*bool, error) {
+func (u *UserService) CheckUserExists(address *requests.CheckUserRequest) (*bool, error) {
 	return u.repo.CheckUserExists(address.Address)
 }
 
-func (u *UserService) CreateUser(user *dto.CreateUserRequest) error {
+func (u *UserService) CreateUser(user *requests.CreateUserRequest) error {
 	verifyResult, err := utils.VerifySignature(user.Message, user.Signature, user.EthAddress)
 
 	if err != nil {

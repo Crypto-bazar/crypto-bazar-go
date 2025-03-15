@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/domain/dto"
+	"bazar/internal/domain/requests"
 	"bazar/internal/platform/utils"
 	"fmt"
 	"log"
@@ -16,7 +16,7 @@ type NFTHandler struct {
 }
 
 func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
-	var req dto.UpdateTokenAddressReq
+	var req requests.UpdateTokenAddressReq
 
 	if err := c.ShouldBind(&req); err != nil {
 		log.Println(err)
@@ -36,7 +36,7 @@ func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
 }
 
 func (u *NFTHandler) CreateNFT(c *gin.Context) {
-	var req dto.CreateNFTRequest
+	var req requests.CreateNFTRequest
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload", "details": err.Error()})

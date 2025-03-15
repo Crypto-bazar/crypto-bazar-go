@@ -2,7 +2,7 @@ package services
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/domain/dto"
+	"bazar/internal/domain/requests"
 	"bazar/internal/domain/models"
 	"fmt"
 )
@@ -12,11 +12,11 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
-func (n *NFTService) SetTokenAddress(updateTokenReq *dto.UpdateTokenAddressReq) (*models.NFT, error) {
+func (n *NFTService) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error) {
 	return n.nftRepo.SetTokenAddress(updateTokenReq)
 }
 
-func (n *NFTService) CreateNFT(imagePath string, nft *dto.CreateNFTRequest) error {
+func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
 
 	if err != nil {

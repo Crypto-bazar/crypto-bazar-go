@@ -1,4 +1,4 @@
-package dto
+package requests
 
 type UpdateTokenAddressReq struct {
 	Id              uint   `json:"id"`

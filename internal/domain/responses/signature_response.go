@@ -1,4 +1,4 @@
-package dto
+package responses
 
 type SignatureResponse struct {
 	IsValid          bool   `json:"isValid"`
