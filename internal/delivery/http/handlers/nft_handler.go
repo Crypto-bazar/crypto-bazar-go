@@ -3,7 +3,7 @@ package handlers
 import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/requests"
-	"bazar/internal/platform/utils"
+	"bazar/pkg/utils"
 	"fmt"
 	"log"
 	"net/http"
@@ -23,7 +23,7 @@ func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
-	
+
 	nft, err := u.service.SetTokenAddress(&req)
 	if err != nil {
 		log.Println(err)

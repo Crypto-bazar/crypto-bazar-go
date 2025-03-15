@@ -2,12 +2,12 @@ package main
 
 import (
 	"bazar/config"
-	"bazar/internal/app/services"
 	"bazar/internal/contract"
-	"bazar/internal/infrastructure"
-	"bazar/internal/platform/database/repositories"
-	"bazar/internal/platform/http/handlers"
-	"bazar/internal/platform/http/router"
+	"bazar/internal/delivery/http/handlers"
+	"bazar/internal/delivery/http/router"
+	"bazar/internal/infrastructure/database"
+	"bazar/internal/infrastructure/eth"
+	"bazar/internal/usecase"
 	"context"
 	"fmt"
 	"log"
@@ -32,23 +32,23 @@ func main() {
 
 	log.Println("Success connection!")
 
-	userRepo := repositories.NewUserRepository(db)
-	userService := services.NewUserService(userRepo)
+	userRepo := database.NewUserRepository(db)
+	userService := usecase.NewUserService(userRepo)
 	userHandler := handlers.NewUserHandler(userService)
 
-	nftRepo := repositories.NewNFTRepository(db)
-	nftService := services.NewNFTService(nftRepo, userRepo)
+	nftRepo := database.NewNFTRepository(db)
+	nftService := usecase.NewNFTService(nftRepo, userRepo)
 	nftHandler := handlers.NewNFTHandler(nftService)
 
 	newRouter := router.NewRouter(userHandler, nftHandler)
 	newRouter.RegisterRoutes()
 
-	client, err := infrastructure.NewClient(cfg.EthereumNodeUrl, cfg.ContractAddress)
+	client, err := eth.NewClient(cfg.EthereumNodeUrl, cfg.ContractAddress)
 	if err != nil {
 		fmt.Printf("Error create client: %v", err)
 	}
 
-	listener, err := infrastructure.NewListener(client, contract.ContractAbi)
+	listener, err := eth.NewListener(client, contract.ContractAbi)
 	if err != nil {
 		fmt.Printf("Error create listener: %v", err)
 	}

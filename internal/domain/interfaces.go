@@ -2,23 +2,23 @@ package domain
 
 import (
 	"bazar/internal/domain/requests"
-	"bazar/internal/domain/models"
+	"bazar/internal/domain/entities"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserRepository interface {
-	CreateUser(user *models.User) error
-	GetAllUsers() (*[]models.User, error)
-	GetUserById(id string) (*models.User, error)
-	GetUserByAddress(address string) (*models.User, error)
+	CreateUser(user *entities.User) error
+	GetAllUsers() (*[]entities.User, error)
+	GetUserById(id string) (*entities.User, error)
+	GetUserByAddress(address string) (*entities.User, error)
 	CheckUserExists(address string) (*bool, error)
 }
 
 type UserService interface {
 	CreateUser(user *requests.CreateUserRequest) error
-	GetAllUsers() (*[]models.User, error)
-	GetUserById(id string) (*models.User, error)
+	GetAllUsers() (*[]entities.User, error)
+	GetUserById(id string) (*entities.User, error)
 	CheckUserExists(address *requests.CheckUserRequest) (*bool, error)
 }
 
@@ -30,17 +30,17 @@ type UserHandler interface {
 }
 
 type NFTRepository interface {
-	CreateNFT(nft *models.NFT) error
-	GetAllNFTs() (*[]models.NFT, error)
-	GetNFTById(id string) (*models.NFT, error)
-	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error)
+	CreateNFT(nft *entities.NFT) error
+	GetAllNFTs() (*[]entities.NFT, error)
+	GetNFTById(id string) (*entities.NFT, error)
+	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error)
 }
 
 type NFTService interface {
 	CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error
-	GetAllNFTs() (*[]models.NFT, error)
-	GetNFTById(id string) (*models.NFT, error)
-	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error)
+	GetAllNFTs() (*[]entities.NFT, error)
+	GetNFTById(id string) (*entities.NFT, error)
+	SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error)
 }
 
 type NFTHandler interface {

@@ -1,9 +1,9 @@
-package services
+package usecase
 
 import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/requests"
-	"bazar/internal/domain/models"
+	"bazar/internal/domain/entities"
 	"fmt"
 )
 
@@ -12,7 +12,7 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
-func (n *NFTService) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error) {
+func (n *NFTService) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error) {
 	return n.nftRepo.SetTokenAddress(updateTokenReq)
 }
 
@@ -23,7 +23,7 @@ func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest)
 		return fmt.Errorf("error, user not found %w", err)
 	}
 
-	nftModel := models.NFT{
+	nftModel := entities.NFT{
 		TokenID:     nft.TokenID,
 		Name:        nft.Name,
 		Description: nft.Description,
@@ -35,11 +35,11 @@ func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest)
 	return n.nftRepo.CreateNFT(&nftModel)
 }
 
-func (n *NFTService) GetAllNFTs() (*[]models.NFT, error) {
+func (n *NFTService) GetAllNFTs() (*[]entities.NFT, error) {
 	return n.nftRepo.GetAllNFTs()
 }
 
-func (n *NFTService) GetNFTById(id string) (*models.NFT, error) {
+func (n *NFTService) GetNFTById(id string) (*entities.NFT, error) {
 	return n.nftRepo.GetNFTById(id)
 }
 

@@ -1,4 +1,4 @@
-package models
+package entities
 
 type NFT struct {
 	ID          uint   `db:"id" json:"id"`

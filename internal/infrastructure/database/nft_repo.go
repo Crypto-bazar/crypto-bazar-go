@@ -1,8 +1,8 @@
-package repositories
+package database
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/domain/models"
+	"bazar/internal/domain/entities"
 	"bazar/internal/domain/requests"
 	"fmt"
 	"log"
@@ -14,8 +14,8 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
-func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*models.NFT, error) {
-	var nft models.NFT
+func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddressReq) (*entities.NFT, error) {
+	var nft entities.NFT
 
 	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE id = :id"
 	_, err := n.db.NamedExec(updateQuery, map[string]interface{}{
@@ -38,7 +38,7 @@ func (n *NFTRepository) SetTokenAddress(updateTokenReq *requests.UpdateTokenAddr
 	return &nft, nil
 }
 
-func (n *NFTRepository) CreateNFT(nft *models.NFT) error {
+func (n *NFTRepository) CreateNFT(nft *entities.NFT) error {
 	query := "INSERT INTO nfts (token_id, name, description, price, owner_id, image_path) VALUES (:token_id, :name, :description, :price, :owner_id, :image_path)"
 	_, err := n.db.NamedExec(query, &nft)
 
@@ -50,8 +50,8 @@ func (n *NFTRepository) CreateNFT(nft *models.NFT) error {
 	return nil
 }
 
-func (n *NFTRepository) GetAllNFTs() (*[]models.NFT, error) {
-	var nfts []models.NFT
+func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
+	var nfts []entities.NFT
 	query := "SELECT * FROM nfts"
 	err := n.db.Select(&nfts, query)
 
@@ -63,8 +63,8 @@ func (n *NFTRepository) GetAllNFTs() (*[]models.NFT, error) {
 	return &nfts, nil
 }
 
-func (n *NFTRepository) GetNFTById(id string) (*models.NFT, error) {
-	var nft models.NFT
+func (n *NFTRepository) GetNFTById(id string) (*entities.NFT, error) {
+	var nft entities.NFT
 	query := "SELECT * FROM nfts WHERE id = ?"
 	err := n.db.Get(&nft, query, id)
 

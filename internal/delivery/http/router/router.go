@@ -2,7 +2,7 @@ package router
 
 import (
 	"bazar/internal/domain"
-	"bazar/internal/platform/http/middleware"
+	"bazar/internal/delivery/http/middleware"
 
 	"github.com/gin-gonic/gin"
 )
