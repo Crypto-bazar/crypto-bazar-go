@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/big"
 	"strings"
+	"time"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -34,7 +35,7 @@ func (l *Listener) parseAbi() *abi.ABI {
 	return &parsedABI
 }
 
-func (l *Listener) subscriveToEvents(ctx context.Context) (ethereum.Subscription, chan types.Log) {
+func (l *Listener) subscribeToEvents(ctx context.Context) (ethereum.Subscription, chan types.Log) {
 	logs := make(chan types.Log)
 	sub, err := l.client.SubscribeToEvents(ctx, logs)
 	if err != nil {
@@ -45,61 +46,63 @@ func (l *Listener) subscriveToEvents(ctx context.Context) (ethereum.Subscription
 }
 
 func (l *Listener) StartListening(ctx context.Context) {
-
-	sub, logs := l.subscriveToEvents(ctx)
-	parsedABI := l.parseAbi()
-
 	for {
-		select {
-		case err := <-sub.Err():
-			log.Fatal(err)
-		case vLog := <-logs:
-			if vLog.Topics[0].Hex() == parsedABI.Events["TokenMinted"].ID.Hex() {
-				var eventData domain.TokenMintedEvent
+		sub, logs := l.subscribeToEvents(ctx)
+		parsedABI := l.parseAbi()
 
-				eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes())
-				eventData.Owner = common.HexToAddress(vLog.Topics[2].Hex())
+		for {
+			select {
+			case err := <-sub.Err():
+				log.Printf("Subscription error: %v. Reconnecting...", err)
+				sub.Unsubscribe()
+				time.Sleep(5 * time.Second)
+				continue
 
-				err := parsedABI.UnpackIntoInterface(&eventData, "TokenMinted", vLog.Data)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				err = l.eventHandler.OnTokenMinted(ctx, eventData)
-
-				if err != nil {
-					log.Panicf("Error get TokenMinted: %v", err)
-				}
-
-			}
-
-			if vLog.Topics[0].Hex() == parsedABI.Events["TokenListedForSale"].ID.Hex() {
-				var eventData domain.TokenListedForSaleEvent
-
-				eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Uint64()
-				eventData.Seller = common.HexToAddress(vLog.Topics[2].Hex())
-
-				err := parsedABI.UnpackIntoInterface(&eventData, "TokenListedForSale", vLog.Data)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				fmt.Printf("Token Listed For Sale: TokenId=%d, Price=%s, Seller=%s\n", eventData.TokenId, eventData.Price.String(), eventData.Seller.Hex())
-			}
-
-			if vLog.Topics[0].Hex() == parsedABI.Events["TokenSold"].ID.Hex() {
-				var eventData domain.TokenSold
-
-				eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Uint64()
-				eventData.Buyer = common.HexToAddress(vLog.Topics[2].Hex())
-
-				err := parsedABI.UnpackIntoInterface(&eventData, "TokenSold", vLog.Data)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				fmt.Printf("Token Sold: TokenId=%d, Buyer=%s, Price=%s\n", eventData.TokenId, eventData.Buyer.Hex(), eventData.Price.String())
+			case vLog := <-logs:
+				l.handleLog(ctx, parsedABI, vLog)
 			}
 		}
+	}
+}
+
+func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types.Log) {
+	switch vLog.Topics[0].Hex() {
+	case parsedABI.Events["TokenMinted"].ID.Hex():
+		var eventData domain.TokenMintedEvent
+		eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes())
+		eventData.Owner = common.HexToAddress(vLog.Topics[2].Hex())
+
+		if err := parsedABI.UnpackIntoInterface(&eventData, "TokenMinted", vLog.Data); err != nil {
+			log.Printf("Error unpacking TokenMinted event: %v", err)
+			return
+		}
+
+		if err := l.eventHandler.OnTokenMinted(ctx, eventData); err != nil {
+			log.Printf("Error processing TokenMinted event: %v", err)
+		}
+
+	case parsedABI.Events["TokenListedForSale"].ID.Hex():
+		var eventData domain.TokenListedForSaleEvent
+		eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Uint64()
+		eventData.Seller = common.HexToAddress(vLog.Topics[2].Hex())
+
+		if err := parsedABI.UnpackIntoInterface(&eventData, "TokenListedForSale", vLog.Data); err != nil {
+			log.Printf("Error unpacking TokenListedForSale event: %v", err)
+			return
+		}
+
+		fmt.Printf("Token Listed For Sale: TokenId=%d, Price=%s, Seller=%s\n", eventData.TokenId, eventData.Price.String(), eventData.Seller.Hex())
+
+	case parsedABI.Events["TokenSold"].ID.Hex():
+		var eventData domain.TokenSold
+		eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Uint64()
+		eventData.Buyer = common.HexToAddress(vLog.Topics[2].Hex())
+
+		if err := parsedABI.UnpackIntoInterface(&eventData, "TokenSold", vLog.Data); err != nil {
+			log.Printf("Error unpacking TokenSold event: %v", err)
+			return
+		}
+
+		fmt.Printf("Token Sold: TokenId=%d, Buyer=%s, Price=%s\n", eventData.TokenId, eventData.Buyer.Hex(), eventData.Price.String())
 	}
 }
