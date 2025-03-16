@@ -37,16 +37,31 @@ func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*
 	return &nft, nil
 }
 
-func (n *NFTRepository) CreateNFT(nft *entities.NFT) error {
-	query := "INSERT INTO nfts (token_id, token_uri, name, description, price, owner_id, image_path) VALUES (:token_id, :token_uri, :name, :description, :price, :owner_id, :image_path)"
-	_, err := n.db.NamedExec(query, &nft)
+func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
+    query := `
+        INSERT INTO nfts (token_id, token_uri, name, description, price, owner_id, image_path)
+        VALUES (:token_id, :token_uri, :name, :description, :price, :owner_id, :image_path)
+        RETURNING id, token_id, token_uri, name, description, price, owner_id, image_path
+    `
 
-	if err != nil {
-		log.Printf("DB error: %v", err)
-		return fmt.Errorf("error creating NFT: %w", err)
-	}
+    rows, err := n.db.NamedQuery(query, nft)
+    if err != nil {
+        log.Printf("DB error: %v", err)
+        return nil, fmt.Errorf("error creating NFT: %w", err)
+    }
+    defer rows.Close()
 
-	return nil
+    if rows.Next() {
+        err = rows.StructScan(nft)
+        if err != nil {
+            log.Printf("Error scanning NFT: %v", err)
+            return nil, fmt.Errorf("error scanning NFT: %w", err)
+        }
+    } else {
+        return nil, fmt.Errorf("no rows returned after insert")
+    }
+
+    return nft, nil
 }
 
 func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {

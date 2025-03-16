@@ -17,12 +17,12 @@ func (n *NFTService) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*ent
 	return n.nftRepo.SetTokenId(updateTokenReq)
 }
 
-func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest) error {
+func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest) (*entities.NFT, error) {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
 	tokenUri := utils.GenerateTokenURI("http://localhost:8080", imagePath)
 
 	if err != nil {
-		return fmt.Errorf("error, user not found %w", err)
+		return nil, fmt.Errorf("error, user not found %w", err)
 	}
 
 	nftModel := entities.NFT{

@@ -48,12 +48,14 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 		return
 	}
 
-	if err := u.service.CreateNFT(imagePath, &req); err != nil {
+	nft, err := u.service.CreateNFT(imagePath, &req)
+  
+  if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, req)
+	c.JSON(http.StatusCreated, nft)
 }
 
 func (u *NFTHandler) GetAllNFTs(c *gin.Context) {
