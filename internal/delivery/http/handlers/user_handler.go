@@ -12,7 +12,6 @@ type UserHandler struct {
 	service domain.UserService
 }
 
-// CheckUserExists implements domain.UserHandler.
 func (u *UserHandler) CheckUserExists(c *gin.Context) {
 	var address requests.CheckUserRequest
 	if err := c.BindJSON(&address); err != nil {
@@ -45,7 +44,6 @@ func (u *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
-// GetAllUsers implements domain.UserHandler.
 func (u *UserHandler) GetAllUsers(c *gin.Context) {
 	users, err := u.service.GetAllUsers()
 	if err != nil {
@@ -56,7 +54,6 @@ func (u *UserHandler) GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-// GetUserById implements domain.UserHandler.
 func (u *UserHandler) GetUserById(c *gin.Context) {
 	id := c.Param("id")
 	user, err := u.service.GetUserById(id)
