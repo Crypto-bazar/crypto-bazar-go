@@ -37,9 +37,16 @@ func (l *Listener) parseAbi() *abi.ABI {
 
 func (l *Listener) subscribeToEvents(ctx context.Context) (ethereum.Subscription, chan types.Log) {
 	logs := make(chan types.Log)
+
+	if l.client == nil {
+		log.Printf("Ethereum client is nil, skipping event subscription")
+		return nil, logs
+	}
+
 	sub, err := l.client.SubscribeToEvents(ctx, logs)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Subscription error: %v.", err)
+
 	}
 
 	return sub, logs
@@ -48,6 +55,13 @@ func (l *Listener) subscribeToEvents(ctx context.Context) (ethereum.Subscription
 func (l *Listener) StartListening(ctx context.Context) {
 	for {
 		sub, logs := l.subscribeToEvents(ctx)
+
+		if sub == nil {
+			log.Println("Subscription is nil, skipping listening loop")
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
 		parsedABI := l.parseAbi()
 
 		for {

@@ -14,6 +14,17 @@ type NFTHandler struct {
 	service domain.NFTService
 }
 
+// GetSalesNFT implements domain.NFTHandler.
+func (u *NFTHandler) GetSalesNFT(c *gin.Context) {
+	nfts, err := u.service.GetSalesNFT()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nfts)
+}
+
 func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
 	var req requests.UpdateTokenIdReq
 
@@ -49,8 +60,8 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 	}
 
 	nft, err := u.service.CreateNFT(imagePath, &req)
-  
-  if err != nil {
+
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

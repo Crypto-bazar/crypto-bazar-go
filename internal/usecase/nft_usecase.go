@@ -13,6 +13,10 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
+func (n *NFTService) GetSalesNFT() (*[]entities.NFT, error) {
+	return n.nftRepo.GetSalesNFT()
+}
+
 func (n *NFTService) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
 	return n.nftRepo.SetTokenId(updateTokenReq)
 }

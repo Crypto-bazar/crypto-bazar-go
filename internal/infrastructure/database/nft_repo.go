@@ -77,6 +77,16 @@ func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
 	return &nfts, nil
 }
 
+func (n *NFTRepository) GetSalesNFT() (*[]entities.NFT, error) {
+	var nfts []entities.NFT
+	query := "SELECT * FROM nfts WHERE price > 0"
+	err := n.db.Select(&nfts, query); if err != nil {
+		return nil, fmt.Errorf("error getting sales NFTs: %w", err)
+	}
+
+	return &nfts, nil
+}
+
 func (n *NFTRepository) GetNFTById(id string) (*entities.NFT, error) {
 	var nft entities.NFT
 	query := "SELECT * FROM nfts WHERE id = ?"

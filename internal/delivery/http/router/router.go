@@ -1,8 +1,8 @@
 package router
 
 import (
-	"bazar/internal/domain"
 	"bazar/internal/delivery/http/middleware"
+	"bazar/internal/domain"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,6 +39,7 @@ func (r *Router) RegisterRoutes() {
 			nft.GET("/", r.nftHandler.GetAllNFTs)
 			nft.GET("/:id", r.nftHandler.GetNFTById)
 			nft.PUT("/", r.nftHandler.SetTokenAddress)
+			nft.GET("/sales", r.nftHandler.GetSalesNFT)
 		}
 	}
 }
