@@ -26,12 +26,11 @@ func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest)
 	}
 
 	nftModel := entities.NFT{
+		Price:       "0",
 		TokenID:     0,
 		Name:        nft.Name,
 		Description: nft.Description,
-		Price:       nft.Price,
 		Owner:       owner.ID,
-		ID:          0,
 		ImagePath:   imagePath,
 		TokenURI:    tokenUri,
 	}
