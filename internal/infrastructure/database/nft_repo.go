@@ -14,9 +14,34 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
+func (n *NFTRepository) SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error) {
+	var nft entities.NFT
+	query := "UPDATE nfts SET price = :price WHERE token_id = :token_id"
+
+	rows, err := n.db.NamedQuery(query, &nft)
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("error creating NFT: %w", err)
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		err = rows.StructScan(&nft)
+		if err != nil {
+			log.Printf("Error scanning NFT: %v", err)
+			return nil, fmt.Errorf("error scanning NFT: %w", err)
+		}
+	} else {
+		return nil, fmt.Errorf("no rows returned after insert")
+	}
+
+	return &nft, nil
+
+}
+
 func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
 	var nft entities.NFT
-	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE token_uri = :token_uri"
+	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE token_uri = :token_uri RETURNING id, token_id, token_uri, name, description, price, owner_id, image_path"
 	_, err := n.db.NamedExec(updateQuery, map[string]any{
 		"token_id":  updateTokenReq.TokenId,
 		"token_uri": updateTokenReq.TokenURI,
@@ -38,30 +63,30 @@ func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*
 }
 
 func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
-    query := `
+	query := `
         INSERT INTO nfts (token_id, token_uri, name, description, price, owner_id, image_path)
         VALUES (:token_id, :token_uri, :name, :description, :price, :owner_id, :image_path)
         RETURNING id, token_id, token_uri, name, description, price, owner_id, image_path
     `
 
-    rows, err := n.db.NamedQuery(query, nft)
-    if err != nil {
-        log.Printf("DB error: %v", err)
-        return nil, fmt.Errorf("error creating NFT: %w", err)
-    }
-    defer rows.Close()
+	rows, err := n.db.NamedQuery(query, nft)
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("error creating NFT: %w", err)
+	}
+	defer rows.Close()
 
-    if rows.Next() {
-        err = rows.StructScan(nft)
-        if err != nil {
-            log.Printf("Error scanning NFT: %v", err)
-            return nil, fmt.Errorf("error scanning NFT: %w", err)
-        }
-    } else {
-        return nil, fmt.Errorf("no rows returned after insert")
-    }
+	if rows.Next() {
+		err = rows.StructScan(nft)
+		if err != nil {
+			log.Printf("Error scanning NFT: %v", err)
+			return nil, fmt.Errorf("error scanning NFT: %w", err)
+		}
+	} else {
+		return nil, fmt.Errorf("no rows returned after insert")
+	}
 
-    return nft, nil
+	return nft, nil
 }
 
 func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
@@ -80,7 +105,8 @@ func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
 func (n *NFTRepository) GetSalesNFT() (*[]entities.NFT, error) {
 	var nfts []entities.NFT
 	query := "SELECT * FROM nfts WHERE price > 0"
-	err := n.db.Select(&nfts, query); if err != nil {
+	err := n.db.Select(&nfts, query)
+	if err != nil {
 		return nil, fmt.Errorf("error getting sales NFTs: %w", err)
 	}
 

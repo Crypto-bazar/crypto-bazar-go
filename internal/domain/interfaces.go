@@ -36,6 +36,7 @@ type NFTRepository interface {
 	GetAllNFTs() (*[]entities.NFT, error)
 	GetNFTById(id string) (*entities.NFT, error)
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
+	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 }
 
 type NFTService interface {
@@ -44,6 +45,7 @@ type NFTService interface {
 	GetAllNFTs() (*[]entities.NFT, error)
 	GetNFTById(id string) (*entities.NFT, error)
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
+	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 }
 
 type NFTHandler interface {

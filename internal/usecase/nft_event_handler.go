@@ -12,7 +12,16 @@ type NFTEventHandler struct {
 }
 
 func (n *NFTEventHandler) OnTokenListedForSale(ctx context.Context, event domain.TokenListedForSaleEvent) error {
-	panic("unimplemented")
+	req := &requests.UpdateTokenPriceReq{
+		TokenId: event.TokenId, Price: event.Price.String(),
+	}
+
+	_, err := n.nftService.SetTokenPrice(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (n *NFTEventHandler) OnTokenMinted(ctx context.Context, event *domain.TokenMintedEvent) error {
