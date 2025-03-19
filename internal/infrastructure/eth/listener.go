@@ -97,7 +97,6 @@ func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types
 
 	case parsedABI.Events["TokenListedForSale"].ID.Hex():
 		eventData, err := events.SalesEvent()
-		fmt.Printf("Token Listed For Sale: TokenId=%d, Price=%s, Seller=%s\n", eventData.TokenId, eventData.Price.String(), eventData.Seller.Hex())
 
 		if err != nil {
 			fmt.Printf("Error unpacking TokenListedForSale event: %v", err)

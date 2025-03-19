@@ -35,6 +35,7 @@ func (e *Events) SalesEvent() (*domain.TokenListedForSaleEvent, error) {
 	var eventData domain.TokenListedForSaleEvent
 	eventData.TokenId = new(big.Int).SetBytes(e.vLog.Topics[1].Bytes()).Uint64()
 	eventData.Seller = common.HexToAddress(e.vLog.Topics[2].Hex())
+	fmt.Printf("Token Listed For Sale: TokenId=%d, Price=%s, Seller=%s\n", eventData.TokenId, eventData.Price.String(), eventData.Seller.Hex())
 
 	if err := e.parsedABI.UnpackIntoInterface(&eventData, "TokenListedForSale", e.vLog.Data); err != nil {
 		return nil, fmt.Errorf("error unpacking TokenListedForSale event: %v", err)

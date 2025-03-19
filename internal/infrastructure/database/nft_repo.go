@@ -15,28 +15,27 @@ type NFTRepository struct {
 }
 
 func (n *NFTRepository) SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error) {
-	var nft entities.NFT
 	query := "UPDATE nfts SET price = :price WHERE token_id = :token_id"
 
-	rows, err := n.db.NamedQuery(query, &nft)
+	res, err := n.db.NamedExec(query, updateTokenReq)
 	if err != nil {
 		log.Printf("DB error: %v", err)
-		return nil, fmt.Errorf("error creating NFT: %w", err)
+		return nil, fmt.Errorf("error updating NFT: %w", err)
 	}
-	defer rows.Close()
 
-	if rows.Next() {
-		err = rows.StructScan(&nft)
-		if err != nil {
-			log.Printf("Error scanning NFT: %v", err)
-			return nil, fmt.Errorf("error scanning NFT: %w", err)
-		}
-	} else {
-		return nil, fmt.Errorf("no rows returned after insert")
+	rowsAffected, _ := res.RowsAffected()
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("no rows updated")
+	}
+
+	var nft entities.NFT
+	err = n.db.Get(&nft, "SELECT * FROM nfts WHERE token_id = $1", updateTokenReq.TokenId)
+	if err != nil {
+		log.Printf("Error fetching updated NFT: %v", err)
+		return nil, fmt.Errorf("error fetching updated NFT: %w", err)
 	}
 
 	return &nft, nil
-
 }
 
 func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
