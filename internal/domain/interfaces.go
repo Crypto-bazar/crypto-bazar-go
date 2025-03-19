@@ -55,7 +55,7 @@ type NFTHandler interface {
 }
 
 type EventHandler interface {
-	OnTokenMinted(ctx context.Context, event TokenMintedEvent) error
+	OnTokenMinted(ctx context.Context, event *TokenMintedEvent) error
 	OnTokenListedForSale(ctx context.Context, event TokenListedForSaleEvent) error
 	OnTokenSold(ctx context.Context, event TokenSold) error
 }

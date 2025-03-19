@@ -15,7 +15,7 @@ func (n *NFTEventHandler) OnTokenListedForSale(ctx context.Context, event domain
 	panic("unimplemented")
 }
 
-func (n *NFTEventHandler) OnTokenMinted(ctx context.Context, event domain.TokenMintedEvent) error {
+func (n *NFTEventHandler) OnTokenMinted(ctx context.Context, event *domain.TokenMintedEvent) error {
 	req := &requests.UpdateTokenIdReq{
 		TokenURI: event.TokenURI,
 		TokenId:  event.TokenId.String(),

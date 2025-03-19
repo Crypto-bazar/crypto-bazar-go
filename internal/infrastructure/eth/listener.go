@@ -82,12 +82,10 @@ func (l *Listener) StartListening(ctx context.Context) {
 func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types.Log) {
 	switch vLog.Topics[0].Hex() {
 	case parsedABI.Events["TokenMinted"].ID.Hex():
-		var eventData domain.TokenMintedEvent
-		eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes())
-		eventData.Owner = common.HexToAddress(vLog.Topics[2].Hex())
-
-		if err := parsedABI.UnpackIntoInterface(&eventData, "TokenMinted", vLog.Data); err != nil {
-			log.Printf("Error unpacking TokenMinted event: %v", err)
+		eventData, err := MintedEvent(parsedABI, vLog)
+		
+		if err != nil {
+			fmt.Printf("Error unpacking TokenMinted event: %v", err)
 			return
 		}
 
