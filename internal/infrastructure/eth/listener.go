@@ -80,10 +80,12 @@ func (l *Listener) StartListening(ctx context.Context) {
 }
 
 func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types.Log) {
+	events := NewEvents(parsedABI, &vLog)
+
 	switch vLog.Topics[0].Hex() {
 	case parsedABI.Events["TokenMinted"].ID.Hex():
-		eventData, err := MintedEvent(parsedABI, vLog)
-		
+		eventData, err := events.MintedEvent()
+
 		if err != nil {
 			fmt.Printf("Error unpacking TokenMinted event: %v", err)
 			return
@@ -94,16 +96,18 @@ func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types
 		}
 
 	case parsedABI.Events["TokenListedForSale"].ID.Hex():
-		var eventData domain.TokenListedForSaleEvent
-		eventData.TokenId = new(big.Int).SetBytes(vLog.Topics[1].Bytes()).Uint64()
-		eventData.Seller = common.HexToAddress(vLog.Topics[2].Hex())
+		eventData, err := events.SalesEvent()
+		fmt.Printf("Token Listed For Sale: TokenId=%d, Price=%s, Seller=%s\n", eventData.TokenId, eventData.Price.String(), eventData.Seller.Hex())
 
-		if err := parsedABI.UnpackIntoInterface(&eventData, "TokenListedForSale", vLog.Data); err != nil {
-			log.Printf("Error unpacking TokenListedForSale event: %v", err)
+		if err != nil {
+			fmt.Printf("Error unpacking TokenListedForSale event: %v", err)
 			return
 		}
 
-		fmt.Printf("Token Listed For Sale: TokenId=%d, Price=%s, Seller=%s\n", eventData.TokenId, eventData.Price.String(), eventData.Seller.Hex())
+		if err := l.eventHandler.OnTokenListedForSale(ctx, eventData); err != nil {
+			fmt.Printf("Error unpacking TokenListedForSale event: %v", err)
+			return
+		}
 
 	case parsedABI.Events["TokenSold"].ID.Hex():
 		var eventData domain.TokenSold

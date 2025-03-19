@@ -11,7 +11,7 @@ type NFTEventHandler struct {
 	nftService domain.NFTService
 }
 
-func (n *NFTEventHandler) OnTokenListedForSale(ctx context.Context, event domain.TokenListedForSaleEvent) error {
+func (n *NFTEventHandler) OnTokenListedForSale(ctx context.Context, event *domain.TokenListedForSaleEvent) error {
 	req := &requests.UpdateTokenPriceReq{
 		TokenId: event.TokenId, Price: event.Price.String(),
 	}
