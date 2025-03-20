@@ -37,6 +37,7 @@ type NFTRepository interface {
 	GetNFTById(id string) (*entities.NFT, error)
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
+	GetUserNFT(address string) (*[]entities.NFT, error)
 }
 
 type NFTService interface {
@@ -46,14 +47,15 @@ type NFTService interface {
 	GetNFTById(id string) (*entities.NFT, error)
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
+	GetUserNFT(address string) (*[]entities.NFT, error)
 }
-
 type NFTHandler interface {
 	CreateNFT(c *gin.Context)
 	GetAllNFTs(c *gin.Context)
 	GetNFTById(c *gin.Context)
 	SetTokenAddress(c *gin.Context)
 	GetSalesNFT(c *gin.Context)
+	GetUserNFT(c *gin.Context)
 }
 
 type EventHandler interface {

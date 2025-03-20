@@ -14,6 +14,22 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
+// GetUserNFT implements domain.NFTRepository.
+func (n *NFTRepository) GetUserNFT(address string) (*[]entities.NFT, error) {
+	var nft []entities.NFT
+	query := `
+    SELECT nfts.* FROM nfts 
+    JOIN "users" ON nfts.owner_id = "users".id 
+    WHERE "users".eth_address = $1`
+
+	err := n.db.Select(&nft, query, address)
+	if err != nil {
+		return nil, fmt.Errorf("error getting nft: %w", err)
+	}
+
+	return &nft, nil
+}
+
 func (n *NFTRepository) SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error) {
 	query := "UPDATE nfts SET price = :price WHERE token_id = :token_id"
 

@@ -14,7 +14,19 @@ type NFTHandler struct {
 	service domain.NFTService
 }
 
-// GetSalesNFT implements domain.NFTHandler.
+func (u *NFTHandler) GetUserNFT(c *gin.Context) {
+	eth_address := c.Query("address")
+
+	nft, err := u.service.GetUserNFT(eth_address)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nft)
+}
+
 func (u *NFTHandler) GetSalesNFT(c *gin.Context) {
 	nfts, err := u.service.GetSalesNFT()
 	if err != nil {
