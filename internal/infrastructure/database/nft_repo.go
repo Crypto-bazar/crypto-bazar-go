@@ -14,13 +14,12 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
-// GetUserNFT implements domain.NFTRepository.
 func (n *NFTRepository) GetUserNFT(address string) (*[]entities.NFT, error) {
 	var nft []entities.NFT
 	query := `
-    SELECT nfts.* FROM nfts 
-    JOIN "users" ON nfts.owner_id = "users".id 
-    WHERE "users".eth_address = $1`
+		SELECT nfts.* FROM nfts 
+		JOIN "users" ON nfts.owner_id = "users".id 
+		WHERE "users".eth_address = $1`
 
 	err := n.db.Select(&nft, query, address)
 	if err != nil {
@@ -31,7 +30,9 @@ func (n *NFTRepository) GetUserNFT(address string) (*[]entities.NFT, error) {
 }
 
 func (n *NFTRepository) SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error) {
-	query := "UPDATE nfts SET price = :price WHERE token_id = :token_id"
+	query := `
+		UPDATE nfts SET price = :price 
+		WHERE token_id = :token_id`
 
 	res, err := n.db.NamedExec(query, updateTokenReq)
 	if err != nil {
@@ -45,7 +46,11 @@ func (n *NFTRepository) SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceR
 	}
 
 	var nft entities.NFT
-	err = n.db.Get(&nft, "SELECT * FROM nfts WHERE token_id = $1", updateTokenReq.TokenId)
+	query = `
+		SELECT * FROM nfts 
+		WHERE token_id = $1`
+
+	err = n.db.Get(&nft, query, updateTokenReq.TokenId)
 	if err != nil {
 		log.Printf("Error fetching updated NFT: %v", err)
 		return nil, fmt.Errorf("error fetching updated NFT: %w", err)
@@ -56,7 +61,12 @@ func (n *NFTRepository) SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceR
 
 func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error) {
 	var nft entities.NFT
-	updateQuery := "UPDATE nfts SET token_id = :token_id WHERE token_uri = :token_uri RETURNING id, token_id, token_uri, name, description, price, owner_id, image_path"
+	updateQuery := `
+		UPDATE nfts 
+		SET token_id = :token_id 
+		WHERE token_uri = :token_uri 
+		RETURNING id, token_id, token_uri, name, description, price, owner_id, image_path`
+
 	_, err := n.db.NamedExec(updateQuery, map[string]any{
 		"token_id":  updateTokenReq.TokenId,
 		"token_uri": updateTokenReq.TokenURI,
@@ -67,7 +77,11 @@ func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*
 		return nil, fmt.Errorf("error updating NFT: %w", err)
 	}
 
-	err = n.db.Get(&nft, "SELECT * FROM nfts WHERE token_id = $1", updateTokenReq.TokenId)
+	query := `
+		SELECT * FROM nfts 
+		WHERE token_id = $1`
+
+	err = n.db.Get(&nft, query, updateTokenReq.TokenId)
 
 	if err != nil {
 		log.Printf("DB error: %v", err)
@@ -119,7 +133,10 @@ func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
 
 func (n *NFTRepository) GetSalesNFT() (*[]entities.NFT, error) {
 	var nfts []entities.NFT
-	query := "SELECT * FROM nfts WHERE price > 0"
+	query := `
+		SELECT * FROM nfts 
+		WHERE price > 0`
+
 	err := n.db.Select(&nfts, query)
 	if err != nil {
 		return nil, fmt.Errorf("error getting sales NFTs: %w", err)
@@ -130,7 +147,10 @@ func (n *NFTRepository) GetSalesNFT() (*[]entities.NFT, error) {
 
 func (n *NFTRepository) GetNFTById(id string) (*entities.NFT, error) {
 	var nft entities.NFT
-	query := "SELECT * FROM nfts WHERE id = ?"
+	query := `
+		SELECT * FROM nfts 
+		WHERE id = ?`
+		
 	err := n.db.Get(&nft, query, id)
 
 	if err != nil {
