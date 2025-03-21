@@ -103,7 +103,12 @@ func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
 		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error creating NFT: %w", err)
 	}
-	defer rows.Close()
+	defer func(rows *sqlx.Rows) {
+		err := rows.Close()
+		if err != nil {
+			fmt.Println("Error closing rows: ", err)
+		}
+	}(rows)
 
 	if rows.Next() {
 		err = rows.StructScan(nft)
@@ -150,7 +155,7 @@ func (n *NFTRepository) GetNFTById(id string) (*entities.NFT, error) {
 	query := `
 		SELECT * FROM nfts 
 		WHERE id = ?`
-		
+
 	err := n.db.Get(&nft, query, id)
 
 	if err != nil {

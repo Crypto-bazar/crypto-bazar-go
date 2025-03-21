@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type DB struct {
+type CFG struct {
 	Host            string
 	User            string
 	Password        string
@@ -20,7 +20,7 @@ type DB struct {
 	ContractAddress string
 }
 
-func ConnectDB(cfg *DB) (*sqlx.DB, error) {
+func ConnectDB(cfg *CFG) (*sqlx.DB, error) {
 	dsn := fmt.Sprintf(
 
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -41,17 +41,17 @@ func ConnectDB(cfg *DB) (*sqlx.DB, error) {
 	return db, nil
 }
 
-func LoadConfig() *DB {
+func LoadConfig() *CFG {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	return &DB{
-		Host:     getEnv("DB_HOST", "localhost"),
-		User:     getEnv("DB_USER", ""),
-		Password: getEnv("DB_PASSWORD", ""),
-		Name:     getEnv("DB_NAME", ""),
-		Port:     getEnv("DB_PORT", "5432"),
+	return &CFG{
+		Host:            getEnv("DB_HOST", "localhost"),
+		User:            getEnv("DB_USER", ""),
+		Password:        getEnv("DB_PASSWORD", ""),
+		Name:            getEnv("DB_NAME", ""),
+		Port:            getEnv("DB_PORT", "5432"),
 		EthereumNodeUrl: getEnv("ETHEREUM_NODE_URL", ""),
 		ContractAddress: getEnv("CONTRACT_ADDRESS", ""),
 	}

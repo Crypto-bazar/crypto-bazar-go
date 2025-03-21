@@ -1,6 +1,6 @@
 package contract
 
-const ContractAbi = `[
+const Abi = `[
 	{
 		"inputs": [
 			{

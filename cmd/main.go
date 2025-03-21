@@ -50,7 +50,7 @@ func main() {
 
 	eventHandler := usecase.NewNFTEventHandler(nftService)
 
-	listener, err := eth.NewListener(client, contract.ContractAbi, eventHandler)
+	listener, err := eth.NewListener(client, contract.Abi, eventHandler)
 	if err != nil {
 		fmt.Printf("Error create listener: %v", err)
 	}

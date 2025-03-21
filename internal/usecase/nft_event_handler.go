@@ -3,7 +3,6 @@ package usecase
 import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/requests"
-	"context"
 	"log"
 )
 
@@ -11,7 +10,7 @@ type NFTEventHandler struct {
 	nftService domain.NFTService
 }
 
-func (n *NFTEventHandler) OnTokenListedForSale(ctx context.Context, event *domain.TokenListedForSaleEvent) error {
+func (n *NFTEventHandler) OnTokenListedForSale(event *domain.TokenListedForSaleEvent) error {
 	req := &requests.UpdateTokenPriceReq{
 		TokenId: event.TokenId, Price: event.Price.String(),
 	}
@@ -24,7 +23,7 @@ func (n *NFTEventHandler) OnTokenListedForSale(ctx context.Context, event *domai
 	return nil
 }
 
-func (n *NFTEventHandler) OnTokenMinted(ctx context.Context, event *domain.TokenMintedEvent) error {
+func (n *NFTEventHandler) OnTokenMinted(event *domain.TokenMintedEvent) error {
 	req := &requests.UpdateTokenIdReq{
 		TokenURI: event.TokenURI,
 		TokenId:  event.TokenId.String(),
@@ -39,7 +38,7 @@ func (n *NFTEventHandler) OnTokenMinted(ctx context.Context, event *domain.Token
 	return nil
 }
 
-func (n *NFTEventHandler) OnTokenSold(ctx context.Context, event domain.TokenSold) error {
+func (n *NFTEventHandler) OnTokenSold(event domain.TokenSold) error {
 	panic("unimplemented")
 }
 

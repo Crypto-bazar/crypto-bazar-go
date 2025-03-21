@@ -15,7 +15,10 @@ func FileSave(c *gin.Context, fileField string, uploadDir string) (string, error
 	}
 
 	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
-		os.Mkdir(uploadDir, os.ModePerm)
+		err := os.Mkdir(uploadDir, os.ModePerm)
+		if err != nil {
+			return "", fmt.Errorf("error while create dir: %w", err)
+		}
 	}
 
 	filePath := filepath.Join(uploadDir, file.Filename)

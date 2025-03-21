@@ -15,9 +15,9 @@ type NFTHandler struct {
 }
 
 func (u *NFTHandler) GetUserNFT(c *gin.Context) {
-	eth_address := c.Query("address")
+	ethAddress := c.Query("address")
 
-	nft, err := u.service.GetUserNFT(eth_address)
+	nft, err := u.service.GetUserNFT(ethAddress)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})

@@ -26,7 +26,7 @@ func NewClient(nodeUrl, contractAddress string) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) SubscribeToEvents(ctx context.Context, logs chan types.Log) (ethereum.Subscription, error) {
+func (c *Client) SubscribeToEvents(logs chan types.Log) (ethereum.Subscription, error) {
 	query := ethereum.FilterQuery{
 		Addresses: []common.Address{c.contractAddress},
 	}

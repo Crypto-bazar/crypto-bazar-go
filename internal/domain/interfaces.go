@@ -3,8 +3,6 @@ package domain
 import (
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/requests"
-	"context"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -59,7 +57,7 @@ type NFTHandler interface {
 }
 
 type EventHandler interface {
-	OnTokenMinted(ctx context.Context, event *TokenMintedEvent) error
-	OnTokenListedForSale(ctx context.Context, event *TokenListedForSaleEvent) error
-	OnTokenSold(ctx context.Context, event TokenSold) error
+	OnTokenMinted(event *TokenMintedEvent) error
+	OnTokenListedForSale(event *TokenListedForSaleEvent) error
+	OnTokenSold(event TokenSold) error
 }
