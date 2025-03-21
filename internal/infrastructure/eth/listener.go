@@ -2,7 +2,6 @@ package eth
 
 import (
 	"bazar/internal/domain"
-	"context"
 	"fmt"
 	"log"
 	"math/big"
@@ -52,7 +51,7 @@ func (l *Listener) subscribeToEvents() (ethereum.Subscription, chan types.Log) {
 	return sub, logs
 }
 
-func (l *Listener) StartListening(ctx context.Context) {
+func (l *Listener) StartListening() {
 	for {
 		sub, logs := l.subscribeToEvents()
 
@@ -73,13 +72,13 @@ func (l *Listener) StartListening(ctx context.Context) {
 				continue
 
 			case vLog := <-logs:
-				l.handleLog(ctx, parsedABI, vLog)
+				l.handleLog(parsedABI, vLog)
 			}
 		}
 	}
 }
 
-func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types.Log) {
+func (l *Listener) handleLog(parsedABI *abi.ABI, vLog types.Log) {
 	events := NewEvents(parsedABI, &vLog)
 
 	switch vLog.Topics[0].Hex() {
@@ -91,7 +90,7 @@ func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types
 			return
 		}
 
-		if err := l.eventHandler.OnTokenMinted(ctx, eventData); err != nil {
+		if err := l.eventHandler.OnTokenMinted(eventData); err != nil {
 			log.Printf("Error processing TokenMinted event: %v", err)
 		}
 
@@ -103,7 +102,7 @@ func (l *Listener) handleLog(ctx context.Context, parsedABI *abi.ABI, vLog types
 			return
 		}
 
-		if err := l.eventHandler.OnTokenListedForSale(ctx, eventData); err != nil {
+		if err := l.eventHandler.OnTokenListedForSale(eventData); err != nil {
 			fmt.Printf("Error unpacking TokenListedForSale event: %v", err)
 			return
 		}

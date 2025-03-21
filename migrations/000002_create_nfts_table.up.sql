@@ -7,5 +7,6 @@ CREATE TABLE nfts (
     price NUMERIC(38,18), 
     owner_id BIGINT NOT NULL,
     image_path TEXT,
+    in_sales bool,
     FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
 );

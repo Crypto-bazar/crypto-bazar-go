@@ -8,7 +8,6 @@ import (
 	"bazar/internal/infrastructure/database"
 	"bazar/internal/infrastructure/eth"
 	"bazar/internal/usecase"
-	"context"
 	"fmt"
 	"log"
 
@@ -55,7 +54,7 @@ func main() {
 		fmt.Printf("Error create listener: %v", err)
 	}
 
-	go listener.StartListening(context.Background())
+	go listener.StartListening()
 
 	if err := newRouter.Run(":8080"); err != nil {
 		log.Fatalf("Error starting server: %v", err)

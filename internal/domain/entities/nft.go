@@ -9,4 +9,5 @@ type NFT struct {
 	Price       string `db:"price" json:"price"`
 	Owner       uint   `db:"owner_id" json:"owner_id"`
 	ImagePath   string `db:"image_path" json:"image_path"`
+	Sales       bool   `db:"in_sales" json:"in_sales"`
 }

@@ -36,6 +36,7 @@ type NFTRepository interface {
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 	GetUserNFT(address string) (*[]entities.NFT, error)
+	SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error)
 }
 
 type NFTService interface {
@@ -46,6 +47,7 @@ type NFTService interface {
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 	GetUserNFT(address string) (*[]entities.NFT, error)
+	SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error)
 }
 type NFTHandler interface {
 	CreateNFT(c *gin.Context)

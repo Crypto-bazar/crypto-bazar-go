@@ -20,6 +20,12 @@ func (n *NFTEventHandler) OnTokenListedForSale(event *domain.TokenListedForSaleE
 		return err
 	}
 
+	setStatusReq := &requests.UpdateTokenStatusReq{Status: true, TokenID: event.TokenId}
+	_, err = n.nftService.SetTokenSales(setStatusReq)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

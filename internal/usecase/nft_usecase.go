@@ -13,8 +13,12 @@ type NFTService struct {
 	userRepo domain.UserRepository
 }
 
+func (n *NFTService) SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error) {
+	return n.nftRepo.SetTokenSales(req)
+}
+
 func (n *NFTService) GetUserNFT(address string) (*[]entities.NFT, error) {
-  return n.nftRepo.GetUserNFT(address)
+	return n.nftRepo.GetUserNFT(address)
 }
 
 func (n *NFTService) SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error) {
