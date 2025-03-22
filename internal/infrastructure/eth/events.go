@@ -43,3 +43,15 @@ func (e *Events) SalesEvent() (*domain.TokenListedForSaleEvent, error) {
 
 	return &eventData, nil
 }
+
+func (e *Events) SoldEvent() (*domain.TokenSold, error) {
+	var eventData domain.TokenSold
+	eventData.Buyer = common.HexToAddress(e.vLog.Topics[2].Hex())
+	eventData.TokenId = new(big.Int).SetBytes(e.vLog.Topics[1].Bytes()).Uint64()
+
+	if err := e.parsedABI.UnpackIntoInterface(&eventData, "TokenSold", e.vLog.Data); err != nil {
+		return nil, fmt.Errorf("error unpacking TokenSold event")
+	}
+
+	return &eventData, nil
+}
