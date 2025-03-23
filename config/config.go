@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type CFG struct {
+type Config struct {
 	Host            string
 	User            string
 	Password        string
@@ -20,7 +20,7 @@ type CFG struct {
 	ContractAddress string
 }
 
-func ConnectDB(cfg *CFG) (*sqlx.DB, error) {
+func ConnectDB(cfg *Config) (*sqlx.DB, error) {
 	dsn := fmt.Sprintf(
 
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -41,12 +41,12 @@ func ConnectDB(cfg *CFG) (*sqlx.DB, error) {
 	return db, nil
 }
 
-func LoadConfig() *CFG {
+func LoadConfig() *Config {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	return &CFG{
+	return &Config{
 		Host:            getEnv("DB_HOST", "localhost"),
 		User:            getEnv("DB_USER", ""),
 		Password:        getEnv("DB_PASSWORD", ""),
