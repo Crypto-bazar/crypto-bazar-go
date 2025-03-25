@@ -6,6 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CommentRepository interface {
+	CreateComment(comment *entities.Comment) (*entities.Comment, error)
+	GetCommentById(id string) (*entities.Comment, error)
+}
+
+type CommentService interface {
+	CreateComment(comment *entities.Comment) (*entities.Comment, error)
+	GetCommentById(id string) (*entities.Comment, error)
+}
+
 type UserRepository interface {
 	CreateUser(user *entities.User) error
 	GetAllUsers() (*[]entities.User, error)
@@ -56,6 +66,11 @@ type NFTHandler interface {
 	SetTokenAddress(c *gin.Context)
 	GetSalesNFT(c *gin.Context)
 	GetUserNFT(c *gin.Context)
+}
+
+type CommentHandler interface {
+	CreateComment(c *gin.Context)
+	GetCommentById(c *gin.Context)
 }
 
 type EventHandler interface {

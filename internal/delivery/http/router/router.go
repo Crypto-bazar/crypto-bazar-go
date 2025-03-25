@@ -40,7 +40,7 @@ func (r *Router) RegisterRoutes() {
 			nft.GET("/:id", r.nftHandler.GetNFTById)
 			nft.PUT("/", r.nftHandler.SetTokenAddress)
 			nft.GET("/sales", r.nftHandler.GetSalesNFT)
-      nft.GET("/user", r.nftHandler.GetUserNFT)
+			nft.GET("/user", r.nftHandler.GetUserNFT)
 		}
 	}
 }

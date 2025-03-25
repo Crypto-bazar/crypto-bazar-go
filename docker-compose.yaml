@@ -1,9 +1,51 @@
+version: '3.8'
+
 services:
-  database:
-    image: 'postgres:latest'
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: aiosghjdaogyiphdioUAHSDIUhasiud1erASD2q231d
       POSTGRES_DB: prod
     ports:
-      - '7432:5432'
+      - "7432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: go_app
+    depends_on:
+      - db
+      - hardhat
+    environment:
+      - DB_HOST=localhost
+      - DB_USER=root
+      - DB_PASSWORD=aiosghjdaogyiphdioUAHSDIUhasiud1erASD2q231d
+      - DB_NAME=prod
+      - DB_PORT=7432
+      - SERVER_PORT=8080
+      - UPLOAD_DIR=./uploads
+      - ETHEREUM_NODE_URL=http://hardhat:8545  # Указание на контейнер Hardhat
+      - CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads:/root/uploads
+    command: ["/root/main", "migrate-up", "&&", "/root/main"]
+
+  hardhat:
+    image: federation/eth-hardhat  # Используем образ Hardhat из Docker Hub
+    container_name: hardhat_network
+    ports:
+      - "8545:8545"
+    environment:
+      - NETWORK_NAME=hardhat
+    volumes:
+      - .:/app  # Монтируем проект в контейнер
+
+volumes:
+  postgres_data:
+  uploads:
