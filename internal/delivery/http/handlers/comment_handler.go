@@ -3,6 +3,7 @@ package handlers
 import (
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ func (ch *CommentHandler) CreateComment(c *gin.Context) {
 	}
 	comment, err := ch.service.CreateComment(&req)
 	if err != nil {
+		log.Printf("Error creating comment: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating comment"})
 		return
 	}
