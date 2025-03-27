@@ -118,6 +118,7 @@ func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*
 }
 
 func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
+	var createdNFT entities.NFT
 	query := `
         INSERT INTO nfts (token_id, token_uri, name, description, price, owner_id, image_path)
         VALUES (:token_id, :token_uri, :name, :description, :price, :owner_id, :image_path)
@@ -146,7 +147,15 @@ func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
 		return nil, fmt.Errorf("no rows returned after insert")
 	}
 
-	return nft, nil
+	query = `SELECT * FROM nfts WHERE token_id = $1`
+
+	err = n.db.Get(&createdNFT, query, nft.TokenID)
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("error getting NFT: %w", err)
+	}
+
+	return &createdNFT, nil
 }
 
 func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
