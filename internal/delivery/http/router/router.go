@@ -2,18 +2,18 @@ package router
 
 import (
 	"bazar/internal/delivery/http/middleware"
-	"bazar/internal/domain"
+	"bazar/internal/domain/interfaces"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Router struct {
 	engine      *gin.Engine
-	userHandler domain.UserHandler
-	nftHandler  domain.NFTHandler
+	userHandler interfaces.UserHandler
+	nftHandler  interfaces.NFTHandler
 }
 
-func NewRouter(userHandler domain.UserHandler, nftHandler domain.NFTHandler) *Router {
+func NewRouter(userHandler interfaces.UserHandler, nftHandler interfaces.NFTHandler) *Router {
 	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler}
 }
 

@@ -1,15 +1,15 @@
 package usecase
 
 import (
-	"bazar/internal/domain"
 	"bazar/internal/domain/entities"
+	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
 	"bazar/pkg/utils"
 	"fmt"
 )
 
 type UserService struct {
-	repo domain.UserRepository
+	repo interfaces.UserRepository
 }
 
 func (u *UserService) CheckUserExists(address *requests.CheckUserRequest) (*bool, error) {
@@ -42,6 +42,6 @@ func (u *UserService) GetUserById(id string) (*entities.User, error) {
 	return u.repo.GetUserById(id)
 }
 
-func NewUserService(repo domain.UserRepository) domain.UserService {
+func NewUserService(repo interfaces.UserRepository) interfaces.UserService {
 	return &UserService{repo: repo}
 }

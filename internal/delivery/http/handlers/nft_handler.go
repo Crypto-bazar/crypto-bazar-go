@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"bazar/internal/domain"
+	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
 	"bazar/pkg/utils"
 	"log"
@@ -11,7 +11,7 @@ import (
 )
 
 type NFTHandler struct {
-	service domain.NFTService
+	service interfaces.NFTService
 }
 
 func (u *NFTHandler) GetUserNFT(c *gin.Context) {
@@ -101,6 +101,6 @@ func (u *NFTHandler) GetNFTById(c *gin.Context) {
 	c.JSON(http.StatusOK, nft)
 }
 
-func NewNFTHandler(service domain.NFTService) domain.NFTHandler {
+func NewNFTHandler(service interfaces.NFTService) interfaces.NFTHandler {
 	return &NFTHandler{service: service}
 }

@@ -2,6 +2,7 @@ package eth
 
 import (
 	"bazar/internal/domain"
+	"bazar/internal/domain/interfaces"
 	"fmt"
 	"log"
 	"math/big"
@@ -17,10 +18,10 @@ import (
 type Listener struct {
 	client       *Client
 	abi          string
-	eventHandler domain.EventHandler
+	eventHandler interfaces.EventHandler
 }
 
-func NewListener(client *Client, abi string, eventHandler domain.EventHandler) (*Listener, error) {
+func NewListener(client *Client, abi string, eventHandler interfaces.EventHandler) (*Listener, error) {
 	return &Listener{client: client, abi: abi, eventHandler: eventHandler}, nil
 
 }

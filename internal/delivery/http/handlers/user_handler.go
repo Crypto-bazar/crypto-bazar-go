@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"bazar/internal/domain"
+	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
 	"net/http"
 
@@ -9,7 +9,7 @@ import (
 )
 
 type UserHandler struct {
-	service domain.UserService
+	service interfaces.UserService
 }
 
 func (u *UserHandler) CheckUserExists(c *gin.Context) {
@@ -64,6 +64,6 @@ func (u *UserHandler) GetUserById(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func NewUserHandler(service domain.UserService) domain.UserHandler {
+func NewUserHandler(service interfaces.UserService) interfaces.UserHandler {
 	return &UserHandler{service: service}
 }

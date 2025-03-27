@@ -1,16 +1,16 @@
 package usecase
 
 import (
-	"bazar/internal/domain"
 	"bazar/internal/domain/entities"
+	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
 	"bazar/pkg/utils"
 	"fmt"
 )
 
 type NFTService struct {
-	nftRepo  domain.NFTRepository
-	userRepo domain.UserRepository
+	nftRepo  interfaces.NFTRepository
+	userRepo interfaces.UserRepository
 }
 
 func (n *NFTService) SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error) {
@@ -61,6 +61,6 @@ func (n *NFTService) GetNFTById(id string) (*entities.NFT, error) {
 	return n.nftRepo.GetNFTById(id)
 }
 
-func NewNFTService(nftRepo domain.NFTRepository, userRepo domain.UserRepository) domain.NFTService {
+func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRepository) interfaces.NFTService {
 	return &NFTService{nftRepo: nftRepo, userRepo: userRepo}
 }

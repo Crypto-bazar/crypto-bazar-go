@@ -2,12 +2,13 @@ package usecase
 
 import (
 	"bazar/internal/domain"
+	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
 	"log"
 )
 
 type NFTEventHandler struct {
-	nftService domain.NFTService
+	nftService interfaces.NFTService
 }
 
 func (n *NFTEventHandler) OnTokenListedForSale(event *domain.TokenListedForSaleEvent) error {
@@ -44,10 +45,10 @@ func (n *NFTEventHandler) OnTokenMinted(event *domain.TokenMintedEvent) error {
 	return nil
 }
 
-func (n *NFTEventHandler) OnTokenSold(event domain.TokenSold) error {
+func (n *NFTEventHandler) OnTokenSold(event *domain.TokenSold) error {
 	panic("unimplemented")
 }
 
-func NewNFTEventHandler(nftService domain.NFTService) domain.EventHandler {
+func NewNFTEventHandler(nftService interfaces.NFTService) interfaces.EventHandler {
 	return &NFTEventHandler{nftService: nftService}
 }

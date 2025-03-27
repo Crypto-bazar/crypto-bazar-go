@@ -1,8 +1,8 @@
 package database
 
 import (
-	"bazar/internal/domain"
 	"bazar/internal/domain/entities"
+	"bazar/internal/domain/interfaces"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"log"
@@ -59,6 +59,6 @@ func (c CommentRepo) GetCommentById(id string) (*entities.Comment, error) {
 	return &comment, nil
 }
 
-func NewCommentRepo(db *sqlx.DB) domain.CommentRepository {
+func NewCommentRepo(db *sqlx.DB) interfaces.CommentRepository {
 	return &CommentRepo{db: db}
 }

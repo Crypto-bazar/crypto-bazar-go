@@ -1,8 +1,8 @@
 package database
 
 import (
-	"bazar/internal/domain"
 	"bazar/internal/domain/entities"
+	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
 	"fmt"
 	"log"
@@ -192,6 +192,6 @@ func (n *NFTRepository) GetNFTById(id string) (*entities.NFT, error) {
 	return &nft, nil
 }
 
-func NewNFTRepository(db *sqlx.DB) domain.NFTRepository {
+func NewNFTRepository(db *sqlx.DB) interfaces.NFTRepository {
 	return &NFTRepository{db: db}
 }

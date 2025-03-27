@@ -1,8 +1,8 @@
 package database
 
 import (
-	"bazar/internal/domain"
 	"bazar/internal/domain/entities"
+	"bazar/internal/domain/interfaces"
 	"fmt"
 	"log"
 
@@ -77,6 +77,6 @@ func (u *UserRepository) GetUserById(id string) (*entities.User, error) {
 	return &user, nil
 }
 
-func NewUserRepository(db *sqlx.DB) domain.UserRepository {
+func NewUserRepository(db *sqlx.DB) interfaces.UserRepository {
 	return &UserRepository{db: db}
 }
