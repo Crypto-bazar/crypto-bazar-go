@@ -4,8 +4,9 @@ import (
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/interfaces"
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"log"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type CommentRepo struct {
@@ -14,33 +15,27 @@ type CommentRepo struct {
 
 func (c CommentRepo) CreateComment(comment *entities.Comment) (*entities.Comment, error) {
 	query := `
-		INSERT INTO comments ( nft_id, owner_id, content)
-		VALUES (:nft_id, :owner_id, :content)`
+		INSERT INTO comments (nft_id, owner_id, content)
+		VALUES (:nft_id, :owner_id, :content)
+		RETURNING *`
 
 	rows, err := c.db.NamedQuery(query, comment)
 	if err != nil {
 		log.Printf("DB error: %v", err)
-		return nil, fmt.Errorf("error create comment: %w", err)
+		return nil, fmt.Errorf("error creating comment: %w", err)
 	}
-
-	defer func(rows *sqlx.Rows) {
-		err := rows.Close()
-		if err != nil {
-			fmt.Println("Error closing rows: ", err)
-		}
-	}(rows)
+	defer rows.Close()
 
 	if rows.Next() {
 		err := rows.StructScan(comment)
 		if err != nil {
 			log.Printf("Error scanning comment: %v", err)
-			return nil, fmt.Errorf("error scanning Comment: %w", err)
+			return nil, fmt.Errorf("error scanning comment: %w", err)
 		}
-	} else {
-		return nil, fmt.Errorf("no rows returned after insert")
+		return comment, nil
 	}
 
-	return comment, nil
+	return nil, fmt.Errorf("no rows returned after insert")
 }
 
 func (c CommentRepo) GetCommentById(id string) (*entities.Comment, error) {
