@@ -39,7 +39,11 @@ func main() {
 	nftService := usecase.NewNFTService(nftRepo, userRepo)
 	nftHandler := handlers.NewNFTHandler(nftService)
 
-	newRouter := router.NewRouter(userHandler, nftHandler)
+	commentRepo := database.NewCommentRepo(db)
+	commentService := usecase.NewCommentService(commentRepo)
+	commentHandler := handlers.NewCommentHandler(commentService)
+
+	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler)
 	newRouter.RegisterRoutes()
 
 	client, err := eth.NewClient(cfg.EthereumNodeUrl, cfg.ContractAddress)

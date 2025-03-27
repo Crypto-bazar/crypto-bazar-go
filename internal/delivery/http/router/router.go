@@ -8,13 +8,14 @@ import (
 )
 
 type Router struct {
-	engine      *gin.Engine
-	userHandler interfaces.UserHandler
-	nftHandler  interfaces.NFTHandler
+	engine         *gin.Engine
+	userHandler    interfaces.UserHandler
+	nftHandler     interfaces.NFTHandler
+	commentHandler interfaces.CommentHandler
 }
 
-func NewRouter(userHandler interfaces.UserHandler, nftHandler interfaces.NFTHandler) *Router {
-	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler}
+func NewRouter(userHandler interfaces.UserHandler, nftHandler interfaces.NFTHandler, commentHandler interfaces.CommentHandler) *Router {
+	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler, commentHandler: commentHandler}
 }
 
 func (r *Router) RegisterRoutes() {
@@ -41,6 +42,11 @@ func (r *Router) RegisterRoutes() {
 			nft.PUT("/", r.nftHandler.SetTokenAddress)
 			nft.GET("/sales", r.nftHandler.GetSalesNFT)
 			nft.GET("/user", r.nftHandler.GetUserNFT)
+		}
+
+		comment := api.Group("comments")
+		{
+			comment.POST("/", r.commentHandler.CreateComment)
 		}
 	}
 }
