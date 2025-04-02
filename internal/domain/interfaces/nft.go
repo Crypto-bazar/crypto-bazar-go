@@ -35,4 +35,5 @@ type NFTHandler interface {
 	SetTokenAddress(c *gin.Context)
 	GetSalesNFT(c *gin.Context)
 	GetUserNFT(c *gin.Context)
+	GetProposedNFTs(c *gin.Context)
 }

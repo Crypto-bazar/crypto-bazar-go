@@ -42,6 +42,7 @@ func (r *Router) RegisterRoutes() {
 			nft.PUT("/", r.nftHandler.SetTokenAddress)
 			nft.GET("/sales", r.nftHandler.GetSalesNFT)
 			nft.GET("/user", r.nftHandler.GetUserNFT)
+			nft.GET("/proposed", r.nftHandler.GetProposedNFTs)
 		}
 
 		comment := api.Group("comments")

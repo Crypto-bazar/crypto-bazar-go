@@ -3,6 +3,7 @@ package handlers
 import (
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
+	"bazar/internal/usecase"
 	"bazar/pkg/utils"
 	"log"
 	"net/http"
@@ -11,7 +12,19 @@ import (
 )
 
 type NFTHandler struct {
-	service interfaces.NFTService
+	service      interfaces.NFTService
+	transcations usecase.TransactionUseCase
+}
+
+func (u *NFTHandler) GetProposedNFTs(c *gin.Context) {
+	nfts, err := u.transcations.GetProposedNFTs()
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nfts)
 }
 
 func (u *NFTHandler) GetUserNFT(c *gin.Context) {
@@ -101,6 +114,6 @@ func (u *NFTHandler) GetNFTById(c *gin.Context) {
 	c.JSON(http.StatusOK, nft)
 }
 
-func NewNFTHandler(service interfaces.NFTService) interfaces.NFTHandler {
-	return &NFTHandler{service: service}
+func NewNFTHandler(service interfaces.NFTService, transactions usecase.TransactionUseCase) interfaces.NFTHandler {
+	return &NFTHandler{service: service, transcations: transactions}
 }

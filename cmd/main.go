@@ -37,19 +37,21 @@ func main() {
 
 	nftRepo := database.NewNFTRepository(db)
 	nftService := usecase.NewNFTService(nftRepo, userRepo)
-	nftHandler := handlers.NewNFTHandler(nftService)
 
 	commentRepo := database.NewCommentRepo(db)
 	commentService := usecase.NewCommentService(commentRepo)
 	commentHandler := handlers.NewCommentHandler(commentService)
 
-	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler)
-	newRouter.RegisterRoutes()
-
 	client, err := eth.NewClient(cfg.EthereumNodeUrl, cfg.ContractAddress)
 	if err != nil {
 		fmt.Printf("Error create client: %v", err)
 	}
+
+	transcations := eth.NewTransaction(client, contract.Abi)
+	transcationsService := usecase.NewTransactionUseCase(transcations)
+	nftHandler := handlers.NewNFTHandler(nftService, *transcationsService)
+	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler)
+	newRouter.RegisterRoutes()
 
 	eventHandler := usecase.NewNFTEventHandler(nftService)
 
