@@ -53,28 +53,24 @@ func (l *Listener) subscribeToEvents() (ethereum.Subscription, chan types.Log) {
 }
 
 func (l *Listener) StartListening() {
+	sub, logs := l.subscribeToEvents()
+
+	if sub == nil {
+		log.Println("Subscription is nil, skipping listening loop")
+		time.Sleep(5 * time.Second)
+	}
+
+	parsedABI := l.parseAbi()
+
 	for {
-		sub, logs := l.subscribeToEvents()
-
-		if sub == nil {
-			log.Println("Subscription is nil, skipping listening loop")
+		select {
+		case err := <-sub.Err():
+			log.Printf("Subscription error: %v. Reconnecting...", err)
+			sub.Unsubscribe()
 			time.Sleep(5 * time.Second)
-			continue
-		}
 
-		parsedABI := l.parseAbi()
-
-		for {
-			select {
-			case err := <-sub.Err():
-				log.Printf("Subscription error: %v. Reconnecting...", err)
-				sub.Unsubscribe()
-				time.Sleep(5 * time.Second)
-				continue
-
-			case vLog := <-logs:
-				l.handleLog(parsedABI, vLog)
-			}
+		case vLog := <-logs:
+			l.handleLog(parsedABI, vLog)
 		}
 	}
 }
