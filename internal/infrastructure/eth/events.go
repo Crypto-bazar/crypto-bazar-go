@@ -3,6 +3,7 @@ package eth
 import (
 	"bazar/internal/domain"
 	"fmt"
+	"log"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -21,12 +22,14 @@ func NewEvents(abi *abi.ABI, vLog *types.Log) *Events {
 
 func (e *Events) MintedEvent() (*domain.TokenMintedEvent, error) {
 	var eventData domain.TokenMintedEvent
-	eventData.TokenId = new(big.Int).SetBytes(e.vLog.Topics[1].Bytes())
-	eventData.Owner = common.HexToAddress(e.vLog.Topics[2].Hex())
+	eventData.TokenId = e.vLog.Topics[1].Big()
 
-	if err := e.parsedABI.UnpackIntoInterface(&eventData, "TokenMinted", e.vLog.Data); err != nil {
+	if err := e.parsedABI.UnpackIntoInterface(&eventData, "NFTMinted", e.vLog.Data); err != nil {
 		return nil, fmt.Errorf("error unpacking TokenMinted event: %v", err)
 	}
+	log.Printf("Topics: %v", e.vLog.Topics)
+	log.Printf("tokenId: %s", eventData.TokenId.String())
+	log.Printf("%s\n", eventData)
 
 	return &eventData, nil
 }

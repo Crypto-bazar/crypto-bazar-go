@@ -79,7 +79,7 @@ func (l *Listener) handleLog(parsedABI *abi.ABI, vLog types.Log) {
 	events := NewEvents(parsedABI, &vLog)
 
 	switch vLog.Topics[0].Hex() {
-	case parsedABI.Events["TokenMinted"].ID.Hex():
+	case parsedABI.Events["NFTMinted"].ID.Hex():
 		eventData, err := events.MintedEvent()
 
 		if err != nil {
