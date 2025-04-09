@@ -1,53 +1,38 @@
 package eth
 
 import (
+	"bazar/internal/contract"
 	"bazar/internal/domain/entities"
 	"context"
-	"errors"
-	"log"
-	"strings"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
 type Transaction struct {
-	client    *Client
-	parsedABI *abi.ABI
+	contract *contract.Mycontract
 }
 
-func NewTransaction(client *Client, abiData string) *Transaction {
-	parsedABI, err := abi.JSON(strings.NewReader(abiData))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return &Transaction{client: client, parsedABI: &parsedABI}
+func NewTransaction(contractInstance *contract.Mycontract) *Transaction {
+	return &Transaction{contract: contractInstance}
 }
 
-func (t *Transaction) GetProposedNFTs() (*[]entities.NFTProposal, error) {
-	methodID := t.parsedABI.Methods["getProposeNFT"].ID
-
-	data := append(methodID[:])
-
-	msg := ethereum.CallMsg{
-		To:   &t.client.contractAddress,
-		Data: data,
-	}
-
-	result, err := t.client.ethClient.CallContract(context.Background(), msg, nil)
+func (t *Transaction) GetProposedNFTs(ctx context.Context) (*[]entities.NFTProposal, error) {
+	proposals, err := t.contract.GetProposeNFT(&bind.CallOpts{
+		Context: ctx,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	if len(result) == 0 {
-		return nil, errors.New("empty response from contract")
+	var result []entities.NFTProposal
+	for _, p := range proposals {
+		result = append(result, entities.NFTProposal{
+			Minted:   p.Minted,
+			Votes:    p.Votes,
+			Proposer: p.Proposer,
+			TokenURI: p.TokenURI,
+		})
 	}
 
-	var proposals []entities.NFTProposal
-	err = t.parsedABI.UnpackIntoInterface(&proposals, "getProposeNFT", result)
-	if err != nil {
-		return nil, err
-	}
-
-	return &proposals, nil
+	return &result, nil
 }
