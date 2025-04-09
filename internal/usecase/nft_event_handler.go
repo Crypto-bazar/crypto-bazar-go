@@ -4,6 +4,7 @@ import (
 	"bazar/internal/domain"
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
+	"fmt"
 	"log"
 )
 
@@ -33,9 +34,10 @@ func (n *NFTEventHandler) OnTokenListedForSale(event *domain.TokenListedForSaleE
 func (n *NFTEventHandler) OnTokenMinted(event *domain.TokenMintedEvent) error {
 	req := &requests.UpdateTokenIdReq{
 		TokenURI: event.TokenURI,
-		TokenId:  event.TokenId.String(),
+		TokenId:  event.TokenId,
 	}
 
+	fmt.Printf("%s", req)
 	_, err := n.nftService.SetTokenId(req)
 	if err != nil {
 		log.Printf("Ошибка обновления NFT в БД: %v", err)
