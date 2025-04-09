@@ -5,6 +5,9 @@ APP_NAME=main.go
 MIGRATIONS_DIR=./migrations
 DSN=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
+dev:
+	air -c .air.toml
+
 # Установка зависимостей
 deps:
 	go mod download

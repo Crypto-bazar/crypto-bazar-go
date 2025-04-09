@@ -2,12 +2,12 @@ package main
 
 import (
 	"bazar/config"
-	"bazar/internal/contract"
-	"bazar/internal/delivery/http/handlers"
-	"bazar/internal/delivery/http/router"
+	handlers2 "bazar/internal/http/handlers"
+	"bazar/internal/http/router"
 	"bazar/internal/infrastructure/database"
 	"bazar/internal/infrastructure/eth"
 	"bazar/internal/usecase"
+	"context"
 	"fmt"
 	"log"
 
@@ -33,34 +33,29 @@ func main() {
 
 	userRepo := database.NewUserRepository(db)
 	userService := usecase.NewUserService(userRepo)
-	userHandler := handlers.NewUserHandler(userService)
+	userHandler := handlers2.NewUserHandler(userService)
 
 	nftRepo := database.NewNFTRepository(db)
 	nftService := usecase.NewNFTService(nftRepo, userRepo)
 
 	commentRepo := database.NewCommentRepo(db)
 	commentService := usecase.NewCommentService(commentRepo)
-	commentHandler := handlers.NewCommentHandler(commentService)
+	commentHandler := handlers2.NewCommentHandler(commentService)
 
-	client, err := eth.NewClient(cfg.EthereumNodeUrl, cfg.ContractAddress)
-	if err != nil {
-		fmt.Printf("Error create client: %v", err)
-	}
+	ctx, cancel := context.WithCancel(context.Background())
+	client := eth.NewClient(cfg.EthereumNodeUrl)
+	defer client.Close()
 
-	transcations := eth.NewTransaction(client, contract.Abi)
-	transcationsService := usecase.NewTransactionUseCase(transcations)
-	nftHandler := handlers.NewNFTHandler(nftService, *transcationsService)
+	instance := eth.LoadContract(cfg.ContractAddress, client)
+	defer cancel()
+
+	go eth.ListenNFTProposed(ctx, instance)
+
+	transcations := eth.NewTransaction(instance)
+	transcationsService := usecase.NewTransactionUseCase(transcations, ctx)
+	nftHandler := handlers2.NewNFTHandler(nftService, *transcationsService)
 	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler)
 	newRouter.RegisterRoutes()
-
-	eventHandler := usecase.NewNFTEventHandler(nftService)
-
-	listener, err := eth.NewListener(client, contract.Abi, eventHandler)
-	if err != nil {
-		fmt.Printf("Error create listener: %v", err)
-	}
-
-	go listener.StartListening()
 
 	if err := newRouter.Run(":8080"); err != nil {
 		log.Fatalf("Error starting server: %v", err)
