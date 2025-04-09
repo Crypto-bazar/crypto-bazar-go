@@ -27,8 +27,6 @@ func (e *Events) MintedEvent() (*domain.TokenMintedEvent, error) {
 	if err := e.parsedABI.UnpackIntoInterface(&eventData, "NFTMinted", e.vLog.Data); err != nil {
 		return nil, fmt.Errorf("error unpacking TokenMinted event: %v", err)
 	}
-	log.Printf("Topics: %v", e.vLog.Topics)
-	log.Printf("tokenId: %s", eventData.TokenId.String())
 	log.Printf("%s\n", eventData)
 
 	return &eventData, nil

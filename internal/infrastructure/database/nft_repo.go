@@ -94,7 +94,7 @@ func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*
 		RETURNING id, token_id, token_uri, name, description, price, owner_id, image_path`
 
 	_, err := n.db.NamedExec(updateQuery, map[string]any{
-		"token_id":  updateTokenReq.TokenId,
+		"token_id":  updateTokenReq.TokenId.Int64(),
 		"token_uri": updateTokenReq.TokenURI,
 	})
 
@@ -107,7 +107,7 @@ func (n *NFTRepository) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*
 		SELECT * FROM nfts 
 		WHERE token_id = $1`
 
-	err = n.db.Get(&nft, query, updateTokenReq.TokenId)
+	err = n.db.Get(&nft, query, updateTokenReq.TokenId.Int64())
 
 	if err != nil {
 		log.Printf("DB error: %v", err)
@@ -130,6 +130,7 @@ func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
 		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error creating NFT: %w", err)
 	}
+
 	defer func(rows *sqlx.Rows) {
 		err := rows.Close()
 		if err != nil {
