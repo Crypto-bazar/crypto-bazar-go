@@ -53,9 +53,11 @@ func main() {
 
 	processor := usecase.NewNFTProcessor(eventListener, nftRepo)
 
-	if err := processor.Run(ctx); err != nil {
-		log.Fatal(err)
-	}
+	go func() {
+		if err := processor.Run(ctx); err != nil {
+			log.Fatalf("processor error: %v", err)
+		}
+	}()
 
 	transactions := eth.NewTransaction(instance)
 	transactionsService := usecase.NewTransactionUseCase(transactions, ctx)
