@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"bazar/internal/domain"
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
@@ -11,6 +12,19 @@ import (
 type NFTService struct {
 	nftRepo  interfaces.NFTRepository
 	userRepo interfaces.UserRepository
+}
+
+func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRepository) interfaces.NFTService {
+	return &NFTService{nftRepo: nftRepo, userRepo: userRepo}
+}
+
+func (n *NFTService) SetNFTProposed(event *domain.NFTProposedEvent) (*entities.NFT, error) {
+	nft, err := n.nftRepo.UpdateProposedByTokenURI(true, event.TokenURI)
+	if err != nil {
+		return nil, fmt.Errorf("error with updating proposed status: %w", err)
+	}
+
+	return nft, nil
 }
 
 func (n *NFTService) SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error) {
@@ -59,8 +73,4 @@ func (n *NFTService) GetAllNFTs() (*[]entities.NFT, error) {
 
 func (n *NFTService) GetNFTById(id string) (*entities.NFT, error) {
 	return n.nftRepo.GetNFTById(id)
-}
-
-func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRepository) interfaces.NFTService {
-	return &NFTService{nftRepo: nftRepo, userRepo: userRepo}
 }
