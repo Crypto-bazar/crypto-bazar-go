@@ -40,4 +40,5 @@ type NFTVotedEvent struct {
 
 type NFTEventListener interface {
 	ListenNFTProposed(ctx context.Context) (<-chan NFTProposedEvent, error)
+	ListenNFTVoted(ctx context.Context) (<-chan NFTVotedEvent, error)
 }

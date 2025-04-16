@@ -17,17 +17,31 @@ func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRep
 }
 
 func (p *NFTProcessor) Run(ctx context.Context) error {
-	events, err := p.eventListener.ListenNFTProposed(ctx)
+	proposedCh, err := p.eventListener.ListenNFTProposed(ctx)
 	if err != nil {
 		return err
 	}
 
-	for event := range events {
-		if err := p.processProposal(event); err != nil {
-			return err
+	voteCh, err := p.eventListener.ListenNFTVoted(ctx)
+	if err != nil {
+		return err
+	}
+
+	for {
+		select {
+		case event := <-proposedCh:
+			if err := p.processProposal(event); err != nil {
+				return err
+			}
+		case event := <-voteCh:
+			if err := p.processVote(event); err != nil {
+				return err
+			}
+		case <-ctx.Done():
+			return nil
+
 		}
 	}
-	return nil
 }
 
 func (p *NFTProcessor) processProposal(event domain.NFTProposedEvent) error {
@@ -37,5 +51,16 @@ func (p *NFTProcessor) processProposal(event domain.NFTProposedEvent) error {
 		return fmt.Errorf("error with updating proposed status: %w", err)
 	}
 
+	return nil
+}
+
+func (p *NFTProcessor) processVote(event domain.NFTVotedEvent) error {
+	fmt.Printf("Результат: ProposalID: %s, Voter: %s, TokenURI: %s, Amount: %s\n",
+		event.ProposalID, event.Voter, event.TokenURI, event.Amount.String())
+	_, err := p.nftRepo.UpdateVotesByTokenURI(event.TokenURI, event.Amount.String())
+
+	if err != nil {
+		return fmt.Errorf("error with updating votes: %w", err)
+	}
 	return nil
 }
