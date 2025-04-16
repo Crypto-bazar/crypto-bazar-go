@@ -18,6 +18,25 @@ func NewNFTRepository(db *sqlx.DB) interfaces.NFTRepository {
 	return &NFTRepository{db: db}
 }
 
+func (n *NFTRepository) UpdateId(tokenUri string, id int) (*entities.NFT, error) {
+	query := "UPDATE nfts SET token_id = $1 WHERE token_uri = $2"
+	_, err := n.db.Exec(query, id, tokenUri)
+	if err != nil {
+		log.Printf("Db error: %v", err)
+		return nil, fmt.Errorf("error updating token id: %w", err)
+	}
+
+	var nft entities.NFT
+	query = "SELECT * FROM nfts WHERE token_uri = $1"
+	err = n.db.Get(&nft, query, tokenUri)
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("err	or getting NFT: %w", err)
+	}
+
+	return &nft, nil
+}
+
 func (n *NFTRepository) UpdateVotesByTokenURI(tokenURI string, amount string) (*entities.NFT, error) {
 	query := "UPDATE nfts SET votes_amount = votes_amount + $1 WHERE token_uri = $2"
 	_, err := n.db.Exec(query, amount, tokenURI)
