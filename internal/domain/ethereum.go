@@ -23,3 +23,9 @@ type TokenSold struct {
 	Buyer   common.Address
 	Price   *big.Int
 }
+
+type NFTProposedEvent struct {
+	ProposalID string
+	Proposer   string
+	TokenURI   string
+}
