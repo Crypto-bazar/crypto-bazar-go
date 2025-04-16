@@ -4,6 +4,7 @@ import (
 	"bazar/internal/contract"
 	"bazar/internal/domain"
 	"context"
+	"fmt"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
@@ -22,7 +23,7 @@ func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NF
 
 	sub, err := l.contract.WatchNFTProposed(&bind.WatchOpts{Context: ctx}, rawCh, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error watching NFT proposed event: %w", err)
 	}
 
 	go func() {
@@ -36,6 +37,38 @@ func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NF
 					ProposalID: event.ProposalId.String(),
 					Proposer:   event.Proposer.Hex(),
 					TokenURI:   event.TokenURI,
+				}
+			case <-sub.Err():
+				return
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+	return eventCh, nil
+}
+
+func (l *EventListener) ListenNFTVoted(ctx context.Context) (<-chan domain.NFTVotedEvent, error) {
+	eventCh := make(chan domain.NFTVotedEvent)
+	rawCh := make(chan *contract.MycontractVoted)
+
+	sub, err := l.contract.WatchVoted(&bind.WatchOpts{Context: ctx}, rawCh, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error watching NFT voted event: %w", err)
+	}
+
+	go func() {
+		defer sub.Unsubscribe()
+		defer close(eventCh)
+
+		for {
+			select {
+			case event := <-rawCh:
+				eventCh <- domain.NFTVotedEvent{
+					ProposalID: event.ProposalId.String(),
+					Voter:      event.Voter.Hex(),
+					TokenURI:   event.TokenURI,
+					Amount:     *event.Amount,
 				}
 			case <-sub.Err():
 				return

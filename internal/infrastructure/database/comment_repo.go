@@ -24,7 +24,12 @@ func (c CommentRepo) CreateComment(comment *entities.Comment) (*entities.Comment
 		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error creating comment: %w", err)
 	}
-	defer rows.Close()
+	defer func(rows *sqlx.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Printf("Error closing rows: %v", err)
+		}
+	}(rows)
 
 	if rows.Next() {
 		err := rows.StructScan(comment)
