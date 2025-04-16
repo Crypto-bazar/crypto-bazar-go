@@ -55,7 +55,7 @@ func main() {
 
 	go func() {
 		if err := processor.Run(ctx); err != nil {
-			log.Fatalf("processor error: %v", err)
+			log.Printf("processor error: %v", err)
 		}
 	}()
 

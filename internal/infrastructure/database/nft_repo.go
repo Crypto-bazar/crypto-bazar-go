@@ -31,7 +31,7 @@ func (n *NFTRepository) UpdateVotesByTokenURI(tokenURI string, amount string) (*
 	err = n.db.Get(&nft, query, tokenURI)
 	if err != nil {
 		log.Printf("DB error: %v", err)
-		return nil, fmt.Errorf("error getting NFT: %w", err)
+		return nil, fmt.Errorf("err	or getting NFT: %w", err)
 	}
 
 	return &nft, nil
