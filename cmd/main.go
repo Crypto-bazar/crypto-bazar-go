@@ -49,11 +49,17 @@ func main() {
 	instance := eth.LoadContract(cfg.ContractAddress, client)
 	defer cancel()
 
-	go eth.ListenNFTProposed(ctx, instance)
+	eventListener := eth.NewEthEventListener(instance)
 
-	transcations := eth.NewTransaction(instance)
-	transcationsService := usecase.NewTransactionUseCase(transcations, ctx)
-	nftHandler := handlers2.NewNFTHandler(nftService, *transcationsService)
+	processor := usecase.NewNFTProcessor(eventListener)
+
+	if err := processor.Run(ctx); err != nil {
+		log.Fatal(err)
+	}
+
+	transactions := eth.NewTransaction(instance)
+	transactionsService := usecase.NewTransactionUseCase(transactions, ctx)
+	nftHandler := handlers2.NewNFTHandler(nftService, *transactionsService)
 	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler)
 	newRouter.RegisterRoutes()
 

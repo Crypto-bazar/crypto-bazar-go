@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -28,4 +29,8 @@ type NFTProposedEvent struct {
 	ProposalID string
 	Proposer   string
 	TokenURI   string
+}
+
+type NFTEventListener interface {
+	ListenNFTProposed(ctx context.Context) (<-chan NFTProposedEvent, error)
 }

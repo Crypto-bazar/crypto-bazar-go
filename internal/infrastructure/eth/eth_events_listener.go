@@ -8,15 +8,15 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
-type EthEventListener struct {
+type EventListener struct {
 	contract *contract.Mycontract
 }
 
-func NewEthEventListener(contract *contract.Mycontract) *EthEventListener {
-	return &EthEventListener{contract: contract}
+func NewEthEventListener(contract *contract.Mycontract) *EventListener {
+	return &EventListener{contract: contract}
 }
 
-func (l *EthEventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NFTProposedEvent, error) {
+func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NFTProposedEvent, error) {
 	eventCh := make(chan domain.NFTProposedEvent)
 	rawCh := make(chan *contract.MycontractNFTProposed)
 
