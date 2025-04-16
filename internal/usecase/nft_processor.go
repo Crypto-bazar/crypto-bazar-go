@@ -12,8 +12,8 @@ type NFTProcessor struct {
 	nftRepo       interfaces.NFTRepository
 }
 
-func NewNFTProcessor(listener domain.NFTEventListener) *NFTProcessor {
-	return &NFTProcessor{eventListener: listener}
+func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRepository) *NFTProcessor {
+	return &NFTProcessor{eventListener: listener, nftRepo: nftRepo}
 }
 
 func (p *NFTProcessor) Run(ctx context.Context) error {

@@ -51,7 +51,7 @@ func main() {
 
 	eventListener := eth.NewEthEventListener(instance)
 
-	processor := usecase.NewNFTProcessor(eventListener)
+	processor := usecase.NewNFTProcessor(eventListener, nftRepo)
 
 	if err := processor.Run(ctx); err != nil {
 		log.Fatal(err)
