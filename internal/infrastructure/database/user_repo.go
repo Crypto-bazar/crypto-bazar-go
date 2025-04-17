@@ -54,7 +54,7 @@ func (u *UserRepository) CreateUser(user *entities.User) error {
 func (u *UserRepository) GetAllUsers() (*[]entities.User, error) {
 	var users []entities.User
 	query := "SELECT * FROM users"
-	err := u.db.Get(&users, query)
+	err := u.db.Select(&users, query)
 
 	if err != nil {
 		log.Printf("DB error: %v", err)

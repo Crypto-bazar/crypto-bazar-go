@@ -254,7 +254,7 @@ func (n *NFTRepository) GetNFTById(id string) (*entities.NFT, error) {
 	var nft entities.NFT
 	query := `
 		SELECT * FROM nfts 
-		WHERE id = ?`
+		WHERE id = $1`
 
 	err := n.db.Get(&nft, query, id)
 
