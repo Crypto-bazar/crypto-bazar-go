@@ -9,10 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CommentHandler отвечает за обработку запросов, связанных с комментариями.
 type CommentHandler struct {
 	service interfaces.CommentService
 }
 
+// CreateComment godoc
+// @Summary Создать комментарий
+// @Tags Comments
+// @Accept json
+// @Produce json
+// @Param request body requests.CreateCommentReq true "Комментарий"
+// @Success 201 {object} entities.Comment
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/comments [post]
 func (ch *CommentHandler) CreateComment(c *gin.Context) {
 	var req requests.CreateCommentReq
 
@@ -28,14 +39,22 @@ func (ch *CommentHandler) CreateComment(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, &comment)
-
 }
 
+// GetCommentById godoc
+// @Summary Получить комментарий по ID
+// @Tags Comments
+// @Produce json
+// @Param id path string true "ID комментария"
+// @Success 200 {object} entities.Comment
+// @Failure 404 {object} map[string]string
+// @Router /api/v1/comments/{id} [get]
 func (ch *CommentHandler) GetCommentById(c *gin.Context) {
 	// TODO implement me
 	panic("implement me")
 }
 
+// NewCommentHandler создает новый экземпляр CommentHandler.
 func NewCommentHandler(service interfaces.CommentService) interfaces.CommentHandler {
 	return &CommentHandler{service: service}
 }

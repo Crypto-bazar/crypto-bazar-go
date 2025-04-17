@@ -4,6 +4,9 @@ import (
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/http/middleware"
 
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +26,7 @@ func (r *Router) RegisterRoutes() {
 	r.engine.Use(middleware.Recovery())
 	r.engine.Use(middleware.Cors())
 	r.engine.Static("/uploads", "./uploads")
+	r.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := r.engine.Group("/api/v1")
 	{

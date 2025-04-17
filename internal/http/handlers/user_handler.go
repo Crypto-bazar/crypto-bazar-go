@@ -8,10 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// UserHandler отвечает за работу с пользователями.
 type UserHandler struct {
 	service interfaces.UserService
 }
 
+// CheckUserExists godoc
+// @Summary Проверить существование пользователя по адресу
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body requests.CheckUserRequest true "Ethereum Address"
+// @Success 200 {object} bool
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/users/check [post]
 func (u *UserHandler) CheckUserExists(c *gin.Context) {
 	var address requests.CheckUserRequest
 	if err := c.BindJSON(&address); err != nil {
@@ -28,6 +39,16 @@ func (u *UserHandler) CheckUserExists(c *gin.Context) {
 	c.JSON(http.StatusOK, isExists)
 }
 
+// CreateUser godoc
+// @Summary Создать нового пользователя
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body requests.CreateUserRequest true "User payload"
+// @Success 201 {object} requests.CreateUserRequest
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/users [post]
 func (u *UserHandler) CreateUser(c *gin.Context) {
 	var user requests.CreateUserRequest
 
@@ -44,6 +65,13 @@ func (u *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
+// GetAllUsers godoc
+// @Summary Получить список всех пользователей
+// @Tags Users
+// @Produce json
+// @Success 200 {array} entities.User
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/users [get]
 func (u *UserHandler) GetAllUsers(c *gin.Context) {
 	users, err := u.service.GetAllUsers()
 	if err != nil {
@@ -54,6 +82,14 @@ func (u *UserHandler) GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// GetUserById godoc
+// @Summary Получить пользователя по ID
+// @Tags Users
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} entities.User
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/users/{id} [get]
 func (u *UserHandler) GetUserById(c *gin.Context) {
 	id := c.Param("id")
 	user, err := u.service.GetUserById(id)
@@ -64,6 +100,7 @@ func (u *UserHandler) GetUserById(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// NewUserHandler создаёт новый обработчик UserHandler.
 func NewUserHandler(service interfaces.UserService) interfaces.UserHandler {
 	return &UserHandler{service: service}
 }

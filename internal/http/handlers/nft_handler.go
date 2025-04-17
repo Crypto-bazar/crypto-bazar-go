@@ -11,11 +11,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// NFTHandler обрабатывает запросы, связанные с NFT.
 type NFTHandler struct {
 	service      interfaces.NFTService
 	transcations usecase.TransactionUseCase
 }
 
+// GetProposedNFTs godoc
+// @Summary Получить предложенные NFT
+// @Tags NFT
+// @Produce json
+// @Success 200 {array} entities.NFT
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/proposed [get]
 func (u *NFTHandler) GetProposedNFTs(c *gin.Context) {
 	nfts, err := u.transcations.GetProposedNFTs()
 	if err != nil {
@@ -27,6 +35,14 @@ func (u *NFTHandler) GetProposedNFTs(c *gin.Context) {
 	c.JSON(http.StatusOK, nfts)
 }
 
+// GetUserNFT godoc
+// @Summary Получить NFT пользователя по Ethereum-адресу
+// @Tags NFT
+// @Produce json
+// @Param address query string true "Ethereum Address"
+// @Success 200 {array} entities.NFT
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/user [get]
 func (u *NFTHandler) GetUserNFT(c *gin.Context) {
 	ethAddress := c.Query("address")
 
@@ -40,6 +56,13 @@ func (u *NFTHandler) GetUserNFT(c *gin.Context) {
 	c.JSON(http.StatusOK, nft)
 }
 
+// GetSalesNFT godoc
+// @Summary Получить NFT на продаже
+// @Tags NFT
+// @Produce json
+// @Success 200 {array} entities.NFT
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/sales [get]
 func (u *NFTHandler) GetSalesNFT(c *gin.Context) {
 	nfts, err := u.service.GetSalesNFT()
 	if err != nil {
@@ -50,6 +73,16 @@ func (u *NFTHandler) GetSalesNFT(c *gin.Context) {
 	c.JSON(http.StatusOK, nfts)
 }
 
+// SetTokenAddress godoc
+// @Summary Обновить Token ID для NFT
+// @Tags NFT
+// @Accept json
+// @Produce json
+// @Param data body requests.UpdateTokenIdReq true "Update Token ID Payload"
+// @Success 200 {object} entities.NFT
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts [put]
 func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
 	var req requests.UpdateTokenIdReq
 
@@ -67,9 +100,22 @@ func (u *NFTHandler) SetTokenAddress(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, nft)
-
 }
 
+// CreateNFT godoc
+// @Summary Создать новый NFT
+// @Tags NFT
+// @Accept multipart/form-data
+// @Produce json
+// @Param name formData string true "Название NFT"
+// @Param description formData string true "Описание NFT"
+// @Param price formData number true "Цена"
+// @Param image formData file true "Файл изображения"
+// @Param eth_address formData string true "Адрес владельца"
+// @Success 201 {object} entities.NFT
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts [post]
 func (u *NFTHandler) CreateNFT(c *gin.Context) {
 	var req requests.CreateNFTRequest
 
@@ -85,7 +131,6 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 	}
 
 	nft, err := u.service.CreateNFT(imagePath, &req)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -94,6 +139,13 @@ func (u *NFTHandler) CreateNFT(c *gin.Context) {
 	c.JSON(http.StatusCreated, nft)
 }
 
+// GetAllNFTs godoc
+// @Summary Получить все NFT
+// @Tags NFT
+// @Produce json
+// @Success 200 {array} entities.NFT
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts [get]
 func (u *NFTHandler) GetAllNFTs(c *gin.Context) {
 	nfts, err := u.service.GetAllNFTs()
 	if err != nil {
@@ -104,6 +156,14 @@ func (u *NFTHandler) GetAllNFTs(c *gin.Context) {
 	c.JSON(http.StatusOK, nfts)
 }
 
+// GetNFTById godoc
+// @Summary Получить NFT по ID
+// @Tags NFT
+// @Produce json
+// @Param id path string true "NFT ID"
+// @Success 200 {object} entities.NFT
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/{id} [get]
 func (u *NFTHandler) GetNFTById(c *gin.Context) {
 	id := c.Param("id")
 	nft, err := u.service.GetNFTById(id)
@@ -114,6 +174,7 @@ func (u *NFTHandler) GetNFTById(c *gin.Context) {
 	c.JSON(http.StatusOK, nft)
 }
 
+// NewNFTHandler создаёт новый экземпляр NFTHandler.
 func NewNFTHandler(service interfaces.NFTService, transactions usecase.TransactionUseCase) interfaces.NFTHandler {
 	return &NFTHandler{service: service, transcations: transactions}
 }

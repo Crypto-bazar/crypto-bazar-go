@@ -2,6 +2,7 @@ package main
 
 import (
 	"bazar/config"
+	_ "bazar/docs"
 	handlers2 "bazar/internal/http/handlers"
 	"bazar/internal/http/router"
 	"bazar/internal/infrastructure/database"
@@ -13,6 +14,26 @@ import (
 
 	"github.com/jmoiron/sqlx"
 )
+
+// @title           Bazar NFT Marketplace API
+// @version         1.0
+// @description     Backend for Bazar - NFT marketplace on Ethereum
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Egor Gladkikh
+// @contact.url    https://github.com/egorgladkikh
+// @contact.email  egor@example.com
+
+// @license.name  MIT
+// @license.url   https://opensource.org/licenses/MIT
+
+// @host      localhost:8080
+// @BasePath  /
+
+// @securityDefinitions.apikey  BearerAuth
+// @in                          header
+// @name                        Authorization
+// @description                 Type "Bearer" followed by a space and JWT token.
 
 func main() {
 	cfg := config.LoadConfig()

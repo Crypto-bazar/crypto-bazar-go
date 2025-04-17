@@ -1,0 +1,516 @@
+basePath: /
+definitions:
+  entities.Comment:
+    properties:
+      content:
+        description: |-
+          Content текст комментария
+          swagger:model
+        type: string
+      created_at:
+        description: |-
+          CreatedAt дата создания комментария
+          swagger:model
+        type: string
+      id:
+        description: |-
+          ID уникальный идентификатор комментария
+          swagger:model
+        type: integer
+      nft_id:
+        description: |-
+          NFTID идентификатор NFT, к которому относится комментарий
+          swagger:model
+        type: integer
+      owner_id:
+        description: |-
+          OwnerId идентификатор пользователя, создавшего комментарий
+          swagger:model
+        type: integer
+      updated_at:
+        description: |-
+          UpdatedAt дата последнего обновления комментария
+          swagger:model
+        type: string
+    type: object
+  entities.NFT:
+    properties:
+      description:
+        description: |-
+          Description описание NFT
+          swagger:model
+        type: string
+      id:
+        description: |-
+          ID уникальный идентификатор NFT
+          swagger:model
+        type: integer
+      image_path:
+        description: |-
+          ImagePath путь к изображению для NFT
+          swagger:model
+        type: string
+      in_sales:
+        description: |-
+          Sales флаг, указывающий, продается ли NFT
+          swagger:model
+        type: boolean
+      name:
+        description: |-
+          Name название NFT
+          swagger:model
+        type: string
+      owner_id:
+        description: |-
+          Owner идентификатор владельца
+          swagger:model
+        type: integer
+      price:
+        description: |-
+          Price цена NFT
+          swagger:model
+        type: string
+      proposal_id:
+        description: |-
+          ProposalId идентификатор предложения для этого NFT
+          swagger:model
+        type: integer
+      proposed:
+        description: |-
+          Proposed флаг, указывающий, предложен ли NFT
+          swagger:model
+        type: boolean
+      token_id:
+        description: |-
+          TokenID идентификатор токена
+          swagger:model
+        type: integer
+      token_uri:
+        description: |-
+          TokenURI URI для токена
+          swagger:model
+        type: string
+      votes_amount:
+        description: |-
+          Votes количество голосов за этот NFT
+          swagger:model
+        type: string
+    type: object
+  entities.User:
+    properties:
+      ethAddress:
+        description: |-
+          EthAddress Ethereum адрес пользователя
+          swagger:model
+        type: string
+      id:
+        description: |-
+          ID уникальный идентификатор пользователя
+          swagger:model
+        type: integer
+    type: object
+  requests.CheckUserRequest:
+    properties:
+      address:
+        type: string
+    type: object
+  requests.CreateCommentReq:
+    properties:
+      content:
+        type: string
+      owner_comment:
+        type: integer
+      token_id:
+        type: integer
+    type: object
+  requests.CreateUserRequest:
+    properties:
+      eth_address:
+        type: string
+      message:
+        type: string
+      signature:
+        type: string
+    type: object
+  requests.UpdateTokenIdReq:
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: egor@example.com
+    name: Egor Gladkikh
+    url: https://github.com/egorgladkikh
+  description: Backend for Bazar - NFT marketplace on Ethereum
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Bazar NFT Marketplace API
+  version: "1.0"
+paths:
+  /api/v1/comments:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Комментарий
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateCommentReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создать комментарий
+      tags:
+      - Comments
+  /api/v1/comments/{id}:
+    get:
+      parameters:
+      - description: ID комментария
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Comment'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить комментарий по ID
+      tags:
+      - Comments
+  /api/v1/nfts:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.NFT'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить все NFT
+      tags:
+      - NFT
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Название NFT
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Описание NFT
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Цена
+        in: formData
+        name: price
+        required: true
+        type: number
+      - description: Файл изображения
+        in: formData
+        name: image
+        required: true
+        type: file
+      - description: Адрес владельца
+        in: formData
+        name: eth_address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.NFT'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создать новый NFT
+      tags:
+      - NFT
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Update Token ID Payload
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdateTokenIdReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.NFT'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Обновить Token ID для NFT
+      tags:
+      - NFT
+  /api/v1/nfts/{id}:
+    get:
+      parameters:
+      - description: NFT ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.NFT'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить NFT по ID
+      tags:
+      - NFT
+  /api/v1/nfts/proposed:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.NFT'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить предложенные NFT
+      tags:
+      - NFT
+  /api/v1/nfts/sales:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.NFT'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить NFT на продаже
+      tags:
+      - NFT
+  /api/v1/nfts/user:
+    get:
+      parameters:
+      - description: Ethereum Address
+        in: query
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.NFT'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить NFT пользователя по Ethereum-адресу
+      tags:
+      - NFT
+  /api/v1/users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить список всех пользователей
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/requests.CreateUserRequest'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создать нового пользователя
+      tags:
+      - Users
+  /api/v1/users/{id}:
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить пользователя по ID
+      tags:
+      - Users
+  /api/v1/users/check:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ethereum Address
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CheckUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Проверить существование пользователя по адресу
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
