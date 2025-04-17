@@ -106,7 +106,8 @@ func (n *NFTRepository) GetUserNFT(address string) (*[]entities.NFT, error) {
 	query := `
 		SELECT nfts.* FROM nfts 
 		JOIN "users" ON nfts.owner_id = "users".id 
-		WHERE "users".eth_address = $1`
+		WHERE "users".eth_address = $1
+		ORDER BY nfts.id`
 
 	err := n.db.Select(&nft, query, address)
 	if err != nil {
@@ -222,7 +223,9 @@ func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
 
 func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
 	var nfts []entities.NFT
-	query := "SELECT * FROM nfts"
+	query := `
+			SELECT * FROM nfts
+			ORDER BY id`
 	err := n.db.Select(&nfts, query)
 
 	if err != nil {
