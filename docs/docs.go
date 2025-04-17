@@ -12,8 +12,8 @@ const docTemplate = `{
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "Egor Gladkikh",
-            "url": "https://github.com/egorgladkikh",
-            "email": "egor@example.com"
+            "url": "https://github.com/ororura",
+            "email": "gladkikhegor01@gmail.com"
         },
         "license": {
             "name": "MIT",
