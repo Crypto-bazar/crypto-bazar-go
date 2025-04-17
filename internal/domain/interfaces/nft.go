@@ -16,7 +16,7 @@ type NFTRepository interface {
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 	GetUserNFT(address string) (*[]entities.NFT, error)
 	SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error)
-	UpdateProposedByTokenURI(status bool, tokenURI string) (*entities.NFT, error)
+	UpdateProposedByTokenURI(id string, tokenURI string) (*entities.NFT, error)
 	UpdateVotesByTokenURI(tokenURI string, amount string) (*entities.NFT, error)
 	UpdateId(tokenUri string, id int) (*entities.NFT, error)
 }

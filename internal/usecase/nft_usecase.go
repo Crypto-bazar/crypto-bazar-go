@@ -19,7 +19,7 @@ func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRep
 }
 
 func (n *NFTService) SetNFTProposed(event *domain.NFTProposedEvent) (*entities.NFT, error) {
-	nft, err := n.nftRepo.UpdateProposedByTokenURI(true, event.TokenURI)
+	nft, err := n.nftRepo.UpdateProposedByTokenURI(event.ProposalID, event.TokenURI)
 	if err != nil {
 		return nil, fmt.Errorf("error with updating proposed status: %w", err)
 	}

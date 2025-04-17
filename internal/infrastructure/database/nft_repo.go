@@ -56,9 +56,9 @@ func (n *NFTRepository) UpdateVotesByTokenURI(tokenURI string, amount string) (*
 	return &nft, nil
 }
 
-func (n *NFTRepository) UpdateProposedByTokenURI(status bool, tokenURI string) (*entities.NFT, error) {
-	query := "UPDATE nfts SET proposed = $1 WHERE token_uri = $2"
-	_, err := n.db.Exec(query, status, tokenURI)
+func (n *NFTRepository) UpdateProposedByTokenURI(id string, tokenURI string) (*entities.NFT, error) {
+	query := "UPDATE nfts SET proposed = true, proposal_id = $1 WHERE token_uri = $2"
+	_, err := n.db.Exec(query, id, tokenURI)
 	if err != nil {
 		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error updating proposed status: %w", err)

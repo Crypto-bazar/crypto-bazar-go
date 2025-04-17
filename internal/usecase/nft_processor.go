@@ -45,7 +45,7 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 }
 
 func (p *NFTProcessor) processProposal(event domain.NFTProposedEvent) error {
-	_, err := p.nftRepo.UpdateProposedByTokenURI(true, event.TokenURI)
+	_, err := p.nftRepo.UpdateProposedByTokenURI(event.ProposalID, event.TokenURI)
 	if err != nil {
 		return fmt.Errorf("error with updating proposed status: %w", err)
 	}
