@@ -18,7 +18,7 @@ func NewNFTRepository(db *sqlx.DB) interfaces.NFTRepository {
 	return &NFTRepository{db: db}
 }
 
-func (n *NFTRepository) UpdateId(tokenUri string, id int) (*entities.NFT, error) {
+func (n *NFTRepository) UpdateId(tokenUri string, id string) (*entities.NFT, error) {
 	query := "UPDATE nfts SET token_id = $1 WHERE token_uri = $2"
 	_, err := n.db.Exec(query, id, tokenUri)
 	if err != nil {

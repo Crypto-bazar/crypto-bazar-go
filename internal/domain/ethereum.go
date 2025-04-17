@@ -38,7 +38,14 @@ type NFTVotedEvent struct {
 	Amount     big.Int
 }
 
+type NFTMintedEvent struct {
+	TokenId  string
+	TokenURI string
+	Owner    string
+}
+
 type NFTEventListener interface {
 	ListenNFTProposed(ctx context.Context) (<-chan NFTProposedEvent, error)
 	ListenNFTVoted(ctx context.Context) (<-chan NFTVotedEvent, error)
+	ListendNFTMinted(ctx context.Context) (<-chan NFTMintedEvent, error)
 }

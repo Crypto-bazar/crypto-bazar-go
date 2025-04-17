@@ -79,3 +79,34 @@ func (l *EventListener) ListenNFTVoted(ctx context.Context) (<-chan domain.NFTVo
 	}()
 	return eventCh, nil
 }
+
+func (l *EventListener) ListendNFTMinted(ctx context.Context) (<-chan domain.NFTMintedEvent, error) {
+	eventCh := make(chan domain.NFTMintedEvent)
+	rawCh := make(chan *contract.MycontractNFTMinted)
+
+	sub, err := l.contract.WatchNFTMinted(&bind.WatchOpts{Context: ctx}, rawCh, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error watching NFT voted event: %w", err)
+	}
+
+	go func() {
+		defer sub.Unsubscribe()
+		defer close(eventCh)
+
+		for {
+			select {
+			case event := <-rawCh:
+				eventCh <- domain.NFTMintedEvent{
+					TokenId:  event.TokenId.String(),
+					TokenURI: event.TokenURI,
+					Owner:    event.Owner.Hex(),
+				}
+			case <-sub.Err():
+				return
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+	return eventCh, nil
+}

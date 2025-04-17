@@ -27,6 +27,11 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 		return err
 	}
 
+	mintedCh, err := p.eventListener.ListendNFTMinted(ctx)
+	if err != nil {
+		return err
+	}
+
 	for {
 		select {
 		case event := <-proposedCh:
@@ -35,6 +40,10 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 			}
 		case event := <-voteCh:
 			if err := p.processVote(event); err != nil {
+				return err
+			}
+		case event := <-mintedCh:
+			if err := p.processMinted(event); err != nil {
 				return err
 			}
 		case <-ctx.Done():
@@ -55,9 +64,16 @@ func (p *NFTProcessor) processProposal(event domain.NFTProposedEvent) error {
 
 func (p *NFTProcessor) processVote(event domain.NFTVotedEvent) error {
 	_, err := p.nftRepo.UpdateVotesByTokenURI(event.TokenURI, event.Amount.String())
-
 	if err != nil {
 		return fmt.Errorf("error with updating votes: %w", err)
+	}
+	return nil
+}
+
+func (p *NFTProcessor) processMinted(event domain.NFTMintedEvent) error {
+	_, err := p.nftRepo.UpdateId(event.TokenURI, event.TokenId)
+	if err != nil {
+		return fmt.Errorf("error with updating proposed status: %w", err)
 	}
 	return nil
 }
