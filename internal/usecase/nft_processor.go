@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"bazar/internal/delivery/http/ws"
+	"bazar/internal/delivery/websocket"
 	"bazar/internal/domain"
 	"bazar/internal/domain/interfaces"
 	"context"
@@ -11,10 +11,10 @@ import (
 type NFTProcessor struct {
 	eventListener domain.NFTEventListener
 	nftRepo       interfaces.NFTRepository
-	hub           *ws.Hub
+	hub           *websocket.Hub
 }
 
-func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRepository, hub *ws.Hub) *NFTProcessor {
+func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRepository, hub *websocket.Hub) *NFTProcessor {
 	return &NFTProcessor{eventListener: listener, nftRepo: nftRepo, hub: hub}
 }
 
