@@ -4,7 +4,6 @@ import (
 	"bazar/config"
 	_ "bazar/docs"
 	"bazar/internal/delivery/http/handlers"
-	handlers2 "bazar/internal/delivery/http/handlers"
 	"bazar/internal/delivery/http/router"
 	"bazar/internal/delivery/websocket"
 	"bazar/internal/infrastructure/database"
@@ -54,7 +53,7 @@ func main() {
 
 	userRepo := database.NewUserRepository(db)
 	userService := usecase.NewUserService(userRepo)
-	userHandler := handlers2.NewUserHandler(userService)
+	userHandler := handlers.NewUserHandler(userService)
 
 	nftRepo := database.NewNFTRepository(db)
 	nftService := usecase.NewNFTService(nftRepo, userRepo)
@@ -62,7 +61,7 @@ func main() {
 
 	commentRepo := database.NewCommentRepo(db)
 	commentService := usecase.NewCommentService(commentRepo)
-	commentHandler := handlers2.NewCommentHandler(commentService)
+	commentHandler := handlers.NewCommentHandler(commentService)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	client := eth.NewClient(cfg.EthereumNodeUrl)
@@ -83,8 +82,8 @@ func main() {
 
 	transactions := eth.NewTransaction(instance)
 	transactionsService := usecase.NewTransactionUseCase(transactions, ctx)
-	nftHandler := handlers2.NewNFTHandler(nftService, *transactionsService)
-	wsHandler := handlers.WsHandler(hub)
+	nftHandler := handlers.NewNFTHandler(nftService, *transactionsService)
+	wsHandler := websocket.Handler(hub)
 
 	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler, &wsHandler)
 	newRouter.RegisterRoutes()

@@ -2,8 +2,6 @@ package router
 
 import (
 	"bazar/internal/delivery/http/middleware"
-	"bazar/internal/delivery/websocket"
-
 	"bazar/internal/domain/interfaces"
 
 	swaggerFiles "github.com/swaggo/files"
