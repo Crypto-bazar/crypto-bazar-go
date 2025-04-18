@@ -1,6 +1,7 @@
-package websocket
+package handlers
 
 import (
+	"bazar/internal/delivery/http/ws"
 	"fmt"
 	"net/http"
 
@@ -16,7 +17,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func Handler(hub *Hub) gin.HandlerFunc {
+func WsHandler(hub *ws.Hub) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {
@@ -24,7 +25,7 @@ func Handler(hub *Hub) gin.HandlerFunc {
 		}
 		defer conn.Close()
 
-		client := make(ClientChan, 256)
+		client := make(ws.ClientChan, 256)
 		hub.Register(client)
 		defer hub.UnRegister(client)
 

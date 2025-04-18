@@ -5,7 +5,7 @@ import (
 	_ "bazar/docs"
 	handlers2 "bazar/internal/delivery/http/handlers"
 	"bazar/internal/delivery/http/router"
-	"bazar/internal/delivery/websocket"
+	"bazar/internal/delivery/http/ws"
 	"bazar/internal/infrastructure/database"
 	"bazar/internal/infrastructure/eth"
 	"bazar/internal/usecase"
@@ -59,7 +59,7 @@ func main() {
 
 	nftRepo := database.NewNFTRepository(db)
 	nftService := usecase.NewNFTService(nftRepo, userRepo)
-	hub := websocket.NewHub()
+	hub := ws.NewHub()
 
 	commentRepo := database.NewCommentRepo(db)
 	commentService := usecase.NewCommentService(commentRepo)
