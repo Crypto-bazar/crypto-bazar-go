@@ -35,18 +35,18 @@ func (h *Hub) Broadcast(v any) {
 
 	data, err := json.Marshal(v)
 	if err != nil {
-		fmt.Println("❌ Broadcast marshal error:", err)
+		fmt.Println("Broadcast marshal error:", err)
 		return
 	}
 
-	fmt.Printf("📢 Broadcast message: %s\n", data)
+	fmt.Printf("Broadcast message: %s\n", data)
 
 	for ch := range h.clients {
 		select {
 		case ch <- data:
-			fmt.Println("✅ Message sent to a client")
+			fmt.Println("Message sent to a client")
 		default:
-			fmt.Println("⚠️ Client channel full or not reading, removing")
+			fmt.Println("Client channel full or not reading, removing")
 			delete(h.clients, ch)
 			close(ch)
 		}

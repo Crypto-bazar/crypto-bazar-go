@@ -29,13 +29,10 @@ func Handler(hub *Hub) gin.HandlerFunc {
 		defer hub.UnRegister(client)
 
 		go func() {
-			fmt.Printf("Working")
 			for msg := range client {
-				fmt.Printf("📤 Sending to client: %s\n", msg)
-
 				err := conn.WriteMessage(websocket.TextMessage, msg)
 				if err != nil {
-					fmt.Printf("❌ Error writing message: %v\n", err)
+					fmt.Printf("Error writing message: %v\n", err)
 					return
 				}
 			}
@@ -44,10 +41,10 @@ func Handler(hub *Hub) gin.HandlerFunc {
 		for {
 			messageType, message, err := conn.ReadMessage()
 			if err != nil {
-				fmt.Println("❌ Error reading message:", err)
+				fmt.Println("Error reading message:", err)
 				break
 			}
-			fmt.Printf("📥 Received from client: [%d] %s\n", messageType, message)
+			fmt.Printf("Received from client: [%d] %s\n", messageType, message)
 		}
 	}
 }
