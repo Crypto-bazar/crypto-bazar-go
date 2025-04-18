@@ -4,6 +4,8 @@ go 1.23.0
 
 toolchain go1.23.6
 
+require github.com/swaggo/files v1.0.1
+
 require (
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
@@ -61,7 +63,7 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/graph-gophers/graphql-go v1.3.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-bexpr v0.1.10 // indirect
@@ -116,7 +118,6 @@ require (
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/storyicon/sigverify v1.1.0 // indirect
 	github.com/supranational/blst v0.3.14 // indirect
-	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0 // indirect
 	github.com/swaggo/swag v1.16.4 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect

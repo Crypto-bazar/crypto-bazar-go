@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"bazar/internal/delivery/websocket"
 	"bazar/internal/domain"
 	"bazar/internal/domain/interfaces"
 	"context"
@@ -10,10 +11,11 @@ import (
 type NFTProcessor struct {
 	eventListener domain.NFTEventListener
 	nftRepo       interfaces.NFTRepository
+	hub           *websocket.Hub
 }
 
-func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRepository) *NFTProcessor {
-	return &NFTProcessor{eventListener: listener, nftRepo: nftRepo}
+func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRepository, hub *websocket.Hub) *NFTProcessor {
+	return &NFTProcessor{eventListener: listener, nftRepo: nftRepo, hub: hub}
 }
 
 func (p *NFTProcessor) Run(ctx context.Context) error {
@@ -63,10 +65,19 @@ func (p *NFTProcessor) processProposal(event domain.NFTProposedEvent) error {
 }
 
 func (p *NFTProcessor) processVote(event domain.NFTVotedEvent) error {
-	_, err := p.nftRepo.UpdateVotesByTokenURI(event.TokenURI, event.Amount.String())
+	nft, err := p.nftRepo.UpdateVotesByTokenURI(event.TokenURI, event.Amount.String())
 	if err != nil {
 		return fmt.Errorf("error with updating votes: %w", err)
 	}
+
+	p.hub.Broadcast(struct {
+		Type string `json:"type"`
+		NFT  any    `json:"nft"`
+	}{
+		Type: "vote",
+		NFT:  nft,
+	})
+
 	return nil
 }
 

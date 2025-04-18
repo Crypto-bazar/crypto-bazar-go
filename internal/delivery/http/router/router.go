@@ -1,8 +1,9 @@
 package router
 
 import (
+	"bazar/internal/delivery/http/middleware"
+	"bazar/internal/delivery/websocket"
 	"bazar/internal/domain/interfaces"
-	"bazar/internal/http/middleware"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -15,10 +16,11 @@ type Router struct {
 	userHandler    interfaces.UserHandler
 	nftHandler     interfaces.NFTHandler
 	commentHandler interfaces.CommentHandler
+	wsHub          *websocket.Hub
 }
 
-func NewRouter(userHandler interfaces.UserHandler, nftHandler interfaces.NFTHandler, commentHandler interfaces.CommentHandler) *Router {
-	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler, commentHandler: commentHandler}
+func NewRouter(userHandler interfaces.UserHandler, nftHandler interfaces.NFTHandler, commentHandler interfaces.CommentHandler, hub *websocket.Hub) *Router {
+	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler, commentHandler: commentHandler, wsHub: hub}
 }
 
 func (r *Router) RegisterRoutes() {
@@ -27,6 +29,7 @@ func (r *Router) RegisterRoutes() {
 	r.engine.Use(middleware.Cors())
 	r.engine.Static("/uploads", "./uploads")
 	r.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.engine.GET("/ws", websocket.Handler(r.wsHub))
 
 	api := r.engine.Group("/api/v1")
 	{

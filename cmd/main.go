@@ -3,8 +3,9 @@ package main
 import (
 	"bazar/config"
 	_ "bazar/docs"
-	handlers2 "bazar/internal/http/handlers"
-	"bazar/internal/http/router"
+	handlers2 "bazar/internal/delivery/http/handlers"
+	"bazar/internal/delivery/http/router"
+	"bazar/internal/delivery/websocket"
 	"bazar/internal/infrastructure/database"
 	"bazar/internal/infrastructure/eth"
 	"bazar/internal/usecase"
@@ -58,6 +59,7 @@ func main() {
 
 	nftRepo := database.NewNFTRepository(db)
 	nftService := usecase.NewNFTService(nftRepo, userRepo)
+	hub := websocket.NewHub()
 
 	commentRepo := database.NewCommentRepo(db)
 	commentService := usecase.NewCommentService(commentRepo)
@@ -72,7 +74,7 @@ func main() {
 
 	eventListener := eth.NewEthEventListener(instance)
 
-	processor := usecase.NewNFTProcessor(eventListener, nftRepo)
+	processor := usecase.NewNFTProcessor(eventListener, nftRepo, hub)
 
 	go func() {
 		if err := processor.Run(ctx); err != nil {
@@ -83,7 +85,7 @@ func main() {
 	transactions := eth.NewTransaction(instance)
 	transactionsService := usecase.NewTransactionUseCase(transactions, ctx)
 	nftHandler := handlers2.NewNFTHandler(nftService, *transactionsService)
-	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler)
+	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler, hub)
 	newRouter.RegisterRoutes()
 
 	if err := newRouter.Run(":8080"); err != nil {
