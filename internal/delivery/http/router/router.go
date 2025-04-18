@@ -1,9 +1,7 @@
 package router
 
 import (
-	"bazar/internal/delivery/http/handlers"
 	"bazar/internal/delivery/http/middleware"
-	"bazar/internal/delivery/http/ws"
 
 	"bazar/internal/domain/interfaces"
 
@@ -18,11 +16,11 @@ type Router struct {
 	userHandler    interfaces.UserHandler
 	nftHandler     interfaces.NFTHandler
 	commentHandler interfaces.CommentHandler
-	wsHub          *ws.Hub
+	wsHandler      *gin.HandlerFunc
 }
 
-func NewRouter(userHandler interfaces.UserHandler, nftHandler interfaces.NFTHandler, commentHandler interfaces.CommentHandler, hub *ws.Hub) *Router {
-	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler, commentHandler: commentHandler, wsHub: hub}
+func NewRouter(userHandler interfaces.UserHandler, nftHandler interfaces.NFTHandler, commentHandler interfaces.CommentHandler, wsHandler *gin.HandlerFunc) *Router {
+	return &Router{engine: gin.Default(), userHandler: userHandler, nftHandler: nftHandler, commentHandler: commentHandler, wsHandler: wsHandler}
 }
 
 func (r *Router) RegisterRoutes() {
@@ -31,7 +29,7 @@ func (r *Router) RegisterRoutes() {
 	r.engine.Use(middleware.Cors())
 	r.engine.Static("/uploads", "./uploads")
 	r.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.engine.GET("/ws", handlers.WsHandler(r.wsHub))
+	r.engine.GET("/ws", *r.wsHandler)
 
 	api := r.engine.Group("/api/v1")
 	{

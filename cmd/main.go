@@ -3,6 +3,7 @@ package main
 import (
 	"bazar/config"
 	_ "bazar/docs"
+	"bazar/internal/delivery/http/handlers"
 	handlers2 "bazar/internal/delivery/http/handlers"
 	"bazar/internal/delivery/http/router"
 	"bazar/internal/delivery/http/ws"
@@ -51,8 +52,6 @@ func main() {
 		}
 	}(db)
 
-	log.Println("Success connection!")
-
 	userRepo := database.NewUserRepository(db)
 	userService := usecase.NewUserService(userRepo)
 	userHandler := handlers2.NewUserHandler(userService)
@@ -85,7 +84,9 @@ func main() {
 	transactions := eth.NewTransaction(instance)
 	transactionsService := usecase.NewTransactionUseCase(transactions, ctx)
 	nftHandler := handlers2.NewNFTHandler(nftService, *transactionsService)
-	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler, hub)
+	wsHandler := handlers.WsHandler(hub)
+
+	newRouter := router.NewRouter(userHandler, nftHandler, commentHandler, &wsHandler)
 	newRouter.RegisterRoutes()
 
 	if err := newRouter.Run(":8080"); err != nil {
