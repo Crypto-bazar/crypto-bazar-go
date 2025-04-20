@@ -15,7 +15,6 @@ func (c *CommentService) CreateComment(req *requests.CreateCommentReq) (*entitie
 	return c.CommentRepo.CreateComment(comment)
 }
 
-// GetCommentById implements domain.CommentService.
 func (c *CommentService) GetCommentById(id string) (*entities.Comment, error) {
 	return c.CommentRepo.GetCommentById(id)
 }
