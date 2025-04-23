@@ -3,7 +3,11 @@ package handlers
 import (
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
+	"bazar/pkg/utils"
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
@@ -100,7 +104,52 @@ func (u *UserHandler) GetUserById(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// NewUserHandler создаёт новый обработчик UserHandler.
+// UploadAvatarHandler godoc
+// @Summary Загрузить аватар пользователя
+// @Tags Users
+// @Accept multipart/form-data
+// @Produce json
+// @Param eth_address path string true "Ethereum Address пользователя"
+// @Param avatar formData file true "Файл аватара (JPG/PNG)"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/users/{eth_address}/avatar [post]
+func (u *UserHandler) UploadAvatarHandler(c *gin.Context) {
+	ethAddress := c.Param("eth_address")
+	if ethAddress == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ETH address is required"})
+		return
+	}
+
+	file, _ := c.FormFile("avatar")
+	if file == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No file uploaded"})
+		return
+	}
+
+	fileName := fmt.Sprintf("%s-%s", ethAddress, utils.GenerateRandomString(8)) + filepath.Ext(file.Filename)
+
+	uploadDir := "./uploads/avatars/"
+	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
+		os.MkdirAll(uploadDir, os.ModePerm)
+	}
+
+	filePath := filepath.Join(uploadDir, fileName)
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	avatarURL := "/uploads/avatars/" + fileName
+	if err, _ := u.service.UpdateAvatarURL(ethAddress, avatarURL); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update avatar URL in the database"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Avatar uploaded successfully", "avatar_url": avatarURL})
+}
+
 func NewUserHandler(service interfaces.UserService) interfaces.UserHandler {
 	return &UserHandler{service: service}
 }

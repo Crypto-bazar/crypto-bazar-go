@@ -450,6 +450,45 @@ paths:
       summary: Создать нового пользователя
       tags:
       - Users
+  /api/v1/users/{eth_address}/avatar:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Ethereum Address пользователя
+        in: path
+        name: eth_address
+        required: true
+        type: string
+      - description: Файл аватара (JPG/PNG)
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Загрузить аватар пользователя
+      tags:
+      - Users
   /api/v1/users/{id}:
     get:
       parameters:

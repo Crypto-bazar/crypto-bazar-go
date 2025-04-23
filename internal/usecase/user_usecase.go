@@ -12,6 +12,10 @@ type UserService struct {
 	repo interfaces.UserRepository
 }
 
+func (u *UserService) UpdateAvatarURL(ethAddress, avatarURL string) (*entities.User, error) {
+	return u.repo.UpdateAvatarURL(ethAddress, avatarURL)
+}
+
 func (u *UserService) CheckUserExists(address *requests.CheckUserRequest) (*bool, error) {
 	return u.repo.CheckUserExists(address.Address)
 }

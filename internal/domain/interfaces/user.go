@@ -13,6 +13,7 @@ type UserRepository interface {
 	GetUserById(id string) (*entities.User, error)
 	GetUserByAddress(address string) (*entities.User, error)
 	CheckUserExists(address string) (*bool, error)
+	UpdateAvatarURL(ethAddress, avatarURL string) (*entities.User, error)
 }
 
 type UserService interface {
@@ -20,6 +21,7 @@ type UserService interface {
 	GetAllUsers() (*[]entities.User, error)
 	GetUserById(id string) (*entities.User, error)
 	CheckUserExists(address *requests.CheckUserRequest) (*bool, error)
+	UpdateAvatarURL(ethAddress, avatarURL string) (*entities.User, error)
 }
 
 type UserHandler interface {
@@ -27,4 +29,5 @@ type UserHandler interface {
 	GetAllUsers(c *gin.Context)
 	GetUserById(c *gin.Context)
 	CheckUserExists(c *gin.Context)
+	UploadAvatarHandler(c *gin.Context)
 }

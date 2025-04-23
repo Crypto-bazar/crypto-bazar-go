@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -27,4 +29,13 @@ func FileSave(c *gin.Context, fileField string, uploadDir string) (string, error
 	}
 
 	return file.Filename, nil
+}
+
+func GenerateRandomString(length int) string {
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return ""
+	}
+	return hex.EncodeToString(bytes)
 }

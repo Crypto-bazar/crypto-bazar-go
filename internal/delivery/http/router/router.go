@@ -38,6 +38,7 @@ func (r *Router) RegisterRoutes() {
 			users.GET("/", r.userHandler.GetAllUsers)
 			users.GET("/:id", r.userHandler.GetUserById)
 			users.POST("/check", r.userHandler.CheckUserExists)
+			users.POST("/:eth_address/avatar", r.userHandler.UploadAvatarHandler)
 		}
 
 		nft := api.Group("/nfts")

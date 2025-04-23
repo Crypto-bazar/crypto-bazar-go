@@ -1,7 +1,8 @@
 CREATE TABLE users
 (
     id          BIGSERIAL PRIMARY KEY,
-    eth_address VARCHAR(42) UNIQUE NOT NULL
+    eth_address VARCHAR(42) UNIQUE NOT NULL,
+    avatar_url VARCHAR(255)
 );
 
 INSERT INTO users(eth_address)

@@ -13,6 +13,25 @@ type UserRepository struct {
 	db *sqlx.DB
 }
 
+func (u *UserRepository) UpdateAvatarURL(ethAddress, avatarURL string) (*entities.User, error) {
+	query := `UPDATE users SET avatar_url = $1 WHERE eth_address = $2`
+	_, err := u.db.Exec(query, avatarURL, ethAddress)
+	if err != nil {
+		return nil, fmt.Errorf("error updating avatar url: %w", err)
+	}
+
+	var nft entities.User
+	query = "SELECT * FROM users WHERE eth_address = $1"
+
+	err = u.db.Get(&nft, query, ethAddress)
+	if err != nil {
+		log.Printf("Db error: %v", err)
+		return nil, fmt.Errorf("error updating avatar url: %w", err)
+	}
+
+	return &nft, nil
+}
+
 func (u *UserRepository) CheckUserExists(address string) (*bool, error) {
 	var isExists bool
 	query := "SELECT EXISTS(SELECT 1 FROM users WHERE eth_address = $1)"
