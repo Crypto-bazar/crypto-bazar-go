@@ -98,6 +98,11 @@ definitions:
     type: object
   entities.User:
     properties:
+      avatar_url:
+        description: |-
+          AvatarUrl путь до аватарки пользователя
+          swagger:model
+        type: string
       ethAddress:
         description: |-
           EthAddress Ethereum адрес пользователя
@@ -450,6 +455,30 @@ paths:
       summary: Создать нового пользователя
       tags:
       - Users
+  /api/v1/users/{address}:
+    get:
+      parameters:
+      - description: User Address
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить пользователя по Address
+      tags:
+      - Users
   /api/v1/users/{eth_address}/avatar:
     post:
       consumes:
@@ -487,30 +516,6 @@ paths:
               type: string
             type: object
       summary: Загрузить аватар пользователя
-      tags:
-      - Users
-  /api/v1/users/{id}:
-    get:
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entities.User'
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Получить пользователя по ID
       tags:
       - Users
   /api/v1/users/check:

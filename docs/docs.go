@@ -537,6 +537,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/users/{address}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Получить пользователя по Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User Address",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/{eth_address}/avatar": {
             "post": {
                 "consumes": [
@@ -582,43 +619,6 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/users/{id}": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Получить пользователя по ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entities.User"
                         }
                     },
                     "500": {
@@ -720,6 +720,10 @@ const docTemplate = `{
         "entities.User": {
             "type": "object",
             "properties": {
+                "avatar_url": {
+                    "description": "AvatarUrl путь до аватарки пользователя\nswagger:model",
+                    "type": "string"
+                },
                 "ethAddress": {
                     "description": "EthAddress Ethereum адрес пользователя\nswagger:model",
                     "type": "string"

@@ -86,17 +86,17 @@ func (u *UserHandler) GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-// GetUserById godoc
-// @Summary Получить пользователя по ID
+// GetUserByAddress godoc
+// @Summary Получить пользователя по Address
 // @Tags Users
 // @Produce json
-// @Param id path string true "User ID"
+// @Param address path string true "User Address"
 // @Success 200 {object} entities.User
 // @Failure 500 {object} map[string]string
-// @Router /api/v1/users/{id} [get]
-func (u *UserHandler) GetUserById(c *gin.Context) {
-	id := c.Param("id")
-	user, err := u.service.GetUserById(id)
+// @Router /api/v1/users/{address} [get]
+func (u *UserHandler) GetUserByAddress(c *gin.Context) {
+	id := c.Param("address")
+	user, err := u.service.GetUserByAddress(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "User not found"})
 		return
@@ -141,7 +141,7 @@ func (u *UserHandler) UploadAvatarHandler(c *gin.Context) {
 		return
 	}
 
-	avatarURL := "/uploads/avatars/" + fileName
+	avatarURL := "uploads/avatars/" + fileName
 	if err, _ := u.service.UpdateAvatarURL(ethAddress, avatarURL); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update avatar URL in the database"})
 		return

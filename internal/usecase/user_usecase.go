@@ -42,8 +42,8 @@ func (u *UserService) GetAllUsers() (*[]entities.User, error) {
 	return u.repo.GetAllUsers()
 }
 
-func (u *UserService) GetUserById(id string) (*entities.User, error) {
-	return u.repo.GetUserById(id)
+func (u *UserService) GetUserByAddress(id string) (*entities.User, error) {
+	return u.repo.GetUserByAddress(id)
 }
 
 func NewUserService(repo interfaces.UserRepository) interfaces.UserService {
