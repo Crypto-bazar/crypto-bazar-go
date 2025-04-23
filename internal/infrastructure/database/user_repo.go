@@ -47,7 +47,6 @@ func (u *UserRepository) CheckUserExists(address string) (*bool, error) {
 
 func (u *UserRepository) GetUserByAddress(address string) (*entities.User, error) {
 	var user entities.User
-	fmt.Println("Address to query:", address)
 	query := "SELECT * FROM users WHERE eth_address = $1"
 	err := u.db.Get(&user, query, address)
 
