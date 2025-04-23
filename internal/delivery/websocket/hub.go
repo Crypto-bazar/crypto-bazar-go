@@ -26,7 +26,11 @@ func (h *Hub) Register(client ClientChan) {
 func (h *Hub) UnRegister(client ClientChan) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	close(client)
+
+	if _, ok := h.clients[client]; ok {
+		delete(h.clients, client)
+		close(client)
+	}
 }
 
 func (h *Hub) Broadcast(v any) {

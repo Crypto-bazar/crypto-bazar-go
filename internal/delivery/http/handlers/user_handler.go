@@ -5,6 +5,7 @@ import (
 	"bazar/internal/domain/requests"
 	"bazar/pkg/utils"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -142,7 +143,8 @@ func (u *UserHandler) UploadAvatarHandler(c *gin.Context) {
 	}
 
 	avatarURL := "uploads/avatars/" + fileName
-	if err, _ := u.service.UpdateAvatarURL(ethAddress, avatarURL); err != nil {
+	if _, err := u.service.UpdateAvatarURL(ethAddress, avatarURL); err != nil {
+		log.Print(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update avatar URL in the database"})
 		return
 	}
