@@ -10,8 +10,8 @@ import (
 type NFTRepository interface {
 	GetSalesNFT() (*[]entities.NFT, error)
 	CreateNFT(nft *entities.NFT) (*entities.NFT, error)
-	GetAllNFTs() (*[]entities.NFT, error)
-	GetNFTById(id string) (*entities.NFT, error)
+	GetAllNFTs() (*[]entities.NFTResponse, error)
+	GetNFTById(id string) (*entities.NFTResponse, error)
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 	GetUserNFT(address string) (*[]entities.NFT, error)
@@ -24,8 +24,8 @@ type NFTRepository interface {
 type NFTService interface {
 	GetSalesNFT() (*[]entities.NFT, error)
 	CreateNFT(imagePath string, nft *requests.CreateNFTRequest) (*entities.NFT, error)
-	GetAllNFTs() (*[]entities.NFT, error)
-	GetNFTById(id string) (*entities.NFT, error)
+	GetAllNFTs() (*[]entities.NFTResponse, error)
+	GetNFTById(id string) (*entities.NFTResponse, error)
 	SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*entities.NFT, error)
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 	GetUserNFT(address string) (*[]entities.NFT, error)

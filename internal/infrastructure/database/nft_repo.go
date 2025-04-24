@@ -4,6 +4,8 @@ import (
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
+	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 
@@ -221,13 +223,29 @@ func (n *NFTRepository) CreateNFT(nft *entities.NFT) (*entities.NFT, error) {
 	return &createdNFT, nil
 }
 
-func (n *NFTRepository) GetAllNFTs() (*[]entities.NFT, error) {
-	var nfts []entities.NFT
-	query := `
-			SELECT * FROM nfts
-			ORDER BY id`
-	err := n.db.Select(&nfts, query)
+func (n *NFTRepository) GetAllNFTs() (*[]entities.NFTResponse, error) {
+	var nfts []entities.NFTResponse
 
+	query := `
+		SELECT
+			n.id,
+			n.token_id,
+			n.proposal_id,
+			n.token_uri,
+			n.name,
+			n.description,
+			n.price::TEXT,
+			u.eth_address AS owner,
+			n.image_path,
+			n.in_sales,
+			n.proposed,
+			n.votes_amount::TEXT
+		FROM nfts n
+		JOIN users u ON n.owner_id = u.id
+		ORDER BY n.id
+	`
+
+	err := n.db.Select(&nfts, query)
 	if err != nil {
 		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error getting all NFTs: %w", err)
@@ -249,16 +267,35 @@ func (n *NFTRepository) GetSalesNFT() (*[]entities.NFT, error) {
 
 	return &nfts, nil
 }
+func (n *NFTRepository) GetNFTById(id string) (*entities.NFTResponse, error) {
+	var nft entities.NFTResponse
 
-func (n *NFTRepository) GetNFTById(id string) (*entities.NFT, error) {
-	var nft entities.NFT
 	query := `
-		SELECT * FROM nfts 
-		WHERE id = $1`
+        SELECT
+            n.id,
+            n.token_id,
+            n.proposal_id,
+            n.token_uri,
+            n.name,
+            n.description,
+            n.price::TEXT,
+            u.eth_address AS owner,
+            n.image_path,
+            n.in_sales,
+            n.proposed,
+            n.votes_amount::TEXT
+        FROM nfts n
+        JOIN users u ON n.owner_id = u.id
+        WHERE n.id = $1
+        LIMIT 1
+    `
 
 	err := n.db.Get(&nft, query, id)
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("NFT with ID %s not found", id)
+		}
 		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error getting NFT by ID: %w", err)
 	}

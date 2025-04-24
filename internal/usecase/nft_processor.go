@@ -6,6 +6,7 @@ import (
 	"bazar/internal/domain/interfaces"
 	"context"
 	"fmt"
+	"log"
 )
 
 type NFTProcessor struct {
@@ -57,6 +58,7 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 
 func (p *NFTProcessor) processProposal(event domain.NFTProposedEvent) error {
 	_, err := p.nftRepo.UpdateProposedByTokenURI(event.ProposalID, event.TokenURI)
+	log.Print(event)
 	if err != nil {
 		return fmt.Errorf("error with updating proposed status: %w", err)
 	}

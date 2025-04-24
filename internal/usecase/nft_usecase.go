@@ -67,10 +67,10 @@ func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest)
 	return n.nftRepo.CreateNFT(&nftModel)
 }
 
-func (n *NFTService) GetAllNFTs() (*[]entities.NFT, error) {
+func (n *NFTService) GetAllNFTs() (*[]entities.NFTResponse, error) {
 	return n.nftRepo.GetAllNFTs()
 }
 
-func (n *NFTService) GetNFTById(id string) (*entities.NFT, error) {
+func (n *NFTService) GetNFTById(id string) (*entities.NFTResponse, error) {
 	return n.nftRepo.GetNFTById(id)
 }
