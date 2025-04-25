@@ -28,7 +28,7 @@ func (n *NFTRepository) UpdateSoldByTokenId(tokenId, buyer string) (*entities.NF
 				WHERE eth_address = $1
 			)
 			UPDATE nfts
-			SET owner_id = (SELECT id FROM owner)
+			SET owner_id = (SELECT id FROM owner), in_sales = false
 			WHERE token_id = $2;
 			`
 	_, err := n.db.Exec(query, buyer, tokenId)
