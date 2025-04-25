@@ -110,3 +110,34 @@ func (l *EventListener) ListendNFTMinted(ctx context.Context) (<-chan domain.NFT
 	}()
 	return eventCh, nil
 }
+
+func (l *EventListener) ListenNFTInSale(ctx context.Context) (<-chan domain.NFTInSaleEvent, error) {
+	eventCh := make(chan domain.NFTInSaleEvent)
+	rawCh := make(chan *contract.ContractNFTInSale)
+
+	sub, err := l.contract.WatchNFTInSale(&bind.WatchOpts{Context: ctx}, rawCh, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error watching NFT sale event: %w", err)
+	}
+
+	go func() {
+		defer sub.Unsubscribe()
+		defer close(eventCh)
+
+		for {
+			select {
+			case event := <-rawCh:
+				eventCh <- domain.NFTInSaleEvent{
+					TokenId: event.TokenId.String(),
+					Owner:   event.Owner.Hex(),
+					Price:   event.Price,
+				}
+			case <-sub.Err():
+				return
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+	return eventCh, nil
+}

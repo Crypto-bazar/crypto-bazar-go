@@ -16,8 +16,29 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
+
+
 func NewNFTRepository(db *sqlx.DB) interfaces.NFTRepository {
 	return &NFTRepository{db: db}
+}
+
+func (n *NFTRepository) UpdateSaleByTokenId(tokenId string, price string) (*entities.NFT, error) {
+	query := "UPDATE nfts SET in_sales = true, price = $1 WHERE token_id = $2"
+	_, err := n.db.Exec(query, price, tokenId)
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("error updating sale price: %w", err)
+	}
+
+	var nft entities.NFT
+	query = "SELECT * FROM nfts WHERE token_id = $1"
+	err = n.db.Get(&nft, query, tokenId)
+	if err != nil {
+		log.Printf("DB error: %v", err)
+		return nil, fmt.Errorf("error getting NFT: %w", err)
+	}
+
+	return &nft, nil
 }
 
 func (n *NFTRepository) UpdateId(tokenUri string, id string) (*entities.NFT, error) {

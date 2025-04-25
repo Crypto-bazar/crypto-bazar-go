@@ -44,8 +44,15 @@ type NFTMintedEvent struct {
 	Owner    string
 }
 
+type NFTInSaleEvent struct {
+	TokenId string
+	Owner   string
+	Price   *big.Int
+}
+
 type NFTEventListener interface {
 	ListenNFTProposed(ctx context.Context) (<-chan NFTProposedEvent, error)
 	ListenNFTVoted(ctx context.Context) (<-chan NFTVotedEvent, error)
 	ListendNFTMinted(ctx context.Context) (<-chan NFTMintedEvent, error)
+	ListenNFTInSale(ctx context.Context) (<-chan NFTInSaleEvent, error)
 }
