@@ -10,16 +10,16 @@ import (
 )
 
 type EventListener struct {
-	contract *contract.Mycontract
+	contract *contract.Contract
 }
 
-func NewEthEventListener(contract *contract.Mycontract) *EventListener {
+func NewEthEventListener(contract *contract.Contract) *EventListener {
 	return &EventListener{contract: contract}
 }
 
 func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NFTProposedEvent, error) {
 	eventCh := make(chan domain.NFTProposedEvent)
-	rawCh := make(chan *contract.MycontractNFTProposed)
+	rawCh := make(chan *contract.ContractNFTProposed)
 
 	sub, err := l.contract.WatchNFTProposed(&bind.WatchOpts{Context: ctx}, rawCh, nil)
 	if err != nil {
@@ -50,7 +50,7 @@ func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NF
 
 func (l *EventListener) ListenNFTVoted(ctx context.Context) (<-chan domain.NFTVotedEvent, error) {
 	eventCh := make(chan domain.NFTVotedEvent)
-	rawCh := make(chan *contract.MycontractVoted)
+	rawCh := make(chan *contract.ContractVoted)
 
 	sub, err := l.contract.WatchVoted(&bind.WatchOpts{Context: ctx}, rawCh, nil, nil)
 	if err != nil {
@@ -82,7 +82,7 @@ func (l *EventListener) ListenNFTVoted(ctx context.Context) (<-chan domain.NFTVo
 
 func (l *EventListener) ListendNFTMinted(ctx context.Context) (<-chan domain.NFTMintedEvent, error) {
 	eventCh := make(chan domain.NFTMintedEvent)
-	rawCh := make(chan *contract.MycontractNFTMinted)
+	rawCh := make(chan *contract.ContractNFTMinted)
 
 	sub, err := l.contract.WatchNFTMinted(&bind.WatchOpts{Context: ctx}, rawCh, nil)
 	if err != nil {

@@ -9,10 +9,10 @@ import (
 )
 
 type Transaction struct {
-	contract *contract.Mycontract
+	contract *contract.Contract
 }
 
-func NewTransaction(contractInstance *contract.Mycontract) *Transaction {
+func NewTransaction(contractInstance *contract.Contract) *Transaction {
 	return &Transaction{contract: contractInstance}
 }
 
