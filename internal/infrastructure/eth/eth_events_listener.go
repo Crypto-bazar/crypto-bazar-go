@@ -17,6 +17,34 @@ func NewEthEventListener(contract *contract.Contract) *EventListener {
 	return &EventListener{contract: contract}
 }
 
+func (l *EventListener) ListenNFTSold(ctx context.Context) (<-chan domain.NFTSoldEvent, error) {
+	eventCh := make(chan domain.NFTSoldEvent)
+	rawCh := make(chan *contract.ContractNFTSold)
+	sub, err := l.contract.WatchNFTSold(&bind.WatchOpts{Context: ctx}, rawCh, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error watching NFT sold event: %w", err)
+	}
+	go func() {
+		defer sub.Unsubscribe()
+		defer close(eventCh)
+		for {
+			select {
+			case event := <-rawCh:
+				eventCh <- domain.NFTSoldEvent{
+					TokenId: event.TokenId.String(),
+					Owner:   event.Buyer.Hex(),
+					Price:   event.Price,
+				}
+			case <-sub.Err():
+				return
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+	return eventCh, nil
+}
+
 func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NFTProposedEvent, error) {
 	eventCh := make(chan domain.NFTProposedEvent)
 	rawCh := make(chan *contract.ContractNFTProposed)

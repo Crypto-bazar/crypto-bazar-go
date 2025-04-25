@@ -40,6 +40,11 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 		return err
 	}
 
+	soldCh, err := p.eventListener.ListenNFTSold(ctx)
+	if err != nil {
+		return err
+	}
+
 	for {
 		select {
 		case event := <-proposedCh:
@@ -58,11 +63,30 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 			if err := p.processSale(event); err != nil {
 				return err
 			}
+		case event := <-soldCh:
+			if err := p.processSold(event); err != nil {
+				return err
+			}
 		case <-ctx.Done():
 			return nil
 
 		}
 	}
+}
+
+func (p *NFTProcessor) processSold(event domain.NFTSoldEvent) error {
+	nft, err := p.nftRepo.UpdateSoldByTokenId(event.TokenId, event.Price.String())
+	if err != nil {
+		return fmt.Errorf("error with updating sold status: %w", err)
+	}
+	p.hub.Broadcast(struct {
+		Type string `json:"type"`
+		NFT  any    `json:"nft"`
+	}{
+		Type: "sold",
+		NFT:  nft,
+	})
+	return nil
 }
 
 func (p *NFTProcessor) processSale(event domain.NFTInSaleEvent) error {

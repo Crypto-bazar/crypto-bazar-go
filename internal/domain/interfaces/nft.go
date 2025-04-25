@@ -20,6 +20,7 @@ type NFTRepository interface {
 	UpdateVotesByTokenURI(tokenURI string, amount string) (*entities.NFT, error)
 	UpdateId(tokenUri string, id string) (*entities.NFT, error)
 	UpdateSaleByTokenId(tokenId string, price string) (*entities.NFT, error)
+	UpdateSoldByTokenId(tokenId, buyer string) (*entities.NFT, error)
 }
 
 type NFTService interface {
