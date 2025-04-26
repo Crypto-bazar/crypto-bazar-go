@@ -1,20 +1,20 @@
 package interfaces
 
 import (
-	"bazar/internal/domain/entities"
 	"bazar/internal/domain/requests"
+	"bazar/internal/domain/responses"
 
 	"github.com/gin-gonic/gin"
 )
 
 type CommentRepository interface {
-	CreateComment(comment *requests.CreateCommentReq) (*entities.Comment, error)
-	GetCommentsByTokenId(tokenId string) (*[]entities.Comment, error)
+	CreateComment(comment *requests.CreateCommentReq) (*responses.CommentResponse, error)
+	GetCommentsByTokenId(tokenId string) (*[]responses.CommentResponse, error)
 }
 
 type CommentService interface {
-	CreateComment(comment *requests.CreateCommentReq) (*entities.Comment, error)
-	GetCommentsByTokenId(tokenId string) (*[]entities.Comment, error)
+	CreateComment(comment *requests.CreateCommentReq) (*responses.CommentResponse, error)
+	GetCommentsByTokenId(tokenId string) (*[]responses.CommentResponse, error)
 }
 
 type CommentHandler interface {

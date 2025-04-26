@@ -46,7 +46,7 @@ func (ch *CommentHandler) CreateComment(c *gin.Context) {
 // @Tags Comments
 // @Produce json
 // @Param id path string true "ID комментария"
-// @Success 200 {object} entities.Comment
+// @Success 200 {object} entities.CommentResponse
 // @Failure 404 {object} map[string]string
 // @Router /api/v1/comments/{id} [get]
 func (ch *CommentHandler) GetCommentsByTokenId(c *gin.Context) {
