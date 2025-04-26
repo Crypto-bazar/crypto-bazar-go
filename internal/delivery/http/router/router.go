@@ -55,6 +55,7 @@ func (r *Router) RegisterRoutes() {
 		comment := api.Group("comments")
 		{
 			comment.POST("/", r.commentHandler.CreateComment)
+			comment.GET("/:tokenId", r.commentHandler.GetCommentsByTokenId)
 		}
 	}
 }

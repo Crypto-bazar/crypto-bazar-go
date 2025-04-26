@@ -49,12 +49,28 @@ func (ch *CommentHandler) CreateComment(c *gin.Context) {
 // @Success 200 {object} entities.Comment
 // @Failure 404 {object} map[string]string
 // @Router /api/v1/comments/{id} [get]
-func (ch *CommentHandler) GetCommentById(c *gin.Context) {
-	// TODO implement me
-	panic("implement me")
+func (ch *CommentHandler) GetCommentsByTokenId(c *gin.Context) {
+	tokenId := c.Param("tokenId")
+	if tokenId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Token ID is required"})
+		return
+	}
+
+	comments, err := ch.service.GetCommentsByTokenId(tokenId)
+	if err != nil {
+		log.Printf("Error getting comments: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting comments"})
+		return
+	}
+
+	if comments == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No comments found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, comments)
 }
 
-// NewCommentHandler создает новый экземпляр CommentHandler.
 func NewCommentHandler(service interfaces.CommentService) interfaces.CommentHandler {
 	return &CommentHandler{service: service}
 }

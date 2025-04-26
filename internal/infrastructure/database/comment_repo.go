@@ -41,20 +41,25 @@ func (c *CommentRepo) CreateComment(comment *requests.CreateCommentReq) (*entiti
 	return &createdComment, nil
 }
 
-func (c CommentRepo) GetCommentById(id string) (*entities.Comment, error) {
-	var comment entities.Comment
-	query := `
-		SELECT * FROM comments
-		WHERE id = $1`
+func (c CommentRepo) GetCommentsByTokenId(tokenId string) (*[]entities.Comment, error) {
+    var comments []entities.Comment
+    query := `
+        SELECT * FROM comments
+        WHERE nft_id = $1
+        ORDER BY created_at DESC`
 
-	err := c.db.Get(&comment, query, id)
+    err := c.db.Select(&comments, query, tokenId)
 
-	if err != nil {
-		log.Printf("DB error: %v", err)
-		return nil, fmt.Errorf("error getting comment by ID: %w", err)
-	}
+    if err != nil {
+        log.Printf("DB error: %v", err)
+        return nil, fmt.Errorf("error getting comments by token ID: %w", err)
+    }
 
-	return &comment, nil
+    if comments == nil {
+        return &[]entities.Comment{}, nil
+    }
+
+    return &comments, nil
 }
 
 func NewCommentRepo(db *sqlx.DB) interfaces.CommentRepository {

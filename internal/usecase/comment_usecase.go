@@ -10,12 +10,13 @@ type CommentService struct {
 	CommentRepo interfaces.CommentRepository
 }
 
-func (c *CommentService) CreateComment(req *requests.CreateCommentReq) (*entities.Comment, error) {
-	return c.CommentRepo.CreateComment(req)
+// GetCommentsByTokenId implements interfaces.CommentService.
+func (c *CommentService) GetCommentsByTokenId(tokenId string) (*[]entities.Comment, error) {
+	return c.CommentRepo.GetCommentsByTokenId(tokenId)
 }
 
-func (c *CommentService) GetCommentById(id string) (*entities.Comment, error) {
-	return c.CommentRepo.GetCommentById(id)
+func (c *CommentService) CreateComment(req *requests.CreateCommentReq) (*entities.Comment, error) {
+	return c.CommentRepo.CreateComment(req)
 }
 
 func NewCommentService(repo interfaces.CommentRepository) interfaces.CommentService {
