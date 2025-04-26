@@ -105,11 +105,19 @@ func (p *NFTProcessor) processSale(event domain.NFTInSaleEvent) error {
 }
 
 func (p *NFTProcessor) processProposal(event domain.NFTProposedEvent) error {
-	_, err := p.nftRepo.UpdateProposedByTokenURI(event.ProposalID, event.TokenURI)
+	nft, err := p.nftRepo.UpdateProposedByTokenURI(event.ProposalID, event.TokenURI)
 	log.Print(event)
 	if err != nil {
 		return fmt.Errorf("error with updating proposed status: %w", err)
 	}
+
+	p.hub.Broadcast(struct {
+		Type string `json:"type"`
+		NFT  any    `json:"nft"`
+	}{
+		Type: "proposed",
+		NFT:  nft,
+	})
 
 	return nil
 }
@@ -132,9 +140,18 @@ func (p *NFTProcessor) processVote(event domain.NFTVotedEvent) error {
 }
 
 func (p *NFTProcessor) processMinted(event domain.NFTMintedEvent) error {
-	_, err := p.nftRepo.UpdateId(event.TokenURI, event.TokenId)
+	nft, err := p.nftRepo.UpdateId(event.TokenURI, event.TokenId)
 	if err != nil {
 		return fmt.Errorf("error with updating proposed status: %w", err)
 	}
+
+	p.hub.Broadcast((struct {
+		Type string `json:"type"`
+		NFT  any    `json:"nft"`
+	}{
+		Type: "minted",
+		NFT:  nft,
+	}))
+
 	return nil
 }
