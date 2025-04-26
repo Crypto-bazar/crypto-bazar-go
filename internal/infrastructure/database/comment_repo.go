@@ -52,8 +52,9 @@ func (c CommentRepo) GetCommentsByTokenId(tokenId string) (*[]responses.CommentR
         SELECT 
             c.id,
             c.nft_id,
-            u.eth_address as eth_address,
+            u.eth_address as owner_address,
             c.content,
+			u.avatar_url,
             c.created_at
         FROM comments c
         JOIN users u ON c.owner_id = u.id

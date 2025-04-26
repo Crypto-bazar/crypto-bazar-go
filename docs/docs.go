@@ -97,7 +97,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.Comment"
+                            "$ref": "#/definitions/responses.CommentResponse"
                         }
                     },
                     "404": {
@@ -768,6 +768,35 @@ const docTemplate = `{
         },
         "requests.UpdateTokenIdReq": {
             "type": "object"
+        },
+        "responses.CommentResponse": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "AvatarUrl URL аватара пользователя\nswagger:model",
+                    "type": "string"
+                },
+                "content": {
+                    "description": "Content текст комментария\nswagger:model",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "CreatedAt дата создания комментария\nswagger:model",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID уникальный идентификатор комментария\nswagger:model",
+                    "type": "integer"
+                },
+                "nft_id": {
+                    "description": "NFTID идентификатор NFT, к которому относится комментарий\nswagger:model",
+                    "type": "integer"
+                },
+                "owner_address": {
+                    "description": "OwnerId идентификатор пользователя, создавшего комментарий\nswagger:model",
+                    "type": "string"
+                }
+            }
         }
     },
     "securityDefinitions": {

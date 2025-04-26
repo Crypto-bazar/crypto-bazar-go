@@ -134,6 +134,39 @@ definitions:
     type: object
   requests.UpdateTokenIdReq:
     type: object
+  responses.CommentResponse:
+    properties:
+      avatar_url:
+        description: |-
+          AvatarUrl URL аватара пользователя
+          swagger:model
+        type: string
+      content:
+        description: |-
+          Content текст комментария
+          swagger:model
+        type: string
+      created_at:
+        description: |-
+          CreatedAt дата создания комментария
+          swagger:model
+        type: string
+      id:
+        description: |-
+          ID уникальный идентификатор комментария
+          swagger:model
+        type: integer
+      nft_id:
+        description: |-
+          NFTID идентификатор NFT, к которому относится комментарий
+          swagger:model
+        type: integer
+      owner_address:
+        description: |-
+          OwnerId идентификатор пользователя, создавшего комментарий
+          swagger:model
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -195,7 +228,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.Comment'
+            $ref: '#/definitions/responses.CommentResponse'
         "404":
           description: Not Found
           schema:
