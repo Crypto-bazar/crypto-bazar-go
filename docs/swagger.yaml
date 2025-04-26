@@ -27,11 +27,6 @@ definitions:
           OwnerId идентификатор пользователя, создавшего комментарий
           swagger:model
         type: integer
-      updated_at:
-        description: |-
-          UpdatedAt дата последнего обновления комментария
-          swagger:model
-        type: string
     type: object
   entities.NFT:
     properties:
@@ -123,8 +118,8 @@ definitions:
     properties:
       content:
         type: string
-      owner_comment:
-        type: integer
+      owner_address:
+        type: string
       token_id:
         type: integer
     type: object

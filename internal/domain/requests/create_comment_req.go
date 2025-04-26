@@ -2,6 +2,6 @@ package requests
 
 type CreateCommentReq struct {
 	TokenId      uint   `json:"token_id"`
-	OwnerComment uint   `json:"owner_comment"`
+	OwnerAddress string   `json:"owner_address"`
 	Content      string `json:"content"`
 }

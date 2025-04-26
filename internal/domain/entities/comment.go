@@ -23,8 +23,4 @@ type Comment struct {
     // CreatedAt дата создания комментария
     // swagger:model
     CreatedAt time.Time `db:"created_at" json:"created_at"`
-
-    // UpdatedAt дата последнего обновления комментария
-    // swagger:model
-    UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }

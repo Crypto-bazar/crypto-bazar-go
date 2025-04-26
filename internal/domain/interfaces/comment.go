@@ -8,7 +8,7 @@ import (
 )
 
 type CommentRepository interface {
-	CreateComment(comment *entities.Comment) (*entities.Comment, error)
+	CreateComment(comment *requests.CreateCommentReq) (*entities.Comment, error)
 	GetCommentById(id string) (*entities.Comment, error)
 }
 

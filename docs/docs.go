@@ -657,10 +657,6 @@ const docTemplate = `{
                 "owner_id": {
                     "description": "OwnerId идентификатор пользователя, создавшего комментарий\nswagger:model",
                     "type": "integer"
-                },
-                "updated_at": {
-                    "description": "UpdatedAt дата последнего обновления комментария\nswagger:model",
-                    "type": "string"
                 }
             }
         },
@@ -748,8 +744,8 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
-                "owner_comment": {
-                    "type": "integer"
+                "owner_address": {
+                    "type": "string"
                 },
                 "token_id": {
                     "type": "integer"

@@ -11,8 +11,7 @@ type CommentService struct {
 }
 
 func (c *CommentService) CreateComment(req *requests.CreateCommentReq) (*entities.Comment, error) {
-	var comment = &entities.Comment{NFTID: req.TokenId, OwnerId: req.OwnerComment, Content: req.Content}
-	return c.CommentRepo.CreateComment(comment)
+	return c.CommentRepo.CreateComment(req)
 }
 
 func (c *CommentService) GetCommentById(id string) (*entities.Comment, error) {

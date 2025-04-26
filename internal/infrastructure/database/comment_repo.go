@@ -3,6 +3,7 @@ package database
 import (
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/interfaces"
+	"bazar/internal/domain/requests"
 	"fmt"
 	"log"
 
@@ -13,34 +14,31 @@ type CommentRepo struct {
 	db *sqlx.DB
 }
 
-func (c CommentRepo) CreateComment(comment *entities.Comment) (*entities.Comment, error) {
-	query := `
-		INSERT INTO comments (nft_id, owner_id, content)
-		VALUES (:nft_id, :owner_id, :content)
-		RETURNING *`
+func (c *CommentRepo) CreateComment(comment *requests.CreateCommentReq) (*entities.Comment, error) {
+	if comment == nil {
+		return nil, fmt.Errorf("nil comment request")
+	}
 
-	rows, err := c.db.NamedQuery(query, comment)
+	query := `
+		WITH owner AS (
+			SELECT id
+			FROM users
+			WHERE eth_address = $1
+		)
+		INSERT INTO comments (nft_id, owner_id, content)
+		VALUES ($2, (SELECT id FROM owner), $3)
+		RETURNING *;
+	`
+
+	var createdComment entities.Comment
+
+	err := c.db.QueryRowx(query, comment.OwnerAddress, comment.TokenId, comment.Content).StructScan(&createdComment)
 	if err != nil {
 		log.Printf("DB error: %v", err)
 		return nil, fmt.Errorf("error creating comment: %w", err)
 	}
-	defer func(rows *sqlx.Rows) {
-		err := rows.Close()
-		if err != nil {
-			log.Printf("Error closing rows: %v", err)
-		}
-	}(rows)
 
-	if rows.Next() {
-		err := rows.StructScan(comment)
-		if err != nil {
-			log.Printf("Error scanning comment: %v", err)
-			return nil, fmt.Errorf("error scanning comment: %w", err)
-		}
-		return comment, nil
-	}
-
-	return nil, fmt.Errorf("no rows returned after insert")
+	return &createdComment, nil
 }
 
 func (c CommentRepo) GetCommentById(id string) (*entities.Comment, error) {
