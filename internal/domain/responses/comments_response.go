@@ -14,7 +14,7 @@ type CommentResponse struct {
 
     // OwnerId идентификатор пользователя, создавшего комментарий
     // swagger:model
-    OwnerAddress string `db:"eth_address" json:"owner_address"`
+    OwnerAddress string `db:"owner_address" json:"owner_address"`
 
     // Content текст комментария
     // swagger:model
