@@ -305,7 +305,8 @@ func (n *NFTRepository) GetSalesNFT() (*[]entities.NFT, error) {
 	var nfts []entities.NFT
 	query := `
 		SELECT * FROM nfts 
-		WHERE price > 0`
+		WHERE in_sales = true
+		ORDER BY id`
 
 	err := n.db.Select(&nfts, query)
 	if err != nil {
