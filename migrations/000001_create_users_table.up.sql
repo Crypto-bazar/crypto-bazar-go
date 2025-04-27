@@ -2,7 +2,7 @@ CREATE TABLE users
 (
     id          BIGSERIAL PRIMARY KEY,
     eth_address VARCHAR(42) UNIQUE NOT NULL,
-    avatar_url VARCHAR(255)
+    avatar_url VARCHAR(255) DEFAULT 'uploads/avatars/default-avatar.jpg'
 );
 
 INSERT INTO users(eth_address)
