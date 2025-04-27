@@ -312,6 +312,10 @@ func (n *NFTRepository) GetSalesNFT() (*[]entities.NFT, error) {
 		return nil, fmt.Errorf("error getting sales NFTs: %w", err)
 	}
 
+	if nfts == nil {
+		nfts = []entities.NFT{}
+	}
+
 	return &nfts, nil
 }
 func (n *NFTRepository) GetNFTById(id string) (*entities.NFTResponse, error) {
