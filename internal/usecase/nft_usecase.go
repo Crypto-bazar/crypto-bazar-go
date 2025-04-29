@@ -18,6 +18,18 @@ func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRep
 	return &NFTService{nftRepo: nftRepo, userRepo: userRepo}
 }
 
+func (n *NFTService) AddFavouriteNFT(nftId string, ethAddress string) (*entities.NFT, error) {
+	return n.nftRepo.AddFavouriteNFT(nftId, ethAddress)
+}
+
+func (n *NFTService) GetFavouriteNFTS(ethAddress string) (*[]entities.NFT, error) {
+	return n.nftRepo.GetFavouriteNFTS(ethAddress)
+}
+
+func (n *NFTService) RemoveFavouriteNFT(nftId string, ethAddress string) (*entities.NFT, error) {
+	return n.nftRepo.RemoveFavouriteNFT(nftId, ethAddress)
+}
+
 func (n *NFTService) SetNFTProposed(event *domain.NFTProposedEvent) (*entities.NFT, error) {
 	nft, err := n.nftRepo.UpdateProposedByTokenURI(event.ProposalID, event.TokenURI)
 	if err != nil {

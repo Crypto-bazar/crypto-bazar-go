@@ -17,6 +17,65 @@ type NFTHandler struct {
 	transcations usecase.TransactionUseCase
 }
 
+func (u *NFTHandler) GetFavouriteNFTS(c *gin.Context) {
+	ethAddress := c.Query("address")
+	nfts, err := u.service.GetFavouriteNFTS(ethAddress)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nfts)
+}
+
+// AddFavouriteNFT godoc
+// @Summary Добавить NFT в избранные
+// @Tags NFT
+// @Accept json
+// @Produce json
+// @Param data body requests.UpdateTokenIdReq true "Update Token ID Payload"
+// @Success 200 {array} entities.NFT
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/favourites [post]
+func (u *NFTHandler) AddFavouriteNFT(c *gin.Context) {
+	var req requests.AddFavouriteNFT
+
+	if err := c.ShouldBind(&req); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	nft, err := u.service.AddFavouriteNFT(req.NftId, req.EthAddress)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nft)
+}
+
+func (u *NFTHandler) RemoveFavouriteNFT(c *gin.Context) {
+	var req requests.RemoveFavouriteNFT
+
+	if err := c.ShouldBind(&req); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	nft, err := u.service.RemoveFavouriteNFT(req.NftId, req.EthAddress)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nft)
+}
+
 // GetProposedNFTs godoc
 // @Summary Получить предложенные NFT
 // @Tags NFT

@@ -21,6 +21,9 @@ type NFTRepository interface {
 	UpdateId(tokenUri string, id string) (*entities.NFT, error)
 	UpdateSaleByTokenId(tokenId string, price string) (*entities.NFT, error)
 	UpdateSoldByTokenId(tokenId, buyer string) (*entities.NFT, error)
+	AddFavouriteNFT(nftId, ethAddress string) (*entities.NFT, error)
+	RemoveFavouriteNFT(nftId, ethAddress string) (*entities.NFT, error)
+	GetFavouriteNFTS(ethAddress string) (*[]entities.NFT, error)
 }
 
 type NFTService interface {
@@ -32,6 +35,9 @@ type NFTService interface {
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 	GetUserNFT(address string) (*[]entities.NFT, error)
 	SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error)
+	AddFavouriteNFT(nftId, ethAddress string) (*entities.NFT, error)
+	RemoveFavouriteNFT(nftId, ethAddress string) (*entities.NFT, error)
+	GetFavouriteNFTS(ethAddress string) (*[]entities.NFT, error)
 }
 type NFTHandler interface {
 	CreateNFT(c *gin.Context)
@@ -41,4 +47,7 @@ type NFTHandler interface {
 	GetSalesNFT(c *gin.Context)
 	GetUserNFT(c *gin.Context)
 	GetProposedNFTs(c *gin.Context)
+	AddFavouriteNFT(c *gin.Context)
+	RemoveFavouriteNFT(c *gin.Context)
+	GetFavouriteNFTS(c *gin.Context)
 }
