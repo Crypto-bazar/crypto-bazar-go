@@ -14,20 +14,22 @@ type NFTService struct {
 	userRepo interfaces.UserRepository
 }
 
-func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRepository) interfaces.NFTService {
-	return &NFTService{nftRepo: nftRepo, userRepo: userRepo}
-}
 
-func (n *NFTService) AddFavouriteNFT(nftId string, ethAddress string) (*entities.NFT, error) {
+func (n *NFTService) AddFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
 	return n.nftRepo.AddFavouriteNFT(nftId, ethAddress)
 }
 
-func (n *NFTService) GetFavouriteNFTS(ethAddress string) (*[]entities.NFT, error) {
+func (n *NFTService) GetFavouriteNFTS(ethAddress string) (*[]entities.NFTResponse, error) {
 	return n.nftRepo.GetFavouriteNFTS(ethAddress)
 }
 
-func (n *NFTService) RemoveFavouriteNFT(nftId string, ethAddress string) (*entities.NFT, error) {
+func (n *NFTService) RemoveFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
 	return n.nftRepo.RemoveFavouriteNFT(nftId, ethAddress)
+}
+
+
+func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRepository) interfaces.NFTService {
+	return &NFTService{nftRepo: nftRepo, userRepo: userRepo}
 }
 
 func (n *NFTService) SetNFTProposed(event *domain.NFTProposedEvent) (*entities.NFT, error) {

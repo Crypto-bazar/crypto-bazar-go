@@ -267,6 +267,174 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/nfts/favourites": {
+            "get": {
+                "description": "Возвращает список NFT, добавленных в избранное для указанного Ethereum-адреса",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NFT"
+                ],
+                "summary": "Получить избранные NFT пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ethereum Address пользователя",
+                        "name": "address",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.NFT"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавляет указанный NFT в список избранных для пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NFT"
+                ],
+                "summary": "Добавить NFT в избранные",
+                "parameters": [
+                    {
+                        "description": "Данные для добавления в избранное",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.AddFavouriteNFT"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.NFT"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет указанный NFT из списка избранных пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NFT"
+                ],
+                "summary": "Удалить NFT из избранных",
+                "parameters": [
+                    {
+                        "description": "Данные для удаления из избранного",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.RemoveFavouriteNFT"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.NFT"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/nfts/proposed": {
             "get": {
                 "produces": [
@@ -730,6 +898,19 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.AddFavouriteNFT": {
+            "type": "object",
+            "properties": {
+                "eth_address": {
+                    "description": "Ethereum адрес пользователя\nrequired: true\nexample: 0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
+                    "type": "string"
+                },
+                "nft_id": {
+                    "description": "ID NFT для добавления в избранное\nrequired: true\nexample: 123",
+                    "type": "string"
+                }
+            }
+        },
         "requests.CheckUserRequest": {
             "type": "object",
             "properties": {
@@ -762,6 +943,19 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "signature": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.RemoveFavouriteNFT": {
+            "type": "object",
+            "properties": {
+                "eth_address": {
+                    "description": "Ethereum адрес пользователя\nrequired: true\nexample: 0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
+                    "type": "string"
+                },
+                "nft_id": {
+                    "description": "ID NFT для удаления из избранного\nrequired: true\nexample: 123",
                     "type": "string"
                 }
             }
