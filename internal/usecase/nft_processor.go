@@ -22,7 +22,7 @@ func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRep
 func (p *NFTProcessor) Run(ctx context.Context) error {
 	proposedCh, err := p.eventListener.ListenNFTProposed(ctx)
 	if err != nil {
-		return err
+		log.Printf("error processing proposal: %v", err)
 	}
 
 	voteCh, err := p.eventListener.ListenNFTVoted(ctx)
@@ -49,23 +49,23 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 		select {
 		case event := <-proposedCh:
 			if err := p.processProposal(event); err != nil {
-				return err
+				log.Printf("error processing proposal: %v", err)
 			}
 		case event := <-voteCh:
 			if err := p.processVote(event); err != nil {
-				return err
+				log.Printf("error processing vote: %v", err)
 			}
 		case event := <-mintedCh:
 			if err := p.processMinted(event); err != nil {
-				return err
+				log.Printf("error processing minted: %v", err)
 			}
 		case event := <-salesCh:
 			if err := p.processSale(event); err != nil {
-				return err
+				log.Printf("error processing sales: %v", err)
 			}
 		case event := <-soldCh:
 			if err := p.processSold(event); err != nil {
-				return err
+				log.Printf("error processing sold: %v", err)
 			}
 		case <-ctx.Done():
 			return nil
@@ -75,7 +75,7 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 }
 
 func (p *NFTProcessor) processSold(event domain.NFTSoldEvent) error {
-	nft, err := p.nftRepo.UpdateSoldByTokenId(event.TokenId, event.Price.String())
+	nft, err := p.nftRepo.UpdateSoldByTokenId(event.TokenId, event.Owner)
 	if err != nil {
 		return fmt.Errorf("error with updating sold status: %w", err)
 	}

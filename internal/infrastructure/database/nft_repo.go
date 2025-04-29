@@ -31,6 +31,7 @@ func (n *NFTRepository) UpdateSoldByTokenId(tokenId, buyer string) (*entities.NF
 			SET owner_id = (SELECT id FROM owner), in_sales = false
 			WHERE token_id = $2;
 			`
+	log.Printf("TokenID: %s, Buyer: %s", tokenId, buyer)
 	_, err := n.db.Exec(query, buyer, tokenId)
 	if err != nil {
 		log.Printf("DB error: %v", err)
