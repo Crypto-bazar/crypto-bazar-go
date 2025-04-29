@@ -52,7 +52,7 @@ func (r *Router) RegisterRoutes() {
 			nft.GET("/user", r.nftHandler.GetUserNFT)
 			nft.GET("/proposed", r.nftHandler.GetProposedNFTs)
 
-			nft.GET("/favourites:address", r.nftHandler.GetFavouriteNFTS)
+			nft.GET("/favourites", r.nftHandler.GetFavouriteNFTS)
 			nft.POST("/favourites", r.nftHandler.AddFavouriteNFT)
 			nft.DELETE("/favourites", r.nftHandler.RemoveFavouriteNFT)
 		}
