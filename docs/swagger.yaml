@@ -109,6 +109,21 @@ definitions:
           swagger:model
         type: integer
     type: object
+  requests.AddFavouriteNFT:
+    properties:
+      eth_address:
+        description: |-
+          Ethereum адрес пользователя
+          required: true
+          example: 0x71C7656EC7ab88b098defB751B7401B5f6d8976F
+        type: string
+      nft_id:
+        description: |-
+          ID NFT для добавления в избранное
+          required: true
+          example: 123
+        type: string
+    type: object
   requests.CheckUserRequest:
     properties:
       address:
@@ -130,6 +145,21 @@ definitions:
       message:
         type: string
       signature:
+        type: string
+    type: object
+  requests.RemoveFavouriteNFT:
+    properties:
+      eth_address:
+        description: |-
+          Ethereum адрес пользователя
+          required: true
+          example: 0x71C7656EC7ab88b098defB751B7401B5f6d8976F
+        type: string
+      nft_id:
+        description: |-
+          ID NFT для удаления из избранного
+          required: true
+          example: 123
         type: string
     type: object
   requests.UpdateTokenIdReq:
@@ -363,6 +393,117 @@ paths:
               type: string
             type: object
       summary: Получить NFT по ID
+      tags:
+      - NFT
+  /api/v1/nfts/favourites:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет указанный NFT из списка избранных пользователя
+      parameters:
+      - description: Данные для удаления из избранного
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RemoveFavouriteNFT'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.NFT'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Удалить NFT из избранных
+      tags:
+      - NFT
+    get:
+      description: Возвращает список NFT, добавленных в избранное для указанного Ethereum-адреса
+      parameters:
+      - description: Ethereum Address пользователя
+        in: query
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.NFT'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить избранные NFT пользователя
+      tags:
+      - NFT
+    post:
+      consumes:
+      - application/json
+      description: Добавляет указанный NFT в список избранных для пользователя
+      parameters:
+      - description: Данные для добавления в избранное
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/requests.AddFavouriteNFT'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.NFT'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Добавить NFT в избранные
       tags:
       - NFT
   /api/v1/nfts/proposed:

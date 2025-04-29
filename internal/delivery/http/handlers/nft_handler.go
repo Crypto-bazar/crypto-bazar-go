@@ -17,6 +17,98 @@ type NFTHandler struct {
 	transcations usecase.TransactionUseCase
 }
 
+// GetFavouriteNFTS godoc
+// @Summary Получить избранные NFT пользователя
+// @Description Возвращает список NFT, добавленных в избранное для указанного Ethereum-адреса
+// @Tags NFT
+// @Produce json
+// @Param address query string true "Ethereum Address пользователя"
+// @Success 200 {array} entities.NFT
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/favourites [get]
+func (u *NFTHandler) GetFavouriteNFTS(c *gin.Context) {
+	ethAddress := c.Query("address")
+	log.Print(13123132)
+	log.Print(ethAddress)
+
+	if ethAddress == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ethereum address is required"})
+		return
+	}
+
+	nfts, err := u.service.GetFavouriteNFTS(ethAddress)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nfts)
+}
+
+// AddFavouriteNFT godoc
+// @Summary Добавить NFT в избранные
+// @Description Добавляет указанный NFT в список избранных для пользователя
+// @Tags NFT
+// @Accept json
+// @Produce json
+// @Param data body requests.AddFavouriteNFT true "Данные для добавления в избранное"
+// @Success 200 {object} entities.NFT
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/favourites [post]
+func (u *NFTHandler) AddFavouriteNFT(c *gin.Context) {
+	var req requests.AddFavouriteNFT
+
+	if err := c.ShouldBind(&req); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	nft, err := u.service.AddFavouriteNFT(req.NftId, req.EthAddress)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nft)
+}
+
+// RemoveFavouriteNFT godoc
+// @Summary Удалить NFT из избранных
+// @Description Удаляет указанный NFT из списка избранных пользователя
+// @Tags NFT
+// @Accept json
+// @Produce json
+// @Param data body requests.RemoveFavouriteNFT true "Данные для удаления из избранного"
+// @Success 200 {object} entities.NFT
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/nfts/favourites [delete]
+func (u *NFTHandler) RemoveFavouriteNFT(c *gin.Context) {
+	var req requests.RemoveFavouriteNFT
+
+	if err := c.ShouldBind(&req); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	nft, err := u.service.RemoveFavouriteNFT(req.NftId, req.EthAddress)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, nft)
+}
+
 // GetProposedNFTs godoc
 // @Summary Получить предложенные NFT
 // @Tags NFT

@@ -16,6 +16,182 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
+func (n *NFTRepository) AddFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
+	tx, err := n.db.Beginx()
+	if err != nil {
+		return nil, fmt.Errorf("error starting transaction: %w", err)
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			if commitErr := tx.Commit(); commitErr != nil {
+				err = fmt.Errorf("error committing transaction: %w", commitErr)
+				tx.Rollback()
+			}
+		}
+	}()
+
+	// 1. Get user ID
+	var userId int64
+	if err = tx.Get(&userId, "SELECT id FROM users WHERE eth_address = $1", ethAddress); err != nil {
+		return nil, fmt.Errorf("error getting user id: %w", err)
+	}
+
+	// 2. Check if NFT exists in favorites
+	var exists bool
+	if err = tx.Get(&exists, `
+        SELECT EXISTS(
+            SELECT 1 FROM favourite_nfts 
+            WHERE user_id = $1 AND nft_id = $2
+        )`, userId, nftId); err != nil {
+		return nil, fmt.Errorf("error checking if NFT exists in favorites: %w", err)
+	}
+
+	if exists {
+		return nil, fmt.Errorf("NFT already in favourites")
+	}
+
+	// 3. Get NFT details
+	var nft entities.NFTResponse
+	if err = tx.Get(&nft, `
+        SELECT 
+            n.id,
+            n.token_id,
+            n.proposal_id,
+            n.token_uri,
+            n.name,
+            n.description,
+            n.price::text,
+            u.eth_address as owner,
+            n.image_path,
+            n.in_sales,
+            n.proposed,
+            n.votes_amount::text
+        FROM nfts n
+        JOIN users u ON n.owner_id = u.id
+        WHERE n.id = $1`, nftId); err != nil {
+		return nil, fmt.Errorf("error getting NFT details: %w", err)
+	}
+
+	// 4. Add to favorites
+	if _, err = tx.Exec(`
+        INSERT INTO favourite_nfts (user_id, nft_id) 
+        VALUES ($1, $2)`, userId, nftId); err != nil {
+		return nil, fmt.Errorf("error adding to favourites: %w", err)
+	}
+
+	return &nft, nil
+}
+
+func (n *NFTRepository) GetFavouriteNFTS(ethAddress string) (*[]entities.NFTResponse, error) {
+	log.Println("GetFavouriteNFTS called with ethAddress:", ethAddress)
+	query := `
+        WITH owner AS (
+            SELECT id 
+            FROM users
+            WHERE eth_address = $1
+        )
+        SELECT 
+            n.id,
+            n.token_id,
+            n.proposal_id,
+            n.token_uri,
+            n.name,
+            n.description,
+            n.price::text as price,
+            u.eth_address as owner,
+            n.image_path,
+            n.in_sales,
+            n.proposed,
+            n.votes_amount::text as votes_amount
+        FROM nfts n
+        JOIN favourite_nfts f ON n.id = f.nft_id
+        JOIN users u ON n.owner_id = u.id
+        WHERE f.user_id = (SELECT id FROM owner)
+        ORDER BY n.id DESC
+    `
+
+	var nfts []entities.NFTResponse
+	err := n.db.Select(&nfts, query, ethAddress)
+	if err != nil {
+		return nil, fmt.Errorf("error querying favourite NFTs: %w", err)
+	}
+
+	return &nfts, nil
+}
+
+func (n *NFTRepository) RemoveFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
+	tx, err := n.db.Beginx()
+	if err != nil {
+		return nil, fmt.Errorf("error starting transaction: %w", err)
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			if commitErr := tx.Commit(); commitErr != nil {
+				err = fmt.Errorf("error committing transaction: %w", commitErr)
+				tx.Rollback()
+			}
+		}
+	}()
+
+	// 1. Get user ID
+	var userId int64
+	if err = tx.Get(&userId, "SELECT id FROM users WHERE eth_address = $1", ethAddress); err != nil {
+		return nil, fmt.Errorf("error getting user id: %w", err)
+	}
+
+	// 2. Get NFT details
+	var nft entities.NFTResponse
+	if err = tx.Get(&nft, `
+        SELECT 
+            n.id,
+            n.token_id,
+            n.proposal_id,
+            n.token_uri,
+            n.name,
+            n.description,
+            n.price::text,
+            u.eth_address as owner,
+            n.image_path,
+            n.in_sales,
+            n.proposed,
+            n.votes_amount::text
+        FROM nfts n
+        JOIN users u ON n.owner_id = u.id
+        WHERE n.id = $1`, nftId); err != nil {
+		return nil, fmt.Errorf("error getting NFT details: %w", err)
+	}
+
+	// 3. Remove from favorites
+	result, err := tx.Exec(`
+        DELETE FROM favourite_nfts 
+        WHERE user_id = $1 AND nft_id = $2`, userId, nftId)
+	if err != nil {
+		return nil, fmt.Errorf("error removing from favourites: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("error checking rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("NFT was not in favourites")
+	}
+
+	return &nft, nil
+}
+
 func NewNFTRepository(db *sqlx.DB) interfaces.NFTRepository {
 	return &NFTRepository{db: db}
 }

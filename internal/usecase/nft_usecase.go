@@ -14,6 +14,18 @@ type NFTService struct {
 	userRepo interfaces.UserRepository
 }
 
+func (n *NFTService) AddFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
+	return n.nftRepo.AddFavouriteNFT(nftId, ethAddress)
+}
+
+func (n *NFTService) GetFavouriteNFTS(ethAddress string) (*[]entities.NFTResponse, error) {
+	return n.nftRepo.GetFavouriteNFTS(ethAddress)
+}
+
+func (n *NFTService) RemoveFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
+	return n.nftRepo.RemoveFavouriteNFT(nftId, ethAddress)
+}
+
 func NewNFTService(nftRepo interfaces.NFTRepository, userRepo interfaces.UserRepository) interfaces.NFTService {
 	return &NFTService{nftRepo: nftRepo, userRepo: userRepo}
 }
@@ -49,7 +61,7 @@ func (n *NFTService) SetTokenId(updateTokenReq *requests.UpdateTokenIdReq) (*ent
 
 func (n *NFTService) CreateNFT(imagePath string, nft *requests.CreateNFTRequest) (*entities.NFT, error) {
 	owner, err := n.userRepo.GetUserByAddress(nft.OwnerAddress)
-	tokenUri := utils.GenerateTokenURI("http://localhost:8080", imagePath)
+	tokenUri := utils.GenerateTokenURI("http://localhost:8080")
 
 	if err != nil {
 		return nil, fmt.Errorf("error, user not found %w", err)

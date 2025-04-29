@@ -39,6 +39,7 @@ func (r *Router) RegisterRoutes() {
 			users.GET("/:address", r.userHandler.GetUserByAddress)
 			users.POST("/check", r.userHandler.CheckUserExists)
 			users.POST("/:eth_address/avatar", r.userHandler.UploadAvatarHandler)
+
 		}
 
 		nft := api.Group("/nfts")
@@ -50,6 +51,10 @@ func (r *Router) RegisterRoutes() {
 			nft.GET("/sales", r.nftHandler.GetSalesNFT)
 			nft.GET("/user", r.nftHandler.GetUserNFT)
 			nft.GET("/proposed", r.nftHandler.GetProposedNFTs)
+
+			nft.GET("/favourites:address", r.nftHandler.GetFavouriteNFTS)
+			nft.POST("/favourites", r.nftHandler.AddFavouriteNFT)
+			nft.DELETE("/favourites", r.nftHandler.RemoveFavouriteNFT)
 		}
 
 		comment := api.Group("comments")
