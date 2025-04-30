@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/event"
 )
 
 type EventListener struct {
@@ -17,155 +18,117 @@ func NewEthEventListener(contract *contract.Contract) *EventListener {
 	return &EventListener{contract: contract}
 }
 
-func (l *EventListener) ListenNFTSold(ctx context.Context) (<-chan domain.NFTSoldEvent, error) {
-	eventCh := make(chan domain.NFTSoldEvent)
-	rawCh := make(chan *contract.ContractNFTSold)
-	sub, err := l.contract.WatchNFTSold(&bind.WatchOpts{Context: ctx}, rawCh, nil, nil)
+func subscribeWithErrorHandling[T any, R any](
+	ctx context.Context,
+	subscribeFn func(*bind.WatchOpts, chan R) (event.Subscription, error),
+	convertFn func(R) T,
+) (<-chan T, <-chan error, error) {
+	eventCh := make(chan T)
+	errCh := make(chan error, 1)
+	rawCh := make(chan R)
+
+	sub, err := subscribeFn(&bind.WatchOpts{Context: ctx}, rawCh)
 	if err != nil {
-		return nil, fmt.Errorf("error watching NFT sold event: %w", err)
+		return nil, nil, fmt.Errorf("subscribe error: %w", err)
 	}
+
 	go func() {
-		defer sub.Unsubscribe()
 		defer close(eventCh)
+		defer sub.Unsubscribe()
+
 		for {
 			select {
-			case event := <-rawCh:
-				eventCh <- domain.NFTSoldEvent{
-					TokenId: event.TokenId.String(),
-					Owner:   event.Buyer.Hex(),
-					Price:   event.Price,
-				}
-			case <-sub.Err():
+			case raw := <-rawCh:
+				eventCh <- convertFn(raw)
+			case err := <-sub.Err():
+				errCh <- err
 				return
 			case <-ctx.Done():
 				return
 			}
 		}
 	}()
-	return eventCh, nil
+
+	return eventCh, errCh, nil
 }
 
-func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NFTProposedEvent, error) {
-	eventCh := make(chan domain.NFTProposedEvent)
-	rawCh := make(chan *contract.ContractNFTProposed)
-
-	sub, err := l.contract.WatchNFTProposed(&bind.WatchOpts{Context: ctx}, rawCh, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error watching NFT proposed event: %w", err)
-	}
-
-	go func() {
-		defer sub.Unsubscribe()
-		defer close(eventCh)
-
-		for {
-			select {
-			case event := <-rawCh:
-				eventCh <- domain.NFTProposedEvent{
-					ProposalID: event.ProposalId.String(),
-					Proposer:   event.Proposer.Hex(),
-					TokenURI:   event.TokenURI,
-				}
-			case <-sub.Err():
-				return
-			case <-ctx.Done():
-				return
+func (l *EventListener) ListenNFTProposed(ctx context.Context) (<-chan domain.NFTProposedEvent, <-chan error, error) {
+	return subscribeWithErrorHandling(
+		ctx,
+		func(opts *bind.WatchOpts, ch chan *contract.ContractNFTProposed) (event.Subscription, error) {
+			return l.contract.WatchNFTProposed(opts, ch, nil)
+		},
+		func(ev *contract.ContractNFTProposed) domain.NFTProposedEvent {
+			return domain.NFTProposedEvent{
+				ProposalID: ev.ProposalId.String(),
+				Proposer:   ev.Proposer.Hex(),
+				TokenURI:   ev.TokenURI,
 			}
-		}
-	}()
-	return eventCh, nil
+		},
+	)
 }
 
-func (l *EventListener) ListenNFTVoted(ctx context.Context) (<-chan domain.NFTVotedEvent, error) {
-	eventCh := make(chan domain.NFTVotedEvent)
-	rawCh := make(chan *contract.ContractVoted)
-
-	sub, err := l.contract.WatchVoted(&bind.WatchOpts{Context: ctx}, rawCh, nil, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error watching NFT voted event: %w", err)
-	}
-
-	go func() {
-		defer sub.Unsubscribe()
-		defer close(eventCh)
-
-		for {
-			select {
-			case event := <-rawCh:
-				eventCh <- domain.NFTVotedEvent{
-					ProposalID: event.ProposalId.String(),
-					Voter:      event.Voter.Hex(),
-					TokenURI:   event.TokenURI,
-					Amount:     *event.Amount,
-				}
-			case <-sub.Err():
-				return
-			case <-ctx.Done():
-				return
+func (l *EventListener) ListenNFTSold(ctx context.Context) (<-chan domain.NFTSoldEvent, <-chan error, error) {
+	return subscribeWithErrorHandling(
+		ctx,
+		func(opts *bind.WatchOpts, ch chan *contract.ContractNFTSold) (event.Subscription, error) {
+			return l.contract.WatchNFTSold(opts, ch, nil, nil)
+		},
+		func(ev *contract.ContractNFTSold) domain.NFTSoldEvent {
+			return domain.NFTSoldEvent{
+				TokenId: ev.TokenId.String(),
+				Owner:   ev.Buyer.Hex(),
+				Price:   ev.Price,
 			}
-		}
-	}()
-	return eventCh, nil
+		},
+	)
 }
 
-func (l *EventListener) ListendNFTMinted(ctx context.Context) (<-chan domain.NFTMintedEvent, error) {
-	eventCh := make(chan domain.NFTMintedEvent)
-	rawCh := make(chan *contract.ContractNFTMinted)
-
-	sub, err := l.contract.WatchNFTMinted(&bind.WatchOpts{Context: ctx}, rawCh, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error watching NFT voted event: %w", err)
-	}
-
-	go func() {
-		defer sub.Unsubscribe()
-		defer close(eventCh)
-
-		for {
-			select {
-			case event := <-rawCh:
-				eventCh <- domain.NFTMintedEvent{
-					TokenId:  event.TokenId.String(),
-					TokenURI: event.TokenURI,
-					Owner:    event.Owner.Hex(),
-				}
-			case <-sub.Err():
-				return
-			case <-ctx.Done():
-				return
+func (l *EventListener) ListenNFTVoted(ctx context.Context) (<-chan domain.NFTVotedEvent, <-chan error, error) {
+	return subscribeWithErrorHandling(
+		ctx,
+		func(opts *bind.WatchOpts, ch chan *contract.ContractVoted) (event.Subscription, error) {
+			return l.contract.WatchVoted(opts, ch, nil, nil)
+		},
+		func(ev *contract.ContractVoted) domain.NFTVotedEvent {
+			return domain.NFTVotedEvent{
+				ProposalID: ev.ProposalId.String(),
+				Voter:      ev.Voter.Hex(),
+				TokenURI:   ev.TokenURI,
+				Amount:     *ev.Amount,
 			}
-		}
-	}()
-	return eventCh, nil
+		},
+	)
 }
 
-func (l *EventListener) ListenNFTInSale(ctx context.Context) (<-chan domain.NFTInSaleEvent, error) {
-	eventCh := make(chan domain.NFTInSaleEvent)
-	rawCh := make(chan *contract.ContractNFTInSale)
-
-	sub, err := l.contract.WatchNFTInSale(&bind.WatchOpts{Context: ctx}, rawCh, nil, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error watching NFT sale event: %w", err)
-	}
-
-	go func() {
-		defer sub.Unsubscribe()
-		defer close(eventCh)
-
-		for {
-			select {
-			case event := <-rawCh:
-				eventCh <- domain.NFTInSaleEvent{
-					TokenId: event.TokenId.String(),
-					Owner:   event.Owner.Hex(),
-					Price:   event.Price,
-				}
-			case <-sub.Err():
-				return
-			case <-ctx.Done():
-				return
+func (l *EventListener) ListendNFTMinted(ctx context.Context) (<-chan domain.NFTMintedEvent, <-chan error, error) {
+	return subscribeWithErrorHandling(
+		ctx,
+		func(opts *bind.WatchOpts, ch chan *contract.ContractNFTMinted) (event.Subscription, error) {
+			return l.contract.WatchNFTMinted(opts, ch, nil)
+		},
+		func(ev *contract.ContractNFTMinted) domain.NFTMintedEvent {
+			return domain.NFTMintedEvent{
+				TokenId:  ev.TokenId.String(),
+				TokenURI: ev.TokenURI,
+				Owner:    ev.Owner.Hex(),
 			}
-		}
-	}()
-	return eventCh, nil
+		},
+	)
+}
+
+func (l *EventListener) ListenNFTInSale(ctx context.Context) (<-chan domain.NFTInSaleEvent, <-chan error, error) {
+	return subscribeWithErrorHandling(
+		ctx,
+		func(opts *bind.WatchOpts, ch chan *contract.ContractNFTInSale) (event.Subscription, error) {
+			return l.contract.WatchNFTInSale(opts, ch, nil, nil)
+		},
+		func(ev *contract.ContractNFTInSale) domain.NFTInSaleEvent {
+			return domain.NFTInSaleEvent{
+				TokenId: ev.TokenId.String(),
+				Owner:   ev.Owner.Hex(),
+				Price:   ev.Price,
+			}
+		},
+	)
 }
