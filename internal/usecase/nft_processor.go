@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 )
 
 type NFTProcessor struct {
@@ -48,28 +49,34 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 	for {
 		select {
 		case event := <-proposedCh:
+			log.Printf("event: %v", event)
 			if err := p.processProposal(event); err != nil {
 				log.Printf("error processing proposal: %v", err)
 			}
 		case event := <-voteCh:
+			log.Printf("event: %v", event)
 			if err := p.processVote(event); err != nil {
 				log.Printf("error processing vote: %v", err)
 			}
 		case event := <-mintedCh:
+			log.Printf("event: %v", event)
 			if err := p.processMinted(event); err != nil {
 				log.Printf("error processing minted: %v", err)
 			}
 		case event := <-salesCh:
+			log.Printf("event: %v", event)
 			if err := p.processSale(event); err != nil {
 				log.Printf("error processing sales: %v", err)
 			}
 		case event := <-soldCh:
+			log.Printf("event: %v", event)
 			if err := p.processSold(event); err != nil {
 				log.Printf("error processing sold: %v", err)
 			}
+		case <-time.After(time.Second * 30):
+			log.Println("select timeout: no events received")
 		case <-ctx.Done():
-			return nil
-
+			log.Println("timeout or cancelled")
 		}
 	}
 }

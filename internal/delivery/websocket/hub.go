@@ -3,6 +3,7 @@ package websocket
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -39,7 +40,7 @@ func (h *Hub) Broadcast(v any) {
 
 	data, err := json.Marshal(v)
 	if err != nil {
-		fmt.Println("Broadcast marshal error:", err)
+		log.Println("Broadcast marshal error:", err)
 		return
 	}
 
@@ -48,9 +49,9 @@ func (h *Hub) Broadcast(v any) {
 	for ch := range h.clients {
 		select {
 		case ch <- data:
-			fmt.Println("Message sent to a client")
+			log.Println("Message sent to a client")
 		default:
-			fmt.Println("Client channel full or not reading, removing")
+			log.Println("Client channel full or not reading, removing")
 			delete(h.clients, ch)
 			close(ch)
 		}
