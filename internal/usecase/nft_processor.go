@@ -21,29 +21,29 @@ func NewNFTProcessor(listener domain.NFTEventListener, nftRepo interfaces.NFTRep
 }
 
 func (p *NFTProcessor) Run(ctx context.Context) error {
-	proposedCh, err := p.eventListener.ListenNFTProposed(ctx)
+	proposedCh, proposedErrCh, err := p.eventListener.ListenNFTProposed(ctx)
 	if err != nil {
-		log.Printf("error processing proposal: %v", err)
+		log.Printf("error listening NFT proposed: %v", err)
 	}
 
-	voteCh, err := p.eventListener.ListenNFTVoted(ctx)
+	voteCh, voteErrCh, err := p.eventListener.ListenNFTVoted(ctx)
 	if err != nil {
-		return err
+		log.Printf("error listening NFT voted: %v", err)
 	}
 
-	mintedCh, err := p.eventListener.ListendNFTMinted(ctx)
+	mintedCh, mintedErrCh, err := p.eventListener.ListendNFTMinted(ctx)
 	if err != nil {
-		return err
+		log.Printf("error listening NFT minted: %v", err)
 	}
 
-	salesCh, err := p.eventListener.ListenNFTInSale(ctx)
+	salesCh, salesErrCh, err := p.eventListener.ListenNFTInSale(ctx)
 	if err != nil {
-		return err
+		log.Printf("error listening NFT in sale: %v", err)
 	}
 
-	soldCh, err := p.eventListener.ListenNFTSold(ctx)
+	soldCh, soldErrCh, err := p.eventListener.ListenNFTSold(ctx)
 	if err != nil {
-		return err
+		log.Printf("error listening NFT sold: %v", err)
 	}
 
 	for {
@@ -66,17 +66,28 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 		case event := <-salesCh:
 			log.Printf("event: %v", event)
 			if err := p.processSale(event); err != nil {
-				log.Printf("error processing sales: %v", err)
+				log.Printf("error processing sale: %v", err)
 			}
 		case event := <-soldCh:
 			log.Printf("event: %v", event)
 			if err := p.processSold(event); err != nil {
 				log.Printf("error processing sold: %v", err)
 			}
+		case err := <-proposedErrCh:
+			log.Printf("error in proposed channel: %v", err)
+		case err := <-voteErrCh:
+			log.Printf("error in vote channel: %v", err)
+		case err := <-mintedErrCh:
+			log.Printf("error in minted channel: %v", err)
+		case err := <-salesErrCh:
+			log.Printf("error in sale channel: %v", err)
+		case err := <-soldErrCh:
+			log.Printf("error in sold channel: %v", err)
 		case <-time.After(time.Second * 30):
 			log.Println("select timeout: no events received")
 		case <-ctx.Done():
 			log.Println("timeout or cancelled")
+			return ctx.Err()
 		}
 	}
 }
@@ -152,13 +163,13 @@ func (p *NFTProcessor) processMinted(event domain.NFTMintedEvent) error {
 		return fmt.Errorf("error with updating proposed status: %w", err)
 	}
 
-	p.hub.Broadcast((struct {
+	p.hub.Broadcast(struct {
 		Type string `json:"type"`
 		NFT  any    `json:"nft"`
 	}{
 		Type: "minted",
 		NFT:  nft,
-	}))
+	})
 
 	return nil
 }
