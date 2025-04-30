@@ -29,9 +29,6 @@ type NFTHandler struct {
 // @Router /api/v1/nfts/favourites [get]
 func (u *NFTHandler) GetFavouriteNFTS(c *gin.Context) {
 	ethAddress := c.Query("address")
-	log.Print(13123132)
-	log.Print(ethAddress)
-
 	if ethAddress == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Ethereum address is required"})
 		return
@@ -61,6 +58,7 @@ func (u *NFTHandler) GetFavouriteNFTS(c *gin.Context) {
 // @Router /api/v1/nfts/favourites [post]
 func (u *NFTHandler) AddFavouriteNFT(c *gin.Context) {
 	var req requests.AddFavouriteNFT
+	log.Print(req)
 
 	if err := c.ShouldBind(&req); err != nil {
 		log.Println(err)
