@@ -10,10 +10,12 @@ import (
 	"bazar/internal/usecase"
 	"context"
 	"fmt"
+	"log"
+	"runtime/debug"
+	"time"
+
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/jmoiron/sqlx"
-	"log"
-	"time"
 )
 
 type Application struct {
@@ -36,7 +38,7 @@ func NewApplication() (*Application, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect ethereum client: %w", err)
 	}
-	
+
 	wsHub := websocket.NewHub()
 
 	return &Application{
@@ -66,6 +68,13 @@ func (a *Application) InitDependencies() error {
 	processor := usecase.NewNFTProcessor(eventListener, nftRepo, a.WSHub)
 
 	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("[panic recovered in processor.Run]: %v", r)
+				debug.PrintStack()
+			}
+		}()
+
 		if err := processor.Run(ctx); err != nil {
 			log.Printf("processor error: %v", err)
 		}
