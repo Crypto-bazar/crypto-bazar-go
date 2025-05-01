@@ -10,7 +10,6 @@ type CommentService struct {
 	CommentRepo interfaces.CommentRepository
 }
 
-// GetCommentsByTokenId implements interfaces.CommentService.
 func (c *CommentService) GetCommentsByTokenId(tokenId string) (*[]responses.CommentResponse, error) {
 	return c.CommentRepo.GetCommentsByTokenId(tokenId)
 }
