@@ -59,7 +59,7 @@ type NFTSoldEvent struct {
 type NFTEventListener interface {
 	ListenNFTProposed(ctx context.Context) (eventCh <-chan NFTProposedEvent, errCh <-chan error, err error)
 	ListenNFTVoted(ctx context.Context) (eventCh <-chan NFTVotedEvent, errCh <-chan error, err error)
-	ListendNFTMinted(ctx context.Context) (eventCh <-chan NFTMintedEvent, errCh <-chan error, err error)
+	ListenedNFTMinted(ctx context.Context) (eventCh <-chan NFTMintedEvent, errCh <-chan error, err error)
 	ListenNFTInSale(ctx context.Context) (eventCh <-chan NFTInSaleEvent, errCh <-chan error, err error)
 	ListenNFTSold(ctx context.Context) (eventCh <-chan NFTSoldEvent, errCh <-chan error, err error)
 }

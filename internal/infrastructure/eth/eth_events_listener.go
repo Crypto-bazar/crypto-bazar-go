@@ -101,7 +101,7 @@ func (l *EventListener) ListenNFTVoted(ctx context.Context) (<-chan domain.NFTVo
 	)
 }
 
-func (l *EventListener) ListendNFTMinted(ctx context.Context) (<-chan domain.NFTMintedEvent, <-chan error, error) {
+func (l *EventListener) ListenedNFTMinted(ctx context.Context) (<-chan domain.NFTMintedEvent, <-chan error, error) {
 	return subscribeWithErrorHandling(
 		ctx,
 		func(opts *bind.WatchOpts, ch chan *contract.ContractNFTMinted) (event.Subscription, error) {

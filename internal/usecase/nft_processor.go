@@ -31,7 +31,7 @@ func (p *NFTProcessor) Run(ctx context.Context) error {
 		log.Printf("error listening NFT voted: %v", err)
 	}
 
-	mintedCh, mintedErrCh, err := p.eventListener.ListendNFTMinted(ctx)
+	mintedCh, mintedErrCh, err := p.eventListener.ListenedNFTMinted(ctx)
 	if err != nil {
 		log.Printf("error listening NFT minted: %v", err)
 	}
