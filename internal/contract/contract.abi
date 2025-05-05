@@ -664,6 +664,11 @@
 				"type": "address"
 			},
 			{
+				"internalType": "address",
+				"name": "creator",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "price",
 				"type": "uint256"

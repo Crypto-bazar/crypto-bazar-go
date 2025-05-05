@@ -41,7 +41,7 @@ func (ch *CommentHandler) CreateComment(c *gin.Context) {
 	c.JSON(http.StatusCreated, &comment)
 }
 
-// GetCommentById godoc
+// GetCommentsByTokenId GetCommentById godoc
 // @Summary Получить комментарий по ID
 // @Tags Comments
 // @Produce json

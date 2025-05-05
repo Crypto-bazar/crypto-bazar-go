@@ -2,7 +2,7 @@ package responses
 
 import "time"
 
-// Comment представляет комментарий к NFT.
+// CommentResponse Comment представляет комментарий к NFT.
 type CommentResponse struct {
 	// ID уникальный идентификатор комментария
 	// swagger:model
