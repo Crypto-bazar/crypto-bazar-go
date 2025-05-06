@@ -4,6 +4,7 @@ import (
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
+	"bazar/internal/domain/responses"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -16,7 +17,110 @@ type NFTRepository struct {
 	db *sqlx.DB
 }
 
-func (n *NFTRepository) AddFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
+func (n *NFTRepository) AddFavouriteNFT(nftId string, ethAddress string) (*responses.FavouriteNFTsResponse, error) {
+	tx, err := n.db.Beginx()
+	if err != nil {
+		return nil, fmt.Errorf("error starting transaction: %w", err)
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			if commitErr := tx.Commit(); commitErr != nil {
+				err = fmt.Errorf("error committing transaction: %w", commitErr)
+				tx.Rollback()
+			}
+		}
+	}()
+
+	// 1. Get user ID
+	var userId int64
+	if err = tx.Get(&userId, "SELECT id FROM users WHERE eth_address = $1", ethAddress); err != nil {
+		return nil, fmt.Errorf("error getting user id: %w", err)
+	}
+
+	// 2. Check if NFT already in favourites
+	var exists bool
+	if err = tx.Get(&exists, `
+        SELECT EXISTS(
+            SELECT 1 FROM favourite_nfts 
+            WHERE user_id = $1 AND nft_id = $2
+        )`, userId, nftId); err != nil {
+		return nil, fmt.Errorf("error checking if NFT exists in favorites: %w", err)
+	}
+
+	if exists {
+		return nil, fmt.Errorf("NFT already in favourites")
+	}
+
+	// 3. Add to favourites (без проверки в таблице nfts)
+	if _, err = tx.Exec(`
+        INSERT INTO favourite_nfts (user_id, nft_id) 
+        VALUES ($1, $2)`, userId, nftId); err != nil {
+		return nil, fmt.Errorf("error adding to favourites: %w", err)
+	}
+
+	// 4. Get updated favourites list
+	query := `
+        SELECT f.nft_id
+        FROM favourite_nfts f
+        WHERE f.user_id = $1
+        ORDER BY f.nft_id DESC
+    `
+
+	var nftItems []responses.FavouriteNFTResponse
+	if err = tx.Select(&nftItems, query, userId); err != nil {
+		return nil, fmt.Errorf("error getting updated favourites: %w", err)
+	}
+
+	nftIds := make([]int64, len(nftItems))
+	for i, item := range nftItems {
+		nftIds[i] = item.NftID
+	}
+
+	return &responses.FavouriteNFTsResponse{
+		NftIds: nftIds,
+	}, nil
+}
+
+func (n *NFTRepository) GetFavouriteNFTS(ethAddress string) (*responses.FavouriteNFTsResponse, error) {
+	log.Println("GetFavouriteNFTS called with ethAddress:", ethAddress)
+
+	query := `
+        WITH owner AS (
+            SELECT id 
+            FROM users
+            WHERE eth_address = $1
+        )
+        SELECT 
+            f.nft_id
+        FROM favourite_nfts f
+        WHERE f.user_id = (SELECT id FROM owner)
+        ORDER BY f.nft_id DESC
+    `
+
+	var nftItems []responses.FavouriteNFTResponse
+	err := n.db.Select(&nftItems, query, ethAddress)
+	if err != nil {
+		return nil, fmt.Errorf("error querying favourite NFTs: %w", err)
+	}
+
+	// Преобразуем в массив ID
+	nftIds := make([]int64, len(nftItems))
+	for i, item := range nftItems {
+		nftIds[i] = item.NftID
+	}
+
+	return &responses.FavouriteNFTsResponse{
+		NftIds: nftIds,
+	}, nil
+}
+
+func (n *NFTRepository) RemoveFavouriteNFT(nftId string, ethAddress string) (*responses.FavouriteNFTsResponse, error) {
 	tx, err := n.db.Beginx()
 	if err != nil {
 		return nil, fmt.Errorf("error starting transaction: %w", err)
@@ -52,125 +156,8 @@ func (n *NFTRepository) AddFavouriteNFT(nftId string, ethAddress string) (*entit
 		return nil, fmt.Errorf("error checking if NFT exists in favorites: %w", err)
 	}
 
-	if exists {
-		return nil, fmt.Errorf("NFT already in favourites")
-	}
-
-	// 3. Get NFT details
-	var nft entities.NFTResponse
-	if err = tx.Get(&nft, `
-        SELECT 
-            n.id,
-            n.token_id,
-            n.proposal_id,
-            n.token_uri,
-            n.name,
-            n.description,
-            n.price::text,
-            u.eth_address as owner,
-            n.image_path,
-            n.in_sales,
-            n.proposed,
-            n.votes_amount::text
-        FROM nfts n
-        JOIN users u ON n.owner_id = u.id
-        WHERE n.id = $1`, nftId); err != nil {
-		return nil, fmt.Errorf("error getting NFT details: %w", err)
-	}
-
-	// 4. Add to favorites
-	if _, err = tx.Exec(`
-        INSERT INTO favourite_nfts (user_id, nft_id) 
-        VALUES ($1, $2)`, userId, nftId); err != nil {
-		return nil, fmt.Errorf("error adding to favourites: %w", err)
-	}
-
-	return &nft, nil
-}
-
-func (n *NFTRepository) GetFavouriteNFTS(ethAddress string) (*[]entities.NFTResponse, error) {
-	log.Println("GetFavouriteNFTS called with ethAddress:", ethAddress)
-	query := `
-        WITH owner AS (
-            SELECT id 
-            FROM users
-            WHERE eth_address = $1
-        )
-        SELECT 
-            n.id,
-            n.token_id,
-            n.proposal_id,
-            n.token_uri,
-            n.name,
-            n.description,
-            n.price::text as price,
-            u.eth_address as owner,
-            n.image_path,
-            n.in_sales,
-            n.proposed,
-            n.votes_amount::text as votes_amount
-        FROM nfts n
-        JOIN favourite_nfts f ON n.id = f.nft_id
-        JOIN users u ON n.owner_id = u.id
-        WHERE f.user_id = (SELECT id FROM owner)
-        ORDER BY n.id DESC
-    `
-
-	var nfts []entities.NFTResponse
-	err := n.db.Select(&nfts, query, ethAddress)
-	if err != nil {
-		return nil, fmt.Errorf("error querying favourite NFTs: %w", err)
-	}
-
-	return &nfts, nil
-}
-
-func (n *NFTRepository) RemoveFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
-	tx, err := n.db.Beginx()
-	if err != nil {
-		return nil, fmt.Errorf("error starting transaction: %w", err)
-	}
-
-	defer func() {
-		if p := recover(); p != nil {
-			tx.Rollback()
-			panic(p)
-		} else if err != nil {
-			tx.Rollback()
-		} else {
-			if commitErr := tx.Commit(); commitErr != nil {
-				err = fmt.Errorf("error committing transaction: %w", commitErr)
-				tx.Rollback()
-			}
-		}
-	}()
-
-	// 1. Get user ID
-	var userId int64
-	if err = tx.Get(&userId, "SELECT id FROM users WHERE eth_address = $1", ethAddress); err != nil {
-		return nil, fmt.Errorf("error getting user id: %w", err)
-	}
-
-	// 2. Get NFT details
-	var nft entities.NFTResponse
-	if err = tx.Get(&nft, `
-        SELECT 
-            n.id,
-            n.token_id,
-            n.proposal_id,
-            n.token_uri,
-            n.name,
-            n.description,
-            n.price::text,
-            u.eth_address as owner,
-            n.image_path,
-            n.in_sales,
-            n.proposed,
-            n.votes_amount::text
-        FROM nfts n
-        JOIN users u ON n.owner_id = u.id
-        WHERE n.id = $1`, nftId); err != nil {
-		return nil, fmt.Errorf("error getting NFT details: %w", err)
+	if !exists {
+		return nil, fmt.Errorf("NFT was not in favourites")
 	}
 
 	// 3. Remove from favorites
@@ -181,15 +168,34 @@ func (n *NFTRepository) RemoveFavouriteNFT(nftId string, ethAddress string) (*en
 		return nil, fmt.Errorf("error removing from favourites: %w", err)
 	}
 
-	rowsAffected, err := result.RowsAffected()
+	// 4. Verify deletion
+	_, err = result.RowsAffected()
 	if err != nil {
 		return nil, fmt.Errorf("error checking rows affected: %w", err)
 	}
-	if rowsAffected == 0 {
-		return nil, fmt.Errorf("NFT was not in favourites")
+
+	// 5. Get updated favorites list
+	query := `
+        SELECT f.nft_id
+        FROM favourite_nfts f
+        WHERE f.user_id = $1
+        ORDER BY f.nft_id DESC
+    `
+
+	var nftItems []responses.FavouriteNFTResponse
+	if err = tx.Select(&nftItems, query, userId); err != nil {
+		return nil, fmt.Errorf("error getting updated favourites: %w", err)
 	}
 
-	return &nft, nil
+	// Convert to IDs array
+	nftIds := make([]int64, len(nftItems))
+	for i, item := range nftItems {
+		nftIds[i] = item.NftID
+	}
+
+	return &responses.FavouriteNFTsResponse{
+		NftIds: nftIds,
+	}, nil
 }
 
 func NewNFTRepository(db *sqlx.DB) interfaces.NFTRepository {

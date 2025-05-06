@@ -3,6 +3,7 @@ package interfaces
 import (
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/requests"
+	"bazar/internal/domain/responses"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,9 +22,9 @@ type NFTRepository interface {
 	UpdateId(tokenUri string, id string) (*entities.NFT, error)
 	UpdateSaleByTokenId(tokenId string, price string) (*entities.NFT, error)
 	UpdateSoldByTokenId(tokenId, buyer string) (*entities.NFT, error)
-	AddFavouriteNFT(nftId, ethAddress string) (*entities.NFTResponse, error)
-	RemoveFavouriteNFT(nftId, ethAddress string) (*entities.NFTResponse, error)
-	GetFavouriteNFTS(ethAddress string) (*[]entities.NFTResponse, error)
+	AddFavouriteNFT(nftId, ethAddress string) (*responses.FavouriteNFTsResponse, error)
+	RemoveFavouriteNFT(nftId, ethAddress string) (*responses.FavouriteNFTsResponse, error)
+	GetFavouriteNFTS(ethAddress string) (*responses.FavouriteNFTsResponse, error)
 }
 
 type NFTService interface {
@@ -35,9 +36,9 @@ type NFTService interface {
 	SetTokenPrice(updateTokenReq *requests.UpdateTokenPriceReq) (*entities.NFT, error)
 	GetUserNFT(address string) (*[]entities.NFT, error)
 	SetTokenSales(req *requests.UpdateTokenStatusReq) (*entities.NFT, error)
-	AddFavouriteNFT(nftId, ethAddress string) (*entities.NFTResponse, error)
-	RemoveFavouriteNFT(nftId, ethAddress string) (*entities.NFTResponse, error)
-	GetFavouriteNFTS(ethAddress string) (*[]entities.NFTResponse, error)
+	AddFavouriteNFT(nftId, ethAddress string) (*responses.FavouriteNFTsResponse, error)
+	RemoveFavouriteNFT(nftId, ethAddress string) (*responses.FavouriteNFTsResponse, error)
+	GetFavouriteNFTS(ethAddress string) (*responses.FavouriteNFTsResponse, error)
 }
 type NFTHandler interface {
 	CreateNFT(c *gin.Context)

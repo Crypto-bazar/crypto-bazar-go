@@ -11,7 +11,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"runtime/debug"
 	"time"
 
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -64,21 +63,21 @@ func (a *Application) InitDependencies() error {
 	ctx := context.Background()
 	instance := eth.LoadContract(a.Config.ContractAddress, a.EthClient)
 
-	eventListener := eth.NewEthEventListener(instance)
-	processor := usecase.NewNFTProcessor(eventListener, nftRepo, a.WSHub)
+	// eventListener := eth.NewEthEventListener(instance)
+	// processor := usecase.NewNFTProcessor(eventListener, nftRepo, a.WSHub)
 
-	go func() {
-		defer func() {
-			if r := recover(); r != nil {
-				log.Printf("[panic recovered in processor.Run]: %v", r)
-				debug.PrintStack()
-			}
-		}()
+	// go func() {
+	// 	defer func() {
+	// 		if r := recover(); r != nil {
+	// 			log.Printf("[panic recovered in processor.Run]: %v", r)
+	// 			debug.PrintStack()
+	// 		}
+	// 	}()
 
-		if err := processor.Run(ctx); err != nil {
-			log.Printf("processor error: %v", err)
-		}
-	}()
+	// 	if err := processor.Run(ctx); err != nil {
+	// 		log.Printf("processor error: %v", err)
+	// 	}
+	// }()
 
 	transactions := eth.NewTransaction(instance)
 	transactionsService := usecase.NewTransactionUseCase(transactions, ctx)
