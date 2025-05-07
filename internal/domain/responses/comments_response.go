@@ -2,7 +2,7 @@ package responses
 
 import "time"
 
-// Comment представляет комментарий к NFT.
+// CommentResponse Comment представляет комментарий к NFT.
 type CommentResponse struct {
 	// ID уникальный идентификатор комментария
 	// swagger:model
@@ -27,4 +27,13 @@ type CommentResponse struct {
 	// AvatarUrl URL аватара пользователя
 	// swagger:model
 	AvatarUrl string `db:"avatar_url" json:"avatar_url"`
+}
+
+type FavouriteNFTsResponse struct {
+	NftIds []int64 `json:"nftIds"`
+}
+
+// FavouriteNFTResponse - структура для одного элемента (можно оставить для других случаев)
+type FavouriteNFTResponse struct {
+	NftID int64 `db:"nft_id" json:"nft_id"`
 }

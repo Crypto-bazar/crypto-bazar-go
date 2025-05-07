@@ -5,6 +5,7 @@ import (
 	"bazar/internal/domain/entities"
 	"bazar/internal/domain/interfaces"
 	"bazar/internal/domain/requests"
+	"bazar/internal/domain/responses"
 	"bazar/pkg/utils"
 	"fmt"
 )
@@ -14,15 +15,15 @@ type NFTService struct {
 	userRepo interfaces.UserRepository
 }
 
-func (n *NFTService) AddFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
+func (n *NFTService) AddFavouriteNFT(nftId string, ethAddress string) (*responses.FavouriteNFTsResponse, error) {
 	return n.nftRepo.AddFavouriteNFT(nftId, ethAddress)
 }
 
-func (n *NFTService) GetFavouriteNFTS(ethAddress string) (*[]entities.NFTResponse, error) {
+func (n *NFTService) GetFavouriteNFTS(ethAddress string) (*responses.FavouriteNFTsResponse, error) {
 	return n.nftRepo.GetFavouriteNFTS(ethAddress)
 }
 
-func (n *NFTService) RemoveFavouriteNFT(nftId string, ethAddress string) (*entities.NFTResponse, error) {
+func (n *NFTService) RemoveFavouriteNFT(nftId string, ethAddress string) (*responses.FavouriteNFTsResponse, error) {
 	return n.nftRepo.RemoveFavouriteNFT(nftId, ethAddress)
 }
 

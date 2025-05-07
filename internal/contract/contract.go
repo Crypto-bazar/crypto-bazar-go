@@ -39,7 +39,7 @@ type DAONFTNFTProposal struct {
 
 // ContractMetaData contains all meta data concerning the Contract contract.
 var ContractMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_governanceToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_paymentToken\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"ERC721IncorrectOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ERC721InsufficientApproval\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"approver\",\"type\":\"address\"}],\"name\":\"ERC721InvalidApprover\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"ERC721InvalidOperator\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"ERC721InvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"ERC721InvalidReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"ERC721InvalidSender\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ERC721NonexistentToken\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"NFTInSale\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"NFTMinted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"}],\"name\":\"NFTProposed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"NFTSold\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Voted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"buyNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getProposeNFT\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"votes\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"minted\",\"type\":\"bool\"}],\"internalType\":\"structDAONFT.NFTProposal[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"governanceToken\",\"outputs\":[{\"internalType\":\"contractIERC20\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"hasVoted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"mintNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"nftProposals\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"votes\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"minted\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"nftSales\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"sold\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paymentToken\",\"outputs\":[{\"internalType\":\"contractIERC20\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proposalCounter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_tokenURI\",\"type\":\"string\"}],\"name\":\"proposeNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"requiredVotes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"sellNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"tokenURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"voteForNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_governanceToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_paymentToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_tokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_paymentTokenPrice\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"ERC721IncorrectOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ERC721InsufficientApproval\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"approver\",\"type\":\"address\"}],\"name\":\"ERC721InvalidApprover\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"ERC721InvalidOperator\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"ERC721InvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"ERC721InvalidReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"ERC721InvalidSender\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ERC721NonexistentToken\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"NFTInSale\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"NFTMinted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"}],\"name\":\"NFTProposed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"NFTSold\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"cost\",\"type\":\"uint256\"}],\"name\":\"TokensPurchased\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Voted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"baseRequiredVotes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"buyGovernanceTokens\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"buyNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"buyPopTokens\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"difficultyDivider\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getProposeNFT\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"votes\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"minted\",\"type\":\"bool\"}],\"internalType\":\"structDAONFT.NFTProposal[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRequiredVotes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"governanceToken\",\"outputs\":[{\"internalType\":\"contractDAOToken\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"hasVoted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"mintNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"nftProposals\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"votes\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"minted\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"nftSales\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"sold\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paymentToken\",\"outputs\":[{\"internalType\":\"contractIERC20\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paymentTokenPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proposalCounter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_tokenURI\",\"type\":\"string\"}],\"name\":\"proposeNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"sellNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"tokenPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"tokenURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"voteForNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // ContractABI is the input ABI used to generate the binding from.
@@ -219,6 +219,68 @@ func (_Contract *ContractCallerSession) BalanceOf(owner common.Address) (*big.In
 	return _Contract.Contract.BalanceOf(&_Contract.CallOpts, owner)
 }
 
+// BaseRequiredVotes is a free data retrieval call binding the contract method 0x6724e796.
+//
+// Solidity: function baseRequiredVotes() view returns(uint256)
+func (_Contract *ContractCaller) BaseRequiredVotes(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Contract.contract.Call(opts, &out, "baseRequiredVotes")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// BaseRequiredVotes is a free data retrieval call binding the contract method 0x6724e796.
+//
+// Solidity: function baseRequiredVotes() view returns(uint256)
+func (_Contract *ContractSession) BaseRequiredVotes() (*big.Int, error) {
+	return _Contract.Contract.BaseRequiredVotes(&_Contract.CallOpts)
+}
+
+// BaseRequiredVotes is a free data retrieval call binding the contract method 0x6724e796.
+//
+// Solidity: function baseRequiredVotes() view returns(uint256)
+func (_Contract *ContractCallerSession) BaseRequiredVotes() (*big.Int, error) {
+	return _Contract.Contract.BaseRequiredVotes(&_Contract.CallOpts)
+}
+
+// DifficultyDivider is a free data retrieval call binding the contract method 0x6907db8e.
+//
+// Solidity: function difficultyDivider() view returns(uint256)
+func (_Contract *ContractCaller) DifficultyDivider(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Contract.contract.Call(opts, &out, "difficultyDivider")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// DifficultyDivider is a free data retrieval call binding the contract method 0x6907db8e.
+//
+// Solidity: function difficultyDivider() view returns(uint256)
+func (_Contract *ContractSession) DifficultyDivider() (*big.Int, error) {
+	return _Contract.Contract.DifficultyDivider(&_Contract.CallOpts)
+}
+
+// DifficultyDivider is a free data retrieval call binding the contract method 0x6907db8e.
+//
+// Solidity: function difficultyDivider() view returns(uint256)
+func (_Contract *ContractCallerSession) DifficultyDivider() (*big.Int, error) {
+	return _Contract.Contract.DifficultyDivider(&_Contract.CallOpts)
+}
+
 // GetApproved is a free data retrieval call binding the contract method 0x081812fc.
 //
 // Solidity: function getApproved(uint256 tokenId) view returns(address)
@@ -279,6 +341,37 @@ func (_Contract *ContractSession) GetProposeNFT() ([]DAONFTNFTProposal, error) {
 // Solidity: function getProposeNFT() view returns((string,address,uint256,bool)[])
 func (_Contract *ContractCallerSession) GetProposeNFT() ([]DAONFTNFTProposal, error) {
 	return _Contract.Contract.GetProposeNFT(&_Contract.CallOpts)
+}
+
+// GetRequiredVotes is a free data retrieval call binding the contract method 0x7b788b7f.
+//
+// Solidity: function getRequiredVotes() view returns(uint256)
+func (_Contract *ContractCaller) GetRequiredVotes(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Contract.contract.Call(opts, &out, "getRequiredVotes")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetRequiredVotes is a free data retrieval call binding the contract method 0x7b788b7f.
+//
+// Solidity: function getRequiredVotes() view returns(uint256)
+func (_Contract *ContractSession) GetRequiredVotes() (*big.Int, error) {
+	return _Contract.Contract.GetRequiredVotes(&_Contract.CallOpts)
+}
+
+// GetRequiredVotes is a free data retrieval call binding the contract method 0x7b788b7f.
+//
+// Solidity: function getRequiredVotes() view returns(uint256)
+func (_Contract *ContractCallerSession) GetRequiredVotes() (*big.Int, error) {
+	return _Contract.Contract.GetRequiredVotes(&_Contract.CallOpts)
 }
 
 // GovernanceToken is a free data retrieval call binding the contract method 0xf96dae0a.
@@ -462,10 +555,11 @@ func (_Contract *ContractCallerSession) NftProposals(arg0 *big.Int) (struct {
 
 // NftSales is a free data retrieval call binding the contract method 0x44432bfc.
 //
-// Solidity: function nftSales(uint256 ) view returns(uint256 tokenId, address owner, uint256 price, bool sold)
+// Solidity: function nftSales(uint256 ) view returns(uint256 tokenId, address owner, address creator, uint256 price, bool sold)
 func (_Contract *ContractCaller) NftSales(opts *bind.CallOpts, arg0 *big.Int) (struct {
 	TokenId *big.Int
 	Owner   common.Address
+	Creator common.Address
 	Price   *big.Int
 	Sold    bool
 }, error) {
@@ -475,6 +569,7 @@ func (_Contract *ContractCaller) NftSales(opts *bind.CallOpts, arg0 *big.Int) (s
 	outstruct := new(struct {
 		TokenId *big.Int
 		Owner   common.Address
+		Creator common.Address
 		Price   *big.Int
 		Sold    bool
 	})
@@ -484,8 +579,9 @@ func (_Contract *ContractCaller) NftSales(opts *bind.CallOpts, arg0 *big.Int) (s
 
 	outstruct.TokenId = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 	outstruct.Owner = *abi.ConvertType(out[1], new(common.Address)).(*common.Address)
-	outstruct.Price = *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
-	outstruct.Sold = *abi.ConvertType(out[3], new(bool)).(*bool)
+	outstruct.Creator = *abi.ConvertType(out[2], new(common.Address)).(*common.Address)
+	outstruct.Price = *abi.ConvertType(out[3], new(*big.Int)).(**big.Int)
+	outstruct.Sold = *abi.ConvertType(out[4], new(bool)).(*bool)
 
 	return *outstruct, err
 
@@ -493,10 +589,11 @@ func (_Contract *ContractCaller) NftSales(opts *bind.CallOpts, arg0 *big.Int) (s
 
 // NftSales is a free data retrieval call binding the contract method 0x44432bfc.
 //
-// Solidity: function nftSales(uint256 ) view returns(uint256 tokenId, address owner, uint256 price, bool sold)
+// Solidity: function nftSales(uint256 ) view returns(uint256 tokenId, address owner, address creator, uint256 price, bool sold)
 func (_Contract *ContractSession) NftSales(arg0 *big.Int) (struct {
 	TokenId *big.Int
 	Owner   common.Address
+	Creator common.Address
 	Price   *big.Int
 	Sold    bool
 }, error) {
@@ -505,10 +602,11 @@ func (_Contract *ContractSession) NftSales(arg0 *big.Int) (struct {
 
 // NftSales is a free data retrieval call binding the contract method 0x44432bfc.
 //
-// Solidity: function nftSales(uint256 ) view returns(uint256 tokenId, address owner, uint256 price, bool sold)
+// Solidity: function nftSales(uint256 ) view returns(uint256 tokenId, address owner, address creator, uint256 price, bool sold)
 func (_Contract *ContractCallerSession) NftSales(arg0 *big.Int) (struct {
 	TokenId *big.Int
 	Owner   common.Address
+	Creator common.Address
 	Price   *big.Int
 	Sold    bool
 }, error) {
@@ -577,6 +675,37 @@ func (_Contract *ContractCallerSession) PaymentToken() (common.Address, error) {
 	return _Contract.Contract.PaymentToken(&_Contract.CallOpts)
 }
 
+// PaymentTokenPrice is a free data retrieval call binding the contract method 0xd0b3b8b2.
+//
+// Solidity: function paymentTokenPrice() view returns(uint256)
+func (_Contract *ContractCaller) PaymentTokenPrice(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Contract.contract.Call(opts, &out, "paymentTokenPrice")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// PaymentTokenPrice is a free data retrieval call binding the contract method 0xd0b3b8b2.
+//
+// Solidity: function paymentTokenPrice() view returns(uint256)
+func (_Contract *ContractSession) PaymentTokenPrice() (*big.Int, error) {
+	return _Contract.Contract.PaymentTokenPrice(&_Contract.CallOpts)
+}
+
+// PaymentTokenPrice is a free data retrieval call binding the contract method 0xd0b3b8b2.
+//
+// Solidity: function paymentTokenPrice() view returns(uint256)
+func (_Contract *ContractCallerSession) PaymentTokenPrice() (*big.Int, error) {
+	return _Contract.Contract.PaymentTokenPrice(&_Contract.CallOpts)
+}
+
 // ProposalCounter is a free data retrieval call binding the contract method 0x0c0512e9.
 //
 // Solidity: function proposalCounter() view returns(uint256)
@@ -606,37 +735,6 @@ func (_Contract *ContractSession) ProposalCounter() (*big.Int, error) {
 // Solidity: function proposalCounter() view returns(uint256)
 func (_Contract *ContractCallerSession) ProposalCounter() (*big.Int, error) {
 	return _Contract.Contract.ProposalCounter(&_Contract.CallOpts)
-}
-
-// RequiredVotes is a free data retrieval call binding the contract method 0xbd31a4d8.
-//
-// Solidity: function requiredVotes() view returns(uint256)
-func (_Contract *ContractCaller) RequiredVotes(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _Contract.contract.Call(opts, &out, "requiredVotes")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// RequiredVotes is a free data retrieval call binding the contract method 0xbd31a4d8.
-//
-// Solidity: function requiredVotes() view returns(uint256)
-func (_Contract *ContractSession) RequiredVotes() (*big.Int, error) {
-	return _Contract.Contract.RequiredVotes(&_Contract.CallOpts)
-}
-
-// RequiredVotes is a free data retrieval call binding the contract method 0xbd31a4d8.
-//
-// Solidity: function requiredVotes() view returns(uint256)
-func (_Contract *ContractCallerSession) RequiredVotes() (*big.Int, error) {
-	return _Contract.Contract.RequiredVotes(&_Contract.CallOpts)
 }
 
 // SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
@@ -701,6 +799,37 @@ func (_Contract *ContractCallerSession) Symbol() (string, error) {
 	return _Contract.Contract.Symbol(&_Contract.CallOpts)
 }
 
+// TokenPrice is a free data retrieval call binding the contract method 0x7ff9b596.
+//
+// Solidity: function tokenPrice() view returns(uint256)
+func (_Contract *ContractCaller) TokenPrice(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Contract.contract.Call(opts, &out, "tokenPrice")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// TokenPrice is a free data retrieval call binding the contract method 0x7ff9b596.
+//
+// Solidity: function tokenPrice() view returns(uint256)
+func (_Contract *ContractSession) TokenPrice() (*big.Int, error) {
+	return _Contract.Contract.TokenPrice(&_Contract.CallOpts)
+}
+
+// TokenPrice is a free data retrieval call binding the contract method 0x7ff9b596.
+//
+// Solidity: function tokenPrice() view returns(uint256)
+func (_Contract *ContractCallerSession) TokenPrice() (*big.Int, error) {
+	return _Contract.Contract.TokenPrice(&_Contract.CallOpts)
+}
+
 // TokenURI is a free data retrieval call binding the contract method 0xc87b56dd.
 //
 // Solidity: function tokenURI(uint256 tokenId) view returns(string)
@@ -753,6 +882,27 @@ func (_Contract *ContractTransactorSession) Approve(to common.Address, tokenId *
 	return _Contract.Contract.Approve(&_Contract.TransactOpts, to, tokenId)
 }
 
+// BuyGovernanceTokens is a paid mutator transaction binding the contract method 0x7e8437a3.
+//
+// Solidity: function buyGovernanceTokens(uint256 amount) returns()
+func (_Contract *ContractTransactor) BuyGovernanceTokens(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error) {
+	return _Contract.contract.Transact(opts, "buyGovernanceTokens", amount)
+}
+
+// BuyGovernanceTokens is a paid mutator transaction binding the contract method 0x7e8437a3.
+//
+// Solidity: function buyGovernanceTokens(uint256 amount) returns()
+func (_Contract *ContractSession) BuyGovernanceTokens(amount *big.Int) (*types.Transaction, error) {
+	return _Contract.Contract.BuyGovernanceTokens(&_Contract.TransactOpts, amount)
+}
+
+// BuyGovernanceTokens is a paid mutator transaction binding the contract method 0x7e8437a3.
+//
+// Solidity: function buyGovernanceTokens(uint256 amount) returns()
+func (_Contract *ContractTransactorSession) BuyGovernanceTokens(amount *big.Int) (*types.Transaction, error) {
+	return _Contract.Contract.BuyGovernanceTokens(&_Contract.TransactOpts, amount)
+}
+
 // BuyNFT is a paid mutator transaction binding the contract method 0x51ed8288.
 //
 // Solidity: function buyNFT(uint256 tokenId) returns()
@@ -772,6 +922,27 @@ func (_Contract *ContractSession) BuyNFT(tokenId *big.Int) (*types.Transaction, 
 // Solidity: function buyNFT(uint256 tokenId) returns()
 func (_Contract *ContractTransactorSession) BuyNFT(tokenId *big.Int) (*types.Transaction, error) {
 	return _Contract.Contract.BuyNFT(&_Contract.TransactOpts, tokenId)
+}
+
+// BuyPopTokens is a paid mutator transaction binding the contract method 0x3cedc020.
+//
+// Solidity: function buyPopTokens(uint256 amount) payable returns()
+func (_Contract *ContractTransactor) BuyPopTokens(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error) {
+	return _Contract.contract.Transact(opts, "buyPopTokens", amount)
+}
+
+// BuyPopTokens is a paid mutator transaction binding the contract method 0x3cedc020.
+//
+// Solidity: function buyPopTokens(uint256 amount) payable returns()
+func (_Contract *ContractSession) BuyPopTokens(amount *big.Int) (*types.Transaction, error) {
+	return _Contract.Contract.BuyPopTokens(&_Contract.TransactOpts, amount)
+}
+
+// BuyPopTokens is a paid mutator transaction binding the contract method 0x3cedc020.
+//
+// Solidity: function buyPopTokens(uint256 amount) payable returns()
+func (_Contract *ContractTransactorSession) BuyPopTokens(amount *big.Int) (*types.Transaction, error) {
+	return _Contract.Contract.BuyPopTokens(&_Contract.TransactOpts, amount)
 }
 
 // MintNFT is a paid mutator transaction binding the contract method 0x14f710fe.
@@ -1852,6 +2023,152 @@ func (_Contract *ContractFilterer) WatchNFTSold(opts *bind.WatchOpts, sink chan<
 func (_Contract *ContractFilterer) ParseNFTSold(log types.Log) (*ContractNFTSold, error) {
 	event := new(ContractNFTSold)
 	if err := _Contract.contract.UnpackLog(event, "NFTSold", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractTokensPurchasedIterator is returned from FilterTokensPurchased and is used to iterate over the raw logs and unpacked data for TokensPurchased events raised by the Contract contract.
+type ContractTokensPurchasedIterator struct {
+	Event *ContractTokensPurchased // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractTokensPurchasedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractTokensPurchased)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractTokensPurchased)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractTokensPurchasedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractTokensPurchasedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractTokensPurchased represents a TokensPurchased event raised by the Contract contract.
+type ContractTokensPurchased struct {
+	Buyer  common.Address
+	Amount *big.Int
+	Cost   *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterTokensPurchased is a free log retrieval operation binding the contract event 0x8fafebcaf9d154343dad25669bfa277f4fbacd7ac6b0c4fed522580e040a0f33.
+//
+// Solidity: event TokensPurchased(address indexed buyer, uint256 amount, uint256 cost)
+func (_Contract *ContractFilterer) FilterTokensPurchased(opts *bind.FilterOpts, buyer []common.Address) (*ContractTokensPurchasedIterator, error) {
+
+	var buyerRule []interface{}
+	for _, buyerItem := range buyer {
+		buyerRule = append(buyerRule, buyerItem)
+	}
+
+	logs, sub, err := _Contract.contract.FilterLogs(opts, "TokensPurchased", buyerRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractTokensPurchasedIterator{contract: _Contract.contract, event: "TokensPurchased", logs: logs, sub: sub}, nil
+}
+
+// WatchTokensPurchased is a free log subscription operation binding the contract event 0x8fafebcaf9d154343dad25669bfa277f4fbacd7ac6b0c4fed522580e040a0f33.
+//
+// Solidity: event TokensPurchased(address indexed buyer, uint256 amount, uint256 cost)
+func (_Contract *ContractFilterer) WatchTokensPurchased(opts *bind.WatchOpts, sink chan<- *ContractTokensPurchased, buyer []common.Address) (event.Subscription, error) {
+
+	var buyerRule []interface{}
+	for _, buyerItem := range buyer {
+		buyerRule = append(buyerRule, buyerItem)
+	}
+
+	logs, sub, err := _Contract.contract.WatchLogs(opts, "TokensPurchased", buyerRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractTokensPurchased)
+				if err := _Contract.contract.UnpackLog(event, "TokensPurchased", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseTokensPurchased is a log parse operation binding the contract event 0x8fafebcaf9d154343dad25669bfa277f4fbacd7ac6b0c4fed522580e040a0f33.
+//
+// Solidity: event TokensPurchased(address indexed buyer, uint256 amount, uint256 cost)
+func (_Contract *ContractFilterer) ParseTokensPurchased(log types.Log) (*ContractTokensPurchased, error) {
+	event := new(ContractTokensPurchased)
+	if err := _Contract.contract.UnpackLog(event, "TokensPurchased", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
